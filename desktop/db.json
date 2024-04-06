@@ -1,0 +1,40 @@
+{
+    "manga": [
+        {
+            "Name": "One Piece",
+            "Alternate names": "One Piece",
+            "Genres": "Action, Adventure, Comedy, Drama, Fantasy, Shounen",
+            "Author(s)": "ODA Eiichiro",
+            "Status": "Ongoing (Scan), Ongoing (Publish)",
+            "Description": "As a child, Monkey D. Luffy dreamed of becoming the King of the Pirates. But his life changed when he accidentally gained the power to stretch like rubber...at the cost of never being able to swim again! Now Luffy, with the help of a motley collection of nakama, is setting off in search of 'One Piece,' said to be the greatest treasure in the world...",
+            "Total Chapters": 1111
+        },
+        {
+            "Name": "Delicious in Dungeon",
+            "Alternate names": "Dungeon Food, Dungeon Meshi",
+            "Genres": "Adventure, Comedy, Fantasy, Seinen, Supernatural",
+            "Author(s)": "KUI Ryouko",
+            "Status": "Complete (Scan), Complete (Publish)",
+            "Description": "After getting his sister devoured by a dragon and losing all their supplies in a failed dungeon raid, Lyos and his party are determined to save his sister before she gets digested. Completely broke and having to resort to eating monsters as food, they meet a dwarf who will introduce them to the world of dungeon meshi - Delicious cuisines made from ingredients such as the flesh of giant bats, walking mushroom, or even screaming mandrakes.",
+            "Total Chapters": 97
+        },
+        {
+            "Name": "[Oshi No Ko]",
+            "Alternate names": "Oshi No Ko",
+            "Genres": "Comedy, Drama, Mystery, Psychological, Seinen, Slice of Life, Tragedy",
+            "Author(s)": "AKASAKA Aka, YOKOYARI Mengo",
+            "Status": "Ongoing (Scan), Ongoing (Publish)",
+            "Description": "The story begins with a beautiful girl, her perfectly fake smile, and the people who love her selfishly for it. What transpires behind the scenes of the glittering showbiz industry? How far would you go for the sake of your beloved idol? What would you do if you found out reincarnation was real? The star of the show is Aquamarine Hoshino and the stage is but a mere facade. Will he manage to reach the climax before the world of glamour swallows him whole?",
+            "Total Chapters": 145
+        },
+        {
+            "Name": "One-Punch Man",
+            "Alternate names": "One Punch-Man, Onepunch Man, OPM",
+            "Genres": "Action, Adventure, Comedy, Drama, Sci-fi, Seinen, Supernatural",
+            "Author(s)": "MURATA Yuusuke, ONE",
+            "Status": "Ongoing (Scan), Ongoing (Publish)",
+            "Description": "In this new action-comedy, everything about a young man named Saitama screams 'AVERAGE,' from his lifeless expression to his bald head, to his unimpressive physique. However, this average-looking fellow doesn't have your average problem... He's actually a superhero that's looking for tough opponents! The problem is, every time he finds a promising candidate he beats the snot out of them in one punch. Can Saitama finally find an evil villain strong enough to challenge him? Follow Saitama through his hilarious romps as he searches for new bad guys to challenge!",
+            "Total Chapters": 200
+        }
+    ]
+}
