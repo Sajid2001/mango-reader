@@ -2,27 +2,32 @@ import {  IconBooks,  IconHistory,  IconRobot, IconSearch, IconSettings } from "
 import SidebarButton from "./SidebarButton";
 
 const Sidebar = () => {
+
+    const strikeWidth = 1.7;
+    const color = "white";
+    const size = 42;
+
     return (  
         <div className='grid grid-cols-1 mt-2'>
             
             <SidebarButton 
-                icon={<IconBooks color="white" size={42} />} 
+                icon={<IconBooks strokeWidth={strikeWidth} color={color} size={size} />} 
                 routeName="hello world"
             />
             <SidebarButton 
-                icon={<IconSearch color="white" size={42} />} 
+                icon={<IconSearch strokeWidth={strikeWidth} color={color} size={size} />} 
                 routeName="hello world"
             />
             <SidebarButton 
-                icon={<IconSettings color="white" size={42} />} 
+                icon={<IconSettings strokeWidth={strikeWidth}  color={color} size={size} />} 
                 routeName="hello world"
             />
             <SidebarButton 
-                icon={<IconHistory color="white" size={42} />} 
+                icon={<IconHistory strokeWidth={strikeWidth} color={color} size={size} />} 
                 routeName="hello world"
             />
             <SidebarButton 
-                icon={<IconRobot color="white" size={42} />} 
+                icon={<IconRobot strokeWidth={strikeWidth} color={color} size={size} />} 
                 routeName="hello world"
             />
         </div>
