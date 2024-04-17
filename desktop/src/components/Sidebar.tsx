@@ -8,7 +8,7 @@ const Sidebar = () => {
     const size = 42;
 
     return (  
-        <div className='grid grid-cols-1 mt-2'>
+        <div className=' grid grid-cols-1 mt-2'>
             
             <SidebarButton 
                 icon={<IconBooks strokeWidth={strikeWidth} color={color} size={size} />} 
