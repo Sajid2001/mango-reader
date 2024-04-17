@@ -12,23 +12,26 @@ function App() {
 
   return (
     <div className='flex'>
-      <div className='absolute z-3 h-screen bg-gray-200'>
-        <Sidebar/>
-      </div>
-      
-      <div className='pl-16'>
-        <HashRouter >
+      <HashRouter >
+
+        <div className=' h-screen bg-gray-200'>
+          <Sidebar/>
+        </div>
+        
+        <div className=''>
           <Routes>
+
             <Route path="/manga/:id" element={<MangaPage/>}/>
             <Route path="/search" element={<SearchPage/>}/>
             <Route path="/history" element={<HistoryPage/>}/>
             <Route path="/settings" element={<SettingsPage/>}/>
             <Route path="/askai" element={<AskAIPage/>}/>
             <Route path="/" element={<LibraryPage/>}/>
+
           </Routes>
-        </HashRouter>
-       
-      </div>
+        </div>
+
+      </HashRouter>
 
     </div>
   )

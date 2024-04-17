@@ -17,22 +17,22 @@ const Sidebar = () => {
             />
             <SidebarButton 
                 icon={<IconSearch strokeWidth={strikeWidth} color={color} size={size} />} 
-                routeName="search"
+                routeName="/search"
                 pageName="Search"
             />
             <SidebarButton 
                 icon={<IconSettings strokeWidth={strikeWidth}  color={color} size={size} />} 
-                routeName="settings"
+                routeName="/settings"
                 pageName="Settings"
             />
             <SidebarButton 
                 icon={<IconHistory strokeWidth={strikeWidth} color={color} size={size} />} 
-                routeName="history"
+                routeName="/history"
                 pageName="History"
             />
             <SidebarButton 
                 icon={<IconRobot strokeWidth={strikeWidth} color={color} size={size} />} 
-                routeName="askai"
+                routeName="/askai"
                 pageName="Ask AI"
             />
         </div>
