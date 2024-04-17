@@ -18,7 +18,7 @@ function App() {
           <Sidebar/>
         </div>
         
-        <div className=''>
+        <div className='w-full'>
           <Routes>
 
             <Route path="/manga/:id" element={<MangaPage/>}/>

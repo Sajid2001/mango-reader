@@ -9,7 +9,7 @@ interface MangaCardProps {
 
 const MangaCard = ({ mangaId, title, description, image }: MangaCardProps) => {
     return (  
-        <div className="w-40 h-60 rounded-2xl relative">
+        <div className="w-auto rounded-2xl relative drop-shadow-lg">
             <Link to={`/manga/${mangaId}`}>
                 <img className="rounded-2xl" src={image} alt="" />
                 <div className="h-full w-full rounded-2xl absolute bottom-0 z-10 bg-slate-500 bg-opacity-35 transition ease-in-out duration-300 opacity-0 hover:opacity-100">
