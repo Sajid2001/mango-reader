@@ -13,44 +13,47 @@ const LibraryPage = () => {
                 
             </div>
             
-            <div className="grid grids-col-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <div className="grid xs:grids-col-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                 
                 <MangaCard 
                     title="Manga Title"
-                    description="Manga descriptionation ahhhhhhhh"
+                    chapers={10}
                     image="https://image.tmdb.org/t/p/original/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg"
                 />
                 <MangaCard 
                     title="Manga Title"
-                    description="Manga description"
-                    image="https://image.tmdb.org/t/p/original/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg"
-                />
-                
-                <MangaCard 
-                    title="Manga Title"
-                    description="Manga description"
+                    chapers={10}
                     image="https://image.tmdb.org/t/p/original/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg"
                 />
                 
                 <MangaCard 
                     title="Manga Title"
-                    description="Manga description"
-                    image="https://image.tmdb.org/t/p/original/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg"
-                />
-                
-                <MangaCard 
-                    title="Manga Title"
-                    description="Manga description"
+                    chapers={10}
                     image="https://image.tmdb.org/t/p/original/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg"
                 />
                 <MangaCard 
                     title="Manga Title"
-                    description="Manga description"
+                    chapers={10}
                     image="https://image.tmdb.org/t/p/original/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg"
                 />
                 <MangaCard 
                     title="Manga Title"
-                    description="Manga description"
+                    chapers={10}
+                    image="https://image.tmdb.org/t/p/original/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg"
+                />
+                <MangaCard 
+                    title="Manga Title"
+                    chapers={10}
+                    image="https://image.tmdb.org/t/p/original/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg"
+                />
+                <MangaCard 
+                    title="Manga Title"
+                    chapers={10}
+                    image="https://image.tmdb.org/t/p/original/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg"
+                />
+                <MangaCard 
+                    title="Manga Title"
+                    chapers={10}
                     image="https://image.tmdb.org/t/p/original/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg"
                 />
                 
