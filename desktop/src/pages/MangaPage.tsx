@@ -1,4 +1,4 @@
-import { IconCheck, IconClock, IconPlayCard, IconPlayerPlay } from "@tabler/icons-react";
+import { IconCheck, IconClock, IconPlayerPlay } from "@tabler/icons-react";
 
 const MangaPage = () => {
 
@@ -11,6 +11,8 @@ const MangaPage = () => {
     const chapters: number = 100;
 
 
+
+
     return ( 
 
 
@@ -18,7 +20,7 @@ const MangaPage = () => {
         <div>
             <div>
                 <div className="bg-slate-200 h-48 w-dull">
-                    <img src="https://media.kitsu.io/manga/cover_images/59240/large.jpg" alt="" className="object-fit"/>
+                    <img src="https://media.kitsu.io/manga/cover_images/59240/large.jpg" alt="" className="h-full object-cover w-full"/>
                 </div>
                 <div className="flex flex-col mt-2">
                     <div className=" pl-4 pt-4 pr-2 pb-2 inline-block align-baseline">
@@ -33,8 +35,9 @@ const MangaPage = () => {
                     </div>
                     
                     <div className="flex *:px-4 *:py-2">
-                        <p className="font-semibold">{description}</p>
+                        <p className="font-semibold text-md">{description}</p>
                     </div>
+
                     <div className="flex *:px-4 font-semibold">
                         <p>{mangaka}</p>
                         <div className="font-bold">{ongoing ? 
