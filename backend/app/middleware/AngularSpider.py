@@ -1,5 +1,5 @@
 import scrapy
-import csv
+# import csv
 import re
 import requests
 from selenium import webdriver
