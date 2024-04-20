@@ -11,9 +11,10 @@
 ### Environment Variables
 Create a file inside the `backend` folder called `.env` and place these variables inside it
 ```
-SECRET_KEY=<Secret key for flask server. Just use a password generator to fill this>
-DB_NAME=<Your database name. ex: database.db>
-PORT=<Your port number of choice, optional field>
+SECRET_KEY=<Secret key for flask server> ->  Just use a password generator to fill this
+DB_NAME=<Your database name. ex: database.db> -> used for sqlite
+DB_CONNECTION=<Your postgres connection url> -> used for postgres
+PORT=<Your port number of choice> -> optional field
 ```
 
 ### Running the boilerplate code
@@ -28,7 +29,7 @@ PORT=<Your port number of choice, optional field>
     Debugger is active!
     Debugger PIN: 137-864-650    
     ```
-    * You should also see a new folder called `instance` be created if it wasn't already
+    * You should also see a new folder called `instance` be created if it wasn't already (if using sqlite)
 2. Navigate to the route `/api/hello` and you should see the following json:
 ```
 {
