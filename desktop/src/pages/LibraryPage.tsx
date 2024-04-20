@@ -34,9 +34,14 @@ const LibraryPage = () => {
         <div className='h-screen bg-gray-100 px-5 w-full align-baseline'>
             <div className="w-full flex tems-stretch">
                 <h1 className="text-3xl p-4 font-bold ">Library {mangaData.length}</h1>
-                <button className="font-semibold text-lg px-3 m-4  bg-slate-300 rounded-lg active:bg-slate-200">Layout</button>
-                <button className="font-semibold h-8 px-3 m-3 self-center bg-slate-300 rounded-lg active:bg-slate-200"><IconMoon size={20}/></button>
-                <input className="font-semibold w-1/3 h-8  mx-2 p-3 py-5 self-center text-lg rounded-lg align-middle bg-slate-300 placeholder:text-black" placeholder="Search Library..."/>
+                <div className="inline-flex m-1 *:my-3 *:mx-1 w-2/3">
+                    
+                    <button className="font-semibold text-lg px-5 bg-slate-300 rounded-lg active:bg-slate-200">Layout</button>
+                    <button className="font-semibold px-3 bg-slate-300 rounded-lg  active:bg-slate-200"><IconMoon size={24}/></button>
+                    <input className="font-semibold w-1/2   font-semibold text-lg px-5 bg-slate-300 rounded-lg active:bg-slate-200 placeholder:text-black" placeholder="Search Library..."/>
+
+                </div>
+
                 
                 
             </div>
