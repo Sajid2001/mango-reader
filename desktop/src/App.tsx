@@ -14,7 +14,7 @@ function App() {
     <div className='flex'>
       <HashRouter >
 
-        <div className=' h-screen bg-gray-200'>
+        <div className=' min-h-screen bg-gray-200'>
           <Sidebar/>
         </div>
         

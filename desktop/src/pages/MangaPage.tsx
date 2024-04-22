@@ -1,4 +1,4 @@
-import { IconCheck, IconClock, IconPlayerPlay } from "@tabler/icons-react";
+import { IconCheck, IconClock, IconDownload, IconPlayerPlay } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -16,6 +16,11 @@ const MangaPage = () => {
         totalChapters: number;
         bannerImage: string;
     }
+
+    interface ChapterDetails {
+       mangaId: number;
+       chapterNumber: number; 
+    }
     
     const { id } = useParams();
 
@@ -30,7 +35,8 @@ const MangaPage = () => {
         totalChapters: 100,
         bannerImage: "https://media.kitsu.io/manga/38/cover_image/large-bd52b8f2fb81d3cf99b4fbe4c072d2b1.jpeg"
     });
-    
+
+    const [chapters, setChapters] = useState<ChapterDetails[]>([]);
 
     useEffect(() => {
         console.log(id)
@@ -57,9 +63,30 @@ const MangaPage = () => {
             console.log(mappedData)
             setManga(mappedData);
           })
-          .catch(error => console.error('Error fetching data:', error));
+          .catch(error => console.error('Error fetching manga data:', error));
           
     }, []);
+
+    useEffect(() => {
+        if(manga.id != -1){
+            fetch("http://localhost:3001/chapters?series_id="+manga.id)
+                .then(response => {
+                    if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+                }).then(data => {
+                    // Map fetched data to Post model
+                    const mappedData: ChapterDetails[] = data.map((post: any) => ({
+                        mangaId: post.series_id,
+                        chapterNumber: post.number
+                    }))
+                    setChapters(mappedData);
+                    
+                })
+                .catch(error => console.error('Error fetching chapter data:', error));
+        }
+    }, [manga])
 
 
     return ( 
@@ -109,9 +136,36 @@ const MangaPage = () => {
                         </div>
                     </div>
                     <div className="flex border-b-2 p-4 font-bold border-slate-800 justify-between">
-                        <p>{manga.totalChapters != null || manga.totalChapters == 0 ? "No totalChapters" : manga.totalChapters == 1 ? "1 Chapter" : `${manga.totalChapters} totalChapters`}</p>
+                        <p>{manga.totalChapters == null || manga.totalChapters == 0 ? "No Chapters Available" : manga.totalChapters == 1 ? "1 Chapter" : `${manga.totalChapters} Chapters`}</p>
                         <button className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end active:bg-slate-700"> <IconPlayerPlay className="pr-2"/> Start</button>
 
+                    </div>
+                    <div className="grid grid-cols-1 gap-1">
+                        
+                        {   chapters != null && chapters.length != 0?
+                            <div>
+                                {chapters.map((chapter) => (
+                                <div className="flex justify-between p-3 items-center">
+                                    <div className="flex-col">
+                                        <p className="font-semibold text-md">Chapter {chapter.chapterNumber}</p>
+                                        <p>04/20/2024</p>
+                                    </div>
+                                    <div className="">
+                                        <button className="bg-slate-500 rounded-lg text-white py-1 px-3 mr-4 hover:bg-slate-700 active:bg-slate-800"><IconDownload /></button>
+                                    </div>
+
+                                </div>
+                                ))}
+                            </div>
+                            :
+                            <div className="flex justify-center font-bold text-center mt-6">
+                                <div className="flex-col">
+                                    <p >Oops, could not find any chapters</p>
+                                    <p className="">(╯°□°）╯ ┻━┻</p>
+                                </div>
+                            </div>
+                        }
+                            
                     </div>
                 </div>
             </div>
