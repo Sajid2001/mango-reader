@@ -4,6 +4,7 @@ import App from './App.tsx'
 import './index.css'
 import { Provider } from 'react-redux'
 import { store } from './reduxStorage/store.tsx'
+import { app, BrowserWindow } from 'electron'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
