@@ -1,5 +1,5 @@
 export interface MangaDetails {
-    mangaId: string;
+    mangaId: number;
     title: string;
     totalChapters: number;
     image: string;

@@ -21,8 +21,8 @@ const LibraryPage = () => {
             // Map fetched data to Post model
             const mappedData: MangaDetails[] = data.map((post: any) => ({
                 mangaId: post.id,
-                title: post.Name,
-                totalChapters: post["Total Chapters"],
+                title: post.name,
+                totalChapters: post.totalChapters,
                 
             }));
             setMangaData(mappedData);
@@ -39,7 +39,7 @@ const LibraryPage = () => {
                     <button className="font-semibold text-lg px-5 bg-slate-300 rounded-lg active:bg-slate-200">Layout</button>
                     <button className="font-semibold px-3 bg-slate-300 rounded-lg  active:bg-slate-200"><IconMoon size={24}/></button>
                     <input className="font-semibold w-1/2   font-semibold text-lg px-5 bg-slate-300 rounded-lg active:bg-slate-200 placeholder:text-black" placeholder="Search Library..."/>
-
+                    
                 </div>
 
                 
@@ -50,6 +50,7 @@ const LibraryPage = () => {
                 
                 {mangaData.map(item => (
                     <MangaCard 
+                        mangaId={item.mangaId}
                         title={item.title}
                         chapters={item.totalChapters}
                         image="https://image.tmdb.org/t/p/original/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg"
