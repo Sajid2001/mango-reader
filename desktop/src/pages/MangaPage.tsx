@@ -44,15 +44,15 @@ const MangaPage = () => {
           .then(data => {
             // Map fetched data to Post model
             const mappedData: MangaDetails = {
-                id: data.id,
-                mangaka: data['author(s)'],
-                alternateNames: data.alternateNames,
-                name: data.name,
-                genres: data.genres,
-                description: data.description,
+                id: data[0].id,
+                mangaka: data[0]['author(s)'],
+                alternateNames: data[0].alternateNames,
+                name: data[0].name,
+                genres: data[0].genres.split(", "),
+                description: data[0].descriptions,
                 ongoing: true,
-                totalChapters: data.totalChapters,
-                bannerImage: data.bannerImage
+                totalChapters: data[0].totalChapters,
+                bannerImage: data[0].bannerImage
             }
             console.log(mappedData)
             setManga(mappedData);
