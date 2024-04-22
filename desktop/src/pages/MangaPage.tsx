@@ -1,5 +1,5 @@
 import { IconCheck, IconClock, IconDownload, IconPlayerPlay } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const MangaPage = () => {
@@ -55,7 +55,7 @@ const MangaPage = () => {
                 alternateNames: data[0].alternateNames,
                 name: data[0].name,
                 genres: data[0].genres.split(", "),
-                description: data[0].descriptions,
+                description: data[0].description,
                 ongoing: true,
                 totalChapters: data[0].totalChapters,
                 bannerImage: data[0].bannerImage
@@ -88,6 +88,13 @@ const MangaPage = () => {
         }
     }, [manga])
 
+    const [isDescriptionOverflow, setIsDescriptionOverflow] = useState(false);
+    const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+    
+    const toggleDescriptionExpansion = () => {
+        setDescriptionExpanded(!descriptionExpanded);
+    }
+
 
     return ( 
 
@@ -117,8 +124,12 @@ const MangaPage = () => {
                     </div>
                     
                     <div className="flex *:px-4 *:py-2">
-                        <p className="font-semibold text-md">{manga.description}</p>
+                        <p  id="description" className={`font-semibold text-md overflow-hidden ${descriptionExpanded ? "h-auto" : "max-h-20"}` }>{manga.description}</p>
+                        
                     </div>
+                    { isDescriptionOverflow &&
+                        <button className="flex px-4 font-bold text-red-500 hover:text-red-800" onClick={toggleDescriptionExpansion}>{ descriptionExpanded ? "See Less" : "See More"}</button>
+                    }
 
                     <div className="flex *:px-4 font-semibold">
                         <p>{manga.mangaka}</p>
