@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 import Sidebar from './components/Sidebar'
 import {Route, HashRouter, Routes } from 'react-router-dom'
 import LibraryPage from './pages/LibraryPage'

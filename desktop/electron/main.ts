@@ -20,11 +20,14 @@ const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL']
 
 function createWindow() {
   win = new BrowserWindow({
+    
     minWidth: 700, // Set minimum width
     minHeight: 300, // Set minimum height
     icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: true,
+      contextIsolation: false,
     },
   })
 
@@ -58,5 +61,7 @@ app.on('activate', () => {
     createWindow()
   }
 })
+
+
 
 app.whenReady().then(createWindow)
