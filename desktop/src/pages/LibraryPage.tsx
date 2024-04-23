@@ -4,29 +4,64 @@ import { useEffect, useState } from "react";
 import { MangaDetails } from "../models/mangaDetails";
 import { getLibrary, loadLibrary } from "../fileStorage/libraryStorage";
 import { Link } from "react-router-dom";
+import { LibraryEntry } from "../models/libraryEntry";
+import { get } from "node:http";
 
 
 
 const LibraryPage = () => {
 
-    const [libraryData, setLibraryData] = useState<MangaDetails[]>([]);
+    const [libraryData, setLibraryData] = useState<LibraryEntry[]>([]);
 
     useEffect(() => {
-        loadLibrary();
-        const retrievedData = getLibrary();
-        console.log(retrievedData)
-        setLibraryData(retrievedData);
+        
+        loadLibrary().then(() => {
+            getLibrary().then((data) => setLibraryData(data));
+            
+            //console.log(data);
+            console.log();
+
+            const ex : LibraryEntry[] = [
+                {
+                manga: {
+                    mangaId: 1,
+                    title: "test",
+                    image: "test",
+                    totalChapters: 1000
+                },
+                progress: 0
+                },
+                {
+                    manga: {
+                        mangaId: 2,
+                        title: "test",
+                        image: "test",
+                        totalChapters: 1000
+                    },
+                    progress: 0
+                    }
+            ]
+            console.log(ex);
+        })
+        
+        
     }, []);
 
     return ( 
-        <div className='h-screen bg-gray-100 px-5 w-full align-baseline'>
-            <div className="w-full flex tems-stretch">
-                <h1 className="text-3xl p-4 font-bold ">Library {libraryData.length}</h1>
-                <div className="inline-flex m-1 *:my-3 *:mx-1 w-2/3">
+        <div className='h-screen flex-col bg-gray-100 px-5 w-full align-baseline'>
+            <div className="w-full flex">
+                
+                <div className=" justify-between w-full">
                     
-                    <button className="font-semibold text-lg px-5 bg-slate-300 rounded-lg active:bg-slate-200">Layout</button>
-                    <button className="font-semibold px-3 bg-slate-300 rounded-lg  active:bg-slate-200"><IconMoon size={24}/></button>
-                    <input className="font-semibold w-1/2   font-semibold text-lg px-5 bg-slate-300 rounded-lg active:bg-slate-200 placeholder:text-black" placeholder="Search Library..."/>
+                    <div className="inline-flex m-1 *:my-2 *:mx-1 *:p-1 *:px-3">
+                        <h1 className="text-3xl p-4 font-bold">Library {libraryData.length}</h1>
+                        <button className="font-semibold text-lg px-5 bg-slate-300 rounded-lg active:bg-slate-200">Layout</button>
+                        <button className="font-semibold px-3 bg-slate-300 rounded-lg  active:bg-slate-200"><IconMoon size={24}/></button>
+                        <input className="font-semibold  text-lg px-5 bg-slate-300 rounded-lg active:bg-slate-200 placeholder:text-black" placeholder="Search Library..."/>
+                    </div>
+                    <div className="inline-flex m-1 *:my-3 *:mx-1 *:p-1 *:px-3">
+                        <button className="font-semibold text-lg px-5 bg-red-300 rounded-lg hover:bg-red-400 active:bg-red-600">Clear Library</button>
+                    </div>
                     
                 </div>
 
@@ -35,18 +70,18 @@ const LibraryPage = () => {
             </div>
             
             {
-                libraryData != null && libraryData.length > 0 ?
+                libraryData != null  && libraryData.length > 0?
                 
                 <div className="grid xs:grids-col-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                     {
-                        libraryData.map((manga) => (
-                            <MangaCard 
-                                    mangaId={manga.mangaId}
-                                    title={manga.title}
-                                    chapters={manga.totalChapters}
-                                    image="https://image.tmdb.org/t/p/original/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg"
-                                />
-                            ))
+                        libraryData.map((entry: LibraryEntry) => (
+                            <MangaCard key={entry.manga.mangaId} 
+                                mangaId={entry.manga.mangaId}
+                                title={entry.manga.title}
+                                chapters={entry.manga.totalChapters}
+                                image="https://image.tmdb.org/t/p/original/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg"
+                            />
+                        ))
                     }
                 </div>
                 

@@ -1,11 +1,16 @@
-import { IconCheck, IconClock, IconDownload, IconPlayerPlay } from "@tabler/icons-react";
+import { IconCheck, IconClock, IconDownload, IconMinus, IconPlayerPlay, IconPlus } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import { addEntryToLibrary, getLibrary, loadLibrary, removeEntryFromLibrary } from "../fileStorage/libraryStorage";
+import { MangaDetails } from "../models/mangaDetails";
+import { LibraryEntry } from "../models/libraryEntry";
+import { ChapterDetails } from "../models/chapterDetails";
 
 const MangaPage = () => {
 
     
-    interface MangaDetails {
+    
+    interface MangaExtDetails {
         id: number;
         mangaka: string;
         alternateNames: string;
@@ -17,14 +22,9 @@ const MangaPage = () => {
         bannerImage: string;
     }
 
-    interface ChapterDetails {
-       mangaId: number;
-       chapterNumber: number; 
-    }
-    
     const { id } = useParams();
 
-    const [manga, setManga] = useState<MangaDetails>({
+    const [manga, setManga] = useState<MangaExtDetails>({
         id: -1,
         mangaka: "Akira Toriyama",
         alternateNames: "Duragon no Hoshi",
@@ -37,9 +37,9 @@ const MangaPage = () => {
     });
 
     const [chapters, setChapters] = useState<ChapterDetails[]>([]);
+    const [reading, setReading] = useState<LibraryEntry>();
 
     useEffect(() => {
-        console.log(id)
         fetch("http://localhost:3001/manga?id="+id)
             .then(response => {
             if (!response.ok) {
@@ -49,7 +49,7 @@ const MangaPage = () => {
           })
           .then(data => {
             // Map fetched data to Post model
-            const mappedData: MangaDetails = {
+            const mappedData: MangaExtDetails = {
                 id: data[0].id,
                 mangaka: data[0]['author(s)'],
                 alternateNames: data[0].alternateNames,
@@ -60,8 +60,18 @@ const MangaPage = () => {
                 totalChapters: data[0].totalChapters,
                 bannerImage: data[0].bannerImage
             }
-            console.log(mappedData)
+            //console.log(mappedData)
             setManga(mappedData);
+          }).then(() => {
+            loadLibrary().then(() => {
+                getLibrary().then((library) => {
+                    const previousReading = library.some((entry) => entry.manga.mangaId === manga.id);
+                    if (previousReading) {
+                        setReading(library.find((entry) => entry.manga.mangaId === manga.id)!);
+                    }
+                })
+            })
+            
           })
           .catch(error => console.error('Error fetching manga data:', error));
           
@@ -93,6 +103,31 @@ const MangaPage = () => {
     
     const toggleDescriptionExpansion = () => {
         setDescriptionExpanded(!descriptionExpanded);
+    }
+
+    const startSeries = () => {
+        if(reading != null){
+            console.log("Already reading");
+            return;
+        }
+        loadLibrary();
+        const mangaDetails: MangaDetails = {
+            mangaId: manga.id,
+            title: manga.name,
+            totalChapters: manga.totalChapters,
+            image: manga.bannerImage
+        }
+        const newEntry: LibraryEntry = {
+            manga: mangaDetails,
+            progress: 0
+        }
+        addEntryToLibrary(newEntry);
+        setReading(newEntry);
+    }
+
+    const stopSeries = () => {
+        loadLibrary();
+        removeEntryFromLibrary(manga.id);
     }
 
 
@@ -148,9 +183,20 @@ const MangaPage = () => {
                     </div>
                     <div className="flex border-b-2 p-4 font-bold border-slate-800 justify-between">
                         <p>{manga.totalChapters == null || manga.totalChapters == 0 ? "No Chapters Available" : manga.totalChapters == 1 ? "1 Chapter" : `${manga.totalChapters} Chapters`}</p>
-                        <button className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end active:bg-slate-700"> <IconPlayerPlay className="pr-2"/> Start</button>
-
-                    </div>
+                            {
+                                reading != null ?
+                                <div className="flex">
+                                    <button className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">  Start <IconPlayerPlay className="pl-2"/></button>
+                                    <button onClick={startSeries} className="flex bg-black rounded-lg text-white py-1 px-3 hover:bg-slate-800 mr-4 justify-self-end active:bg-slate-700">  Add to Library <IconPlus className="pl-2"/></button>
+                                </div>
+                                :
+                                <div className="flex">
+                                    <button className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">  Continue <IconPlayerPlay className="pl-2"/></button>
+                                    <button onClick={stopSeries} className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">  Remove from Library <IconMinus className="pl-2"/></button>
+                                </div>
+                            }
+                        
+                        </div>
                     <div className="grid grid-cols-1 gap-1">
                         
                         {   chapters != null && chapters.length != 0?

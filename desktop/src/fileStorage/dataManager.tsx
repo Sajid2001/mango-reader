@@ -1,3 +1,5 @@
+import { LibraryEntry } from "../models/libraryEntry";
+
 const fs = require('fs');
 
 export const writeDataToFile = (filename: string, data: string) => {
@@ -11,7 +13,7 @@ export const writeDataToFile = (filename: string, data: string) => {
 export const readDataFromFile = (filename: string) => {
     try {
         const data = fs.readFileSync(filename, 'utf-8');
-        console.log(data);
+        //console.log(data);
         return JSON.parse(data);
     } catch(err) {
         console.error(err);

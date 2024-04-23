@@ -1,29 +1,34 @@
-import { MangaDetails } from "../models/mangaDetails";
+import { LibraryEntry } from "../models/libraryEntry";
 
 import { readDataFromFile, writeDataToFile } from './dataManager';
 
-let library: MangaDetails[] = [];
+let library: LibraryEntry[] = [];
 const filepath = "library.json";
 
-const loadLibrary = () => {
-    library = readDataFromFile(filepath) || [];
+const loadLibrary = async () => {
+    const data = readDataFromFile(filepath);
+    if (data) {
+        library = data;
+    }
+    return library;
+
 };
 
-const saveLibrary = () => {
+const saveLibrary = async () => {
     writeDataToFile(filepath, JSON.stringify(library));
 };
 
-const addEntryToLibrary = (entry: MangaDetails) => {
+const addEntryToLibrary = async (entry: LibraryEntry) => {
     library.push(entry);
     saveLibrary();
 };
 
-const removeEntryFromLibrary = (entry: MangaDetails) => {
-    library = library.filter((manga) => manga.mangaId !== entry.mangaId);
+const removeEntryFromLibrary = async (removedEntryId: number) => {
+    library = library.filter((entry) => entry.manga.mangaId !== removedEntryId);
     saveLibrary();
 }
 
-const getLibrary = () => {
+const getLibrary = async () => {
     return library;
 };
 

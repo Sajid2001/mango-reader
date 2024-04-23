@@ -1,5 +1,7 @@
-import { app, BrowserWindow } from 'electron'
+import { writeDataToFile } from './../src/fileStorage/dataManager';
+import { app, BrowserWindow, ipcMain } from 'electron'
 import path from 'node:path'
+const fs = require('fs');
 
 // The built directory structure
 //
@@ -43,6 +45,11 @@ function createWindow() {
     win.loadFile(path.join(process.env.DIST, 'index.html'))
   }
 }
+
+ipcMain.on("saveData", (sender, data) => {
+  let sData = JSON.stringify(data);
+  fs.writeDataToFile("library.json", sData);
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
