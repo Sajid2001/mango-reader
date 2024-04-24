@@ -24,12 +24,16 @@ const addEntryToLibrary = async (entry: LibraryEntry) => {
 };
 
 const removeEntryFromLibrary = async (removedEntryId: number) => {
-    library = library.filter((entry) => entry.manga.mangaId !== removedEntryId);
+    library = library.filter((entry) => entry.manga.mangaId != removedEntryId);
     saveLibrary();
 }
 
+const emptyLibrary = async () => {
+    library = [];
+    saveLibrary();
+}
 const getLibrary = async () => {
     return library;
 };
 
-export { loadLibrary, addEntryToLibrary, removeEntryFromLibrary, getLibrary };
+export { loadLibrary, addEntryToLibrary, removeEntryFromLibrary, emptyLibrary, getLibrary };

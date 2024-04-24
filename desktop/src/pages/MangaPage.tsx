@@ -37,7 +37,7 @@ const MangaPage = () => {
     });
 
     const [chapters, setChapters] = useState<ChapterDetails[]>([]);
-    const [reading, setReading] = useState<LibraryEntry>();
+    const [reading, setReading] = useState<LibraryEntry | null>();
 
     useEffect(() => {
         fetch("http://localhost:3001/manga?id="+id)
@@ -62,23 +62,27 @@ const MangaPage = () => {
             }
             //console.log(mappedData)
             setManga(mappedData);
-          }).then(() => {
-            loadLibrary().then(() => {
-                getLibrary().then((library) => {
-                    const previousReading = library.some((entry) => entry.manga.mangaId === manga.id);
-                    if (previousReading) {
-                        setReading(library.find((entry) => entry.manga.mangaId === manga.id)!);
-                    }
-                })
-            })
-            
           })
           .catch(error => console.error('Error fetching manga data:', error));
           
     }, []);
 
+   
+
     useEffect(() => {
         if(manga.id != -1){
+
+            loadLibrary().then(() => {
+                getLibrary().then((library) => {
+                    console.log(manga.id);
+                    const previousReading = library.some((entry) => entry.manga.mangaId === id);
+                    console.log(previousReading);
+                    if (previousReading) {
+                        setReading(library.find((entry) => entry.manga.mangaId == manga.id)!);
+                    }
+                })
+            })
+
             fetch("http://localhost:3001/chapters?series_id="+manga.id)
                 .then(response => {
                     if (!response.ok) {
@@ -110,7 +114,6 @@ const MangaPage = () => {
             console.log("Already reading");
             return;
         }
-        loadLibrary();
         const mangaDetails: MangaDetails = {
             mangaId: manga.id,
             title: manga.name,
@@ -126,8 +129,13 @@ const MangaPage = () => {
     }
 
     const stopSeries = () => {
-        loadLibrary();
+        console.log(reading);
+        if(reading == null){
+            console.log("Already removed from library");
+            return;
+        }
         removeEntryFromLibrary(manga.id);
+        setReading(null);
     }
 
 
@@ -184,7 +192,7 @@ const MangaPage = () => {
                     <div className="flex border-b-2 p-4 font-bold border-slate-800 justify-between">
                         <p>{manga.totalChapters == null || manga.totalChapters == 0 ? "No Chapters Available" : manga.totalChapters == 1 ? "1 Chapter" : `${manga.totalChapters} Chapters`}</p>
                             {
-                                reading != null ?
+                                reading == null ?
                                 <div className="flex">
                                     <button className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">  Start <IconPlayerPlay className="pl-2"/></button>
                                     <button onClick={startSeries} className="flex bg-black rounded-lg text-white py-1 px-3 hover:bg-slate-800 mr-4 justify-self-end active:bg-slate-700">  Add to Library <IconPlus className="pl-2"/></button>
