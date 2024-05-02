@@ -15,36 +15,57 @@ SECRET_KEY=<Secret key for flask server> ->  Just use a password generator to fi
 DB_NAME=<Your database name. ex: database.db> -> used for sqlite
 DB_CONNECTION=<Your postgres connection url> -> used for postgres
 PORT=<Your port number of choice> -> optional field
+POSTGRES_DB_NAME=<Postgres DB Name>
+POSTGRES_USER=<Postgres username>
+POSTGRES_PASSWORD=<Postgres password>
+POSTGRES_HOST=<Postgres host name>
+POSTGRES_PORT=<Postgres port number>
 ```
 
-### Running the boilerplate code
-**Do this after installing dependencies and setting up environment variables**
-1. Run the command `python run.py`
-    * You should see a message such as this in the terminal: 
-    ```
-    WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
-    Running on http://127.0.0.1:8080
-    Press CTRL+C to quit
-    Restarting with stat
-    Debugger is active!
-    Debugger PIN: 137-864-650    
-    ```
-    * You should also see a new folder called `instance` be created if it wasn't already (if using sqlite)
-2. Navigate to the route `/api/hello` and you should see the following json:
+### Inserting into the Database
+
+#### Before doing this, make sure you
+* have Postgres on your computer
+* your database credentials are inside the `.env` file
+* you have created all the necessary tables inside your database
+* you have installed all dependencies for the backend inside the virtual environment
+
+#### Script to create tables
 ```
-{
-    "message": "hello"
-}
+CREATE TABLE manga (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(100) NOT NULL UNIQUE,
+    alternate_names VARCHAR(200),
+    authors VARCHAR(200),
+    genres VARCHAR(200),
+    description TEXT,
+    status VARCHAR(100),
+    total_chapters INTEGER,
+    banner_image VARCHAR(500),
+    cover_image VARCHAR(500)
+);
+
+CREATE TABLE chapter (
+    id SERIAL PRIMARY KEY,
+    manga_id INTEGER NOT NULL,
+    link VARCHAR(500) NOT NULL,
+    chapter_number FLOAT NOT NULL,
+    FOREIGN KEY (manga_id) REFERENCES manga(id)
+);
+
+CREATE TABLE pages (
+    id SERIAL PRIMARY KEY,
+    manga_id INTEGER NOT NULL,
+    chapter_number INTEGER NOT NULL,
+    scan_url VARCHAR(500) NOT NULL,
+    page_number INTEGER NOT NULL,
+    FOREIGN KEY (manga_id) REFERENCES manga(id)
+);
 ```
 
-## Navigating the project
-* Most of your code will be inside the `app` directory
-* Within the `app` directory, you have four folders
-    * `views` - where your routing logic will go
-        * See: `Flask Blueprints`
-    * `models` - where your SQLAlchemy models will go
-        * See: `Flask SQLAlchemy`
-    * `middleware` - where your middleware functions will go
-        * may not be necessary for this project, but keep just in case
-* If you want to create a new folder inside the `app` directory, make sure you add an empty `__init__.py` file inside it to tell your compiler that this is a python package directory
-* When you run the Flask app for the first time, you should see a new folder named `instance`. Within this folder is your SQLite database. Deleting this folder will delete the database and force the app to create a new one when the app is rerun.
+#### Instructions
+
+1. Navigate your terminal to the `scripts` folder inside the `backend`
+2. Run the angular_spider script inside the scripts folder using scrapy -> ex: `scrapy runspider angular_spider.py`
+    * You should see a new .txt file named `manga_data.txt` inside the scripts folder once this script is finished
+3. Navigate back to the backend folder and run `python insert.py` to insert the data from the .txt file into your database
