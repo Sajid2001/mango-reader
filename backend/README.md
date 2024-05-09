@@ -1,19 +1,19 @@
 # Flask Backend
 ## Dev Setup
 ### Installation
-1. Create a virtual environment by running the command `python -m venv .venv`
-2. Activate the virtual environment by running the command `venv/Scripts/activate`
+1. Navigate to the `backend` folder in the terminal
+2. Create a virtual environment by running the command `python -m venv .venv`
+3. Activate the virtual environment by running the command `.venv/Scripts/activate`
     * you should see a `(.venv)` annotation on your terminal window next to the file path
     * now all of your `pip` installations will go to the virtual environment instead of your local computer
     * **Make sure you change the compiler in your IDE or editor to `./.venv/Scripts/python.exe` or else your `pip` installations will not be recognized**
-3. Install project dependencies by running `pip install -r requirements.txt`
+4. Install project dependencies by running `pip install -r requirements.txt`
 
 ### Environment Variables
 Create a file inside the `backend` folder called `.env` and place these variables inside it
 ```
 SECRET_KEY=<Secret key for flask server> ->  Just use a password generator to fill this
-DB_NAME=<Your database name. ex: database.db> -> used for sqlite
-DB_CONNECTION=<Your postgres connection url> -> used for postgres
+POSTGRES_CONNECTION_URI=<Your postgres connection url> -> used for postgres
 PORT=<Your port number of choice> -> optional field
 POSTGRES_DB_NAME=<Postgres DB Name>
 POSTGRES_USER=<Postgres username>
