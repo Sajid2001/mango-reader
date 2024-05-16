@@ -132,7 +132,7 @@ class AngularSpider(scrapy.Spider):
                 # Get the first result
                 manga = data['data'][0]
                 attributes = manga.get('attributes', {})
-                banner_image = attributes.get('posterImage', {}).get('original')
+                banner_image = attributes.get('coverImage', {}).get('original')
                 if banner_image:
                     return banner_image
                 else:
@@ -153,7 +153,7 @@ class AngularSpider(scrapy.Spider):
                 # Get the first result
                 manga = data['data'][0]
                 attributes = manga.get('attributes', {})
-                cover_image = attributes.get('coverImage', {}).get('original')
+                cover_image = attributes.get('posterImage', {}).get('original')
                 if cover_image:
                     return cover_image
                 else:
