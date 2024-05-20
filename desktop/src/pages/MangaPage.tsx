@@ -1,6 +1,6 @@
 import { IconCheck, IconClock, IconDownload, IconMinus, IconPlayerPlay, IconPlus } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { addEntryToLibrary, getLibrary, loadLibrary, removeEntryFromLibrary } from "../fileStorage/libraryStorage";
 import { MangaDetails } from "../models/mangaDetails";
 import { LibraryEntry } from "../models/libraryEntry";
@@ -20,6 +20,7 @@ const MangaPage = () => {
         ongoing: boolean;
         totalChapters: number;
         bannerImage: string;
+        coverImage: string;
     }
 
     const { id } = useParams();
@@ -33,14 +34,15 @@ const MangaPage = () => {
         description: "",
         ongoing: true,
         totalChapters: 100,
-        bannerImage: "https://media.kitsu.io/manga/38/cover_image/large-bd52b8f2fb81d3cf99b4fbe4c072d2b1.jpeg"
+        bannerImage: "https://media.kitsu.io/manga/38/cover_image/large-bd52b8f2fb81d3cf99b4fbe4c072d2b1.jpeg",
+        coverImage: "https://media.kitsu.io/manga/38/cover_image/large-bd52b8f2fb81d3cf99b4fbe4c072d2b1.jpeg"
     });
 
     const [chapters, setChapters] = useState<ChapterDetails[]>([]);
     const [reading, setReading] = useState<LibraryEntry | null>();
 
     useEffect(() => {
-        fetch("http://localhost:3001/manga?id="+id)
+        fetch("http://127.0.0.1:8000/api/manga/"+id)
             .then(response => {
             if (!response.ok) {
               throw new Error('Network response was not ok');
@@ -50,15 +52,16 @@ const MangaPage = () => {
           .then(data => {
             // Map fetched data to Post model
             const mappedData: MangaExtDetails = {
-                id: data[0].id,
-                mangaka: data[0]['author(s)'],
-                alternateNames: data[0].alternateNames,
-                name: data[0].name,
-                genres: data[0].genres.split(", "),
-                description: data[0].description,
+                id: data.id,
+                mangaka: data.authors,
+                alternateNames: data.alternate_names,
+                name: data.title,
+                genres: data.genres.split(", "),
+                description: data.description,
                 ongoing: true,
-                totalChapters: data[0].totalChapters,
-                bannerImage: data[0].bannerImage
+                totalChapters: data.total_chapters,
+                bannerImage: data.cover_image,
+                coverImage: data.banner_image
             }
             //console.log(mappedData)
             setManga(mappedData);
@@ -74,16 +77,14 @@ const MangaPage = () => {
 
             loadLibrary().then(() => {
                 getLibrary().then((library) => {
-                    console.log(manga.id);
-                    const previousReading = library.some((entry) => entry.manga.mangaId === id);
-                    console.log(previousReading);
+                    const previousReading = library.some((entry) => entry.manga.mangaId === manga.id);
                     if (previousReading) {
                         setReading(library.find((entry) => entry.manga.mangaId == manga.id)!);
                     }
                 })
             })
 
-            fetch("http://localhost:3001/chapters?series_id="+manga.id)
+            fetch("http://127.0.0.1:8000/api/chapters/"+manga.id)
                 .then(response => {
                     if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -93,7 +94,7 @@ const MangaPage = () => {
                     // Map fetched data to Post model
                     const mappedData: ChapterDetails[] = data.map((post: any) => ({
                         mangaId: post.series_id,
-                        chapterNumber: post.number
+                        chapterNumber: post.chapter_number
                     }))
                     setChapters(mappedData);
                     
@@ -118,8 +119,9 @@ const MangaPage = () => {
             mangaId: manga.id,
             title: manga.name,
             totalChapters: manga.totalChapters,
-            image: manga.bannerImage
+            coverImage: manga.coverImage
         }
+        console.log(mangaDetails);
         const newEntry: LibraryEntry = {
             manga: mangaDetails,
             progress: 0
@@ -141,8 +143,6 @@ const MangaPage = () => {
 
     return ( 
 
-        
-        
         <div>
             <div>
                 <div className="bg-slate-200 h-48 w-dull">
@@ -210,7 +210,7 @@ const MangaPage = () => {
                         {   chapters != null && chapters.length != 0?
                             <div>
                                 {chapters.map((chapter) => (
-                                <div className="flex justify-between p-3 items-center">
+                                <Link to={`/reader/${manga.id}/${chapter.chapterNumber}`} className="flex justify-between p-3 items-center hover:bg-slate-100">
                                     <div className="flex-col">
                                         <p className="font-semibold text-md">Chapter {chapter.chapterNumber}</p>
                                         <p>04/20/2024</p>
@@ -218,8 +218,7 @@ const MangaPage = () => {
                                     <div className="">
                                         <button className="bg-slate-500 rounded-lg text-white py-1 px-3 mr-4 hover:bg-slate-700 active:bg-slate-800"><IconDownload /></button>
                                     </div>
-
-                                </div>
+                                </Link>
                                 ))}
                             </div>
                             :

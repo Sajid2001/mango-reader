@@ -8,7 +8,7 @@ const SearchPage = () => {
     const [mangaData, setMangaData] = useState<MangaDetails[]>([]);
 
     useEffect(() => {
-        fetch('http://localhost:3001/manga')
+        fetch('http://127.0.0.1:8000/api/manga/')
             .then(response => {
             if (!response.ok) {
               throw new Error('Network response was not ok');
@@ -19,8 +19,9 @@ const SearchPage = () => {
             // Map fetched data to Post model
             const mappedData: MangaDetails[] = data.map((post: any) => ({
                 mangaId: post.id,
-                title: post.name,
-                totalChapters: post.totalChapters,
+                title: post.title,
+                totalChapters: post.total_chapters,
+                coverImage: post.banner_image
                 
             }));
             setMangaData(mappedData);
@@ -50,16 +51,10 @@ const SearchPage = () => {
                     <MangaCard 
                         mangaId={item.mangaId}
                         title={item.title}
-                        image="https://image.tmdb.org/t/p/original/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg"
+                        image={item.coverImage}
+                        chapters={item.totalChapters}
                     />
                 ))}
-                <MangaCard 
-                    title="Manga Title"
-                    image="https://image.tmdb.org/t/p/original/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg"
-                />
-                
-                
-                
             </div>
         </div> 
     );

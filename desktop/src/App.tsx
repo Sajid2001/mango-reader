@@ -6,6 +6,7 @@ import HistoryPage from './pages/HistoryPage'
 import SettingsPage from './pages/SettingsPage'
 import AskAIPage from './pages/AskAIPage'
 import MangaPage from './pages/MangaPage'
+import ReaderPage from './pages/ReaderPage'
 function App() {
 
   return (
@@ -18,7 +19,7 @@ function App() {
         
         <div className='w-full'>
           <Routes>
-
+            <Route path="/reader/:mangaId/:chapterId" element={<ReaderPage/>}/>
             <Route path="/manga/:id" element={<MangaPage/>}/>
             <Route path="/search" element={<SearchPage/>}/>
             <Route path="/history" element={<HistoryPage/>}/>

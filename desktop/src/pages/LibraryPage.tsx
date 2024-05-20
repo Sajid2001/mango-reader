@@ -26,22 +26,21 @@ const LibraryPage = () => {
                 manga: {
                     mangaId: 1,
                     title: "test",
-                    image: "test",
+                    coverImage: "test",
                     totalChapters: 1000
                 },
                 progress: 0
                 },
                 {
-                    manga: {
-                        mangaId: 2,
-                        title: "test",
-                        image: "test",
-                        totalChapters: 1000
-                    },
-                    progress: 0
-                    }
+                manga: {
+                    mangaId: 2,
+                    title: "test",
+                    coverImage: "test",
+                    totalChapters: 1000
+                },
+                progress: 0
+                }
             ]
-            console.log(ex);
         })
         
         
@@ -84,7 +83,7 @@ const LibraryPage = () => {
                                 mangaId={entry.manga.mangaId}
                                 title={entry.manga.title}
                                 chapters={entry.manga.totalChapters}
-                                image="https://image.tmdb.org/t/p/original/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg"
+                                image={entry.manga.coverImage}
                             />
                         ))
                     }
