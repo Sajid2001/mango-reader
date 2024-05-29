@@ -63,11 +63,9 @@ class AngularSpider(scrapy.Spider):
             rss_url = response.urljoin(rss_link)
             self.driver.get(rss_url)
             rss_content = self.driver.page_source
-            rss_selector = Selector(text=rss_content)
-            # Gets the latest chapter
-            total_chapters = rss_selector.xpath('//item[3]/title/text()').get()
-            # Use regex to extract only the number and round up if decimal
-            total_chapters = math.ceil(float(re.search(r'\d+(\.\d+)?', total_chapters).group()))
+            soup = BeautifulSoup(rss_content, 'xml')
+            # Count the number of <item> elements
+            total_chapters = len(soup.find_all('item'))
         else:
             total_chapters = None
         self.banner_image = self.get_banner(name)
@@ -91,14 +89,6 @@ class AngularSpider(scrapy.Spider):
             f.write(f'RSS Link: https://manga4life.com{rss_link}\n\n')
 
         self.log(f'Saved data for "{name}" to {filename}')
-            
-        # # Writing data to CSV
-        # filename = "manga_data.csv"
-        # with open(filename, 'a+', newline='', encoding='utf-8') as f:
-        #     writer = csv.writer(f)
-        #     writer.writerow([name, genres_str, description, status_str])
-        
-        # self.log(f'Saved data for "{name}" to {filename}')
 
     # Parses chapter links from the RSS feed and stores them in a separate txt file
     def parse_chapter_links(self, rss_url):
@@ -132,7 +122,7 @@ class AngularSpider(scrapy.Spider):
                 # Get the first result
                 manga = data['data'][0]
                 attributes = manga.get('attributes', {})
-                banner_image = attributes.get('posterImage', {}).get('original')
+                banner_image = attributes.get('coverImage', {}).get('original')
                 if banner_image:
                     return banner_image
                 else:
@@ -153,7 +143,7 @@ class AngularSpider(scrapy.Spider):
                 # Get the first result
                 manga = data['data'][0]
                 attributes = manga.get('attributes', {})
-                cover_image = attributes.get('coverImage', {}).get('original')
+                cover_image = attributes.get('posterImage', {}).get('original')
                 if cover_image:
                     return cover_image
                 else:
