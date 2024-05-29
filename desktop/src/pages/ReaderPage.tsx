@@ -11,6 +11,7 @@ const ReaderPage = () => {
     const [mangaName, setMangaName] = useState<string>("test");
     const [curentPage, setCurrentPage] = useState<number>(0);
     const [maxChapters, setMaxChapters] = useState<number>(0);
+    const [chapterName, setChapterName] = useState<string>("test");
 
 
     useEffect(() => {
@@ -29,6 +30,17 @@ const ReaderPage = () => {
     }, [mangaId]);
 
     useEffect(() => {
+        fetch("http://127.0.0.1:8000/api/chapters/"+Number(mangaId))
+                .then(response => {
+                    if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+                }).then(data => {
+                    // Map fetched data to Post model
+                    setChapterName(data[Number(chapterId)].chapter_name)
+                })
+                .catch(error => console.error('Error fetching chapter data:', error));
         fetch("http://127.0.0.1:8000/api/chapters/"+Number(mangaId)+"/"+Number(chapterId))
                 .then(response => {
                     if (!response.ok) {
@@ -38,7 +50,7 @@ const ReaderPage = () => {
                 }).then(data => {
                     // Map fetched data to Post model
                     const mappedData = data.map((chapter: any) => chapter.scan_url);
-
+                    
                     setScans(mappedData);
                 })
                 .catch(error => console.error('Error fetching chapter data:', error));
@@ -57,8 +69,8 @@ const ReaderPage = () => {
                         <div className="flex flex-col w-full font-semibold px-5 text-lg *:w-full *:flex *:px-2 *:py-1 *:items-center *:justify-between  *:bg-slate-100 *:rounded-lg *:my-2">
                             <div className="*:rounded-lg">
                                 <Link to={`/reader/${mangaId}/${Math.max(Number(chapterId)-1, 1)}`} className="hover:bg-slate-200 active:bg-slate-400"><IconChevronLeft size={IconSize}/></Link>
-                                Chapter {Number(chapterId)}
-                                <Link to={`/reader/${mangaId}/${Math.min(Number(chapterId)+1, maxChapters+2)}`}  className="hover:bg-slate-200 active:bg-slate-400 disabled:bg-green-500"><IconChevronRight size={IconSize}/></Link>
+                                {chapterName}
+                                <Link to={`/reader/${mangaId}/${Math.min(Number(chapterId)+1, maxChapters)}`}  className="hover:bg-slate-200 active:bg-slate-400 disabled:bg-green-500"><IconChevronRight size={IconSize}/></Link>
                             </div>
                             <div className="*:rounded-lg">
                                 <button className="hover:bg-slate-200 active:bg-slate-400"><IconChevronLeft size={IconSize}/></button>

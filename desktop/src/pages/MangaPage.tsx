@@ -94,7 +94,8 @@ const MangaPage = () => {
                     // Map fetched data to Post model
                     const mappedData: ChapterDetails[] = data.map((post: any) => ({
                         mangaId: post.series_id,
-                        chapterNumber: post.chapter_number
+                        chapterNumber: post.chapter_number,
+                        chapterName: post.chapter_name
                     }))
                     setChapters(mappedData);
                     
@@ -209,10 +210,10 @@ const MangaPage = () => {
                         
                         {   chapters != null && chapters.length != 0?
                             <div>
-                                {chapters.map((chapter) => (
+                                {chapters.slice().reverse().map((chapter) => (
                                 <Link to={`/reader/${manga.id}/${chapter.chapterNumber}`} className="flex justify-between p-3 items-center hover:bg-slate-100">
                                     <div className="flex-col">
-                                        <p className="font-semibold text-md">Chapter {chapter.chapterNumber}</p>
+                                        <p className="font-semibold text-md">{chapter.chapterName}</p>
                                         <p>04/20/2024</p>
                                     </div>
                                     <div className="">
