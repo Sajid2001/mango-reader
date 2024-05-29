@@ -60,8 +60,8 @@ const MangaPage = () => {
                 description: data.description,
                 ongoing: true,
                 totalChapters: data.total_chapters,
-                bannerImage: data.cover_image,
-                coverImage: data.banner_image
+                bannerImage: data.banner_image,
+                coverImage: data.cover_image
             }
             //console.log(mappedData)
             setManga(mappedData);

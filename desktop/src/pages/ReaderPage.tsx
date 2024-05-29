@@ -48,7 +48,7 @@ const ReaderPage = () => {
         <div className="flex px-4 justify-center h-screen w-screen bg-gray-200 overflow-y-auto">
             {
                 sidebarToggled ? 
-                <div className=" fixed top-0 left-0 h-screen w-72 bg-gray-300 overflow-y-auto bg-opacity-55">
+                <div className=" fixed top-0 left-0 h-screen w-72 bg-gray-300 overflow-y-auto bg-opacity-65">
                     <div className="flex flex-col p-6 *:mb-3">
                         <div className="flex text-black font-bold text-2xl">
                             <button onClick={() => setSidebarToggled(false)}><IconX size={IconSize} color="black"/></button>

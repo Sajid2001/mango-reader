@@ -21,7 +21,7 @@ const SearchPage = () => {
                 mangaId: post.id,
                 title: post.title,
                 totalChapters: post.total_chapters,
-                coverImage: post.banner_image
+                coverImage: post.cover_image
                 
             }));
             setMangaData(mappedData);
@@ -30,7 +30,7 @@ const SearchPage = () => {
     }, []);
 
     return ( 
-        <div className='h-screen bg-gray-100 px-5 w-full align-baseline'>
+        <div className='h-screen bg-gray-100 px-5 w-full align-baseline overflow-y-auto'>
             <div className="w-full flex tems-stretch">
                 <h1 className="text-3xl p-4 font-bold ">Search {mangaData.length}</h1>
                 <div className="inline-flex m-1 *:my-3 *:mx-1 w-2/3">
