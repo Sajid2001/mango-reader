@@ -9,6 +9,7 @@ class Chapter(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     manga_id = db.Column(db.Integer, db.ForeignKey('manga.id'), nullable=False)
     link = db.Column(db.String(500), nullable=False)
+    chapter_name = db.Column(db.String(500), nullable=False)
     chapter_number = db.Column(db.Float, nullable=False)
 
     def __repr__(self):
@@ -19,5 +20,6 @@ class Chapter(db.Model):
         'id': self.id,
         'manga_id': self.manga_id,
         'link': self.link,
-        'chapter_number': self.chapter_number,
+        'chapter_name': self.chapter_name,
+        'chapter_number': self.chapter_number
     }
