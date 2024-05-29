@@ -37,10 +37,10 @@ def process_manga_data(cursor, manga_data):
         manga_id = cursor.fetchone()[0]
 
         if 'RSS Link' in manga_data:
-            # print(manga_data['RSS Link'])
             parse_chapter_links(cursor=cursor, 
                                 manga_id=manga_id,
                                 rss_link=manga_data['RSS Link'], 
+                                series_title=manga_data.get("Title", ""),
                                 driver=driver)
 
         print(f"Processed manga '{manga_data.get('Title')}'")
@@ -49,7 +49,7 @@ def process_manga_data(cursor, manga_data):
         print("Manga Table error occurred:", e)
 
 
-def parse_chapter_links(cursor, manga_id, rss_link, driver):
+def parse_chapter_links(cursor, manga_id, rss_link, series_title, driver):
     try:
         driver.get(rss_link)
         rss_content = driver.page_source
@@ -59,6 +59,8 @@ def parse_chapter_links(cursor, manga_id, rss_link, driver):
             chapter_number = 1  # Initialize the chapter number counter
             for item in reversed(chapter_links):  # Iterate over chapter_links in reverse order
                 title = item.find('title').text.strip()
+                # Remove the series title from the chapter title
+                title = re.sub(re.escape(series_title), '', title, flags=re.IGNORECASE).strip()
                 link = item.find('link').text.strip().replace("-page-1.html", "")
                 if "https://manga4life.com/read-online/" in link:
                     cursor.execute("""
@@ -100,7 +102,6 @@ try:
                 manga_data[key] = value
             else:  # If encountering a blank line, process the manga_data
                 if manga_data:  # Check if manga_data is not empty
-                    # print(manga_data)
                     process_manga_data(cursor=cur, manga_data=manga_data)
                     manga_data = {}  # Reset manga_data
                     
@@ -115,6 +116,3 @@ finally:
     conn.commit()
     cur.close()
     conn.close()
-
-
-
