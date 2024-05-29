@@ -50,29 +50,31 @@ def process_manga_data(cursor, manga_data):
 
 
 def parse_chapter_links(cursor, manga_id, rss_link, driver):
-        try:
-            driver.get(rss_link)
-            rss_content = driver.page_source
-            soup = BeautifulSoup(rss_content, 'xml')
-            chapter_links = soup.find_all('item')
-            if chapter_links:
-                for item in chapter_links:
-                    link = item.find('link').text.strip().replace("-page-1.html", "")
-                    if "https://manga4life.com/read-online/" in link:
-                        chapter_number = re.search(r'chapter-(\d+(?:\.\d+)?)', link).group(1)
-                        cursor.execute("INSERT INTO chapter (manga_id, link, chapter_number) VALUES (%s, %s, %s) RETURNING id", (manga_id, link, chapter_number))
-                        # chapter_id = cursor.fetchone()[0]
-                        # print("Chapter ID:", chapter_id)
-                        print("Link:", link)
-                        # Pages.parse_pages(link, cursor, chapter_id, driver) # We can do this when a user clicks on a chapter
-                        # Commit the changes after inserting pages for each chapter
-                        # cursor.connection.commit()
-                print("Chapter links inserted.")
-            else:
-                print("No chapter links found in the RSS feed.")
+    try:
+        driver.get(rss_link)
+        rss_content = driver.page_source
+        soup = BeautifulSoup(rss_content, 'xml')
+        chapter_links = soup.find_all('item')
+        if chapter_links:
+            chapter_number = 1  # Initialize the chapter number counter
+            for item in reversed(chapter_links):  # Iterate over chapter_links in reverse order
+                title = item.find('title').text.strip()
+                link = item.find('link').text.strip().replace("-page-1.html", "")
+                if "https://manga4life.com/read-online/" in link:
+                    cursor.execute("""
+                        INSERT INTO chapter (manga_id, link, chapter_name, chapter_number)
+                        VALUES (%s, %s, %s, %s) RETURNING id
+                    """, (manga_id, link, title, chapter_number))
+                    chapter_id = cursor.fetchone()[0]
+                    print(f"Link: {link}, Title: {title}")
+                    # Increment the chapter number counter
+                    chapter_number += 1
+            print("Chapter links inserted.")
+        else:
+            print("No chapter links found in the RSS feed.")
 
-        except Exception as e:
-            print("Chapter error occurred:", e) 
+    except Exception as e:
+        print("Chapter error occurred:", e)
 
 # Connect to PostgreSQL
 conn = psycopg2.connect(
