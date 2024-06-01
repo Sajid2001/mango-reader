@@ -13,12 +13,16 @@ const ReaderPage = () => {
     const [currentPage, setCurrentPage] = useState<number>(2);
     const [maxChapters, setMaxChapters] = useState<number>(0);
     const [chapterName, setChapterName] = useState<string>("test");
-    const [maxPages, setMaxPages] = useState<number>(0);
+
     const [singlePage, setSinglePage] = useState<boolean>(true);
     const [fitHeight, setFitHeight] = useState<boolean>(false);
     const [leftToRight, setLeftToRight] = useState<boolean>(false);
 
-    const imageRefs = useRef([]);
+    const scanRefs = useRef<(HTMLImageElement | null)[]>([]);
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const observers = useRef<IntersectionObserver[]>([]);
+    const [currentPhoto, setCurrentPhoto] = useState<string | null>(null);
+
 
     useEffect(() => {
         fetch("http://127.0.0.1:8000/api/manga/"+Number(mangaId))
@@ -59,10 +63,35 @@ const ReaderPage = () => {
                 
                 
                 setScans(mappedData);
-                setMaxPages(data.length);
                 setCurrentPage(1);
             })
             .catch(error => console.error('Error fetching chapter data:', error));
+            const observerCallback: IntersectionObserverCallback = (entries) => {
+                entries.forEach(entry => {
+                  if (entry.isIntersecting) {
+                    setCurrentPage(Number(entry.target.getAttribute('key')));
+                  }
+                });
+              };
+          
+              const observerOptions: IntersectionObserverInit = {
+                root: containerRef.current,
+                threshold: 0.5, // Adjust this value as needed
+              };
+          
+              const observer = new IntersectionObserver(observerCallback, observerOptions);
+          
+              scanRefs.current.forEach(photo => {
+                if (photo) {
+                  observer.observe(photo);
+                  observers.current.push(observer);
+                }
+              });
+          
+              return () => {
+                // Clean up observers on component unmount
+                observers.current.forEach(observer => observer.disconnect());
+              };
     }, [mangaId, chapterId]);
 
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -91,16 +120,12 @@ const ReaderPage = () => {
             window.removeEventListener('keydown', handleKeyPress);
         };
     }, [currentPage, scans.length]);
-
-    useEffect(() => {
-        
-    },[])
     
-    const scrollToPhoto = (index: number) => {
-        if (imageRefs.current[index]) {
-            imageRefs.current[index].scrollIntoView({ behavior: 'smooth' });
-        }
-    };
+    useEffect(() => {
+        if(singlePage) return;
+        scanRefs.current[currentPage-1]?.scrollIntoView({ behavior: 'instant' });  
+    }, [currentPage, singlePage])
+
     return ( 
         <div className="flex px-4 justify-center h-screen w-screen bg-gray-200 overflow-y-auto">
             {
@@ -142,11 +167,19 @@ const ReaderPage = () => {
                 <div>
                     {
                         singlePage ? 
-                        <img src={scans[currentPage-1]} className="flex justify-self-center"/> 
+                        <img src={scans[currentPage-1]} className={`${fitHeight ? "h-full" : "w-full"} flex justify-self-center`}/> 
                         :
-                        <div className="grid grid-cols-1">
+                        <div className="grid grid-cols-1" ref={containerRef}>
                             {
-                                scans.map((scan: string, index: number) => <img src={scan} id={`${index}`}  className={`${fitHeight ? "h-full" : "w-full"} flex justify-self-center`}/>)
+                                scans.map((scan: string, index: number) => 
+                                    <img 
+                                        src={scan} 
+                                        key={index}
+                                        ref={(el) => scanRefs.current[index] = el}
+                                        id={`${index}`}  
+                                        className={`${fitHeight ? "h-full" : "w-full"} flex justify-self-center`}
+                                    />
+                                )
                             }
                         </div>
                     }
