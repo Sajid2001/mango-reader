@@ -1,19 +1,20 @@
-import { IconArrowBackUp, IconArrowsMaximize, IconArrowsMinimize, IconBook, IconChevronLeft,  IconChevronRight,  IconCircleArrowLeft,  IconCircleArrowRight,  IconKeyboard,  IconPageBreak,  IconSettings,  IconX } from "@tabler/icons-react";
+import { current } from "@reduxjs/toolkit";
+import { IconArrowAutofitHeight, IconArrowAutofitWidth, IconArrowBackUp, IconBook, IconChevronLeft,  IconChevronRight,  IconCircleArrowLeft,  IconCircleArrowRight,  IconKeyboard,  IconPageBreak,  IconSettings,  IconX } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 const ReaderPage = () => {
     const IconSize = 28;
     const { mangaId, chapterId } = useParams();
-    const [scans, setScans] = useState<string[]>();
+    const [scans, setScans] = useState<string[]>([]);
 
     const [sidebarToggled, setSidebarToggled] = useState(false);
     const [mangaName, setMangaName] = useState<string>("test");
-    const [curentPage, setCurrentPage] = useState<number>(0);
+    const [currentPage, setCurrentPage] = useState<number>(2);
     const [maxChapters, setMaxChapters] = useState<number>(0);
     const [chapterName, setChapterName] = useState<string>("test");
-
-    const [singlePage, setSinglePage] = useState<boolean>(false);
+    const [maxPages, setMaxPages] = useState<number>(0);
+    const [singlePage, setSinglePage] = useState<boolean>(true);
     const [fitHeight, setFitHeight] = useState<boolean>(false);
     const [leftToRight, setLeftToRight] = useState<boolean>(false);
 
@@ -56,35 +57,50 @@ const ReaderPage = () => {
                 // Map fetched data to Post model
                 const mappedData = data.map((chapter: any) => chapter.scan_url);
                 
+                
                 setScans(mappedData);
+                setMaxPages(data.length);
+                setCurrentPage(1);
             })
             .catch(error => console.error('Error fetching chapter data:', error));
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    setCurrentPage(Number(entry.target.id));
-                }
-                });
-            },
-            {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.5,
-            }
-            );
-        
-            imageRefs.current.forEach((image: any) => {
-                if (image) observer.observe(image);
-            });
-        
-            return () => {
-            imageRefs.current.forEach((image: any) => {
-                if (image) observer.unobserve(image);
-            });
-        };
     }, [mangaId, chapterId]);
 
+    const handleKeyPress = (event: KeyboardEvent) => {
+        switch (event.key) {
+            case 'ArrowLeft':
+            if (scans.length > 0) {
+                setCurrentPage(currentPage => Math.max(currentPage - 1, 1));
+            }
+            break;
+        case 'ArrowRight':
+            if (scans.length > 0 && currentPage < scans.length) {
+                setCurrentPage(currentPage => currentPage + 1);
+            }
+            break;
+            default:
+                break;
+        }
+    }
+
+    useEffect(() => {
+        // Add event listener for keydown
+        window.addEventListener('keydown', handleKeyPress); 
+
+        // Clean up event listener on component unmount
+        return () => {
+            window.removeEventListener('keydown', handleKeyPress);
+        };
+    }, [currentPage, scans.length]);
+
+    useEffect(() => {
+        
+    },[])
+    
+    const scrollToPhoto = (index: number) => {
+        if (imageRefs.current[index]) {
+            imageRefs.current[index].scrollIntoView({ behavior: 'smooth' });
+        }
+    };
     return ( 
         <div className="flex px-4 justify-center h-screen w-screen bg-gray-200 overflow-y-auto">
             {
@@ -102,14 +118,14 @@ const ReaderPage = () => {
                                 <Link to={`/reader/${mangaId}/${Math.min(Number(chapterId)+1, maxChapters)}`}  className={`${Number(chapterId) == maxChapters ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronRight size={IconSize} color={`${Number(chapterId) != maxChapters ? "black" : "inherit"}`}/></Link>
                             </div>
                             <div className="*:rounded-lg">
-                                <button onClick={() => ""} className="hover:bg-slate-200 active:bg-slate-400"><IconChevronLeft size={IconSize}/></button>
-                                1/{scans?.length}
-                                <button className="hover:bg-slate-200 active:bg-slate-400"><IconChevronRight size={IconSize}/></button>
+                                <button onClick={() => setCurrentPage(Math.max(currentPage-1, 1))} className={`${currentPage == 1 ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronLeft size={IconSize} color={`${currentPage != 1 ? "black" : "inherit"}`}/></button>
+                                {currentPage}/{scans.length}
+                                <button onClick={() => setCurrentPage(Math.min(currentPage+1, scans.length))} className={`${currentPage == scans.length ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronRight size={IconSize} color={`${currentPage != scans.length ? "black" : "inherit"}`}/></button>
                             </div>
                         </div>
                         <div className="flex flex-col w-full font-semibold px-5 text-lg  *:*::w-full *:*:flex *:px-2 *:py-1 *:*:items-center *:*:justify-between  *:bg-slate-100 *:rounded-lg *:my-2">
                             <button onClick={() => setSinglePage(!singlePage)} className="hover:bg-slate-200 active:bg-slate-400">{ singlePage ? <div>Longstrip <IconPageBreak size={IconSize}/></div> : <div>Single Page <IconBook size={IconSize}/></div>}</button>
-                            <button onClick={() => setFitHeight(!fitHeight)} className="hover:bg-slate-200 active:bg-slate-400">{ fitHeight ?  <div>Fit Width <IconArrowsMinimize size={IconSize}/></div> : <div>Fit Height <IconArrowsMaximize size={IconSize}/></div>}</button>
+                            <button onClick={() => setFitHeight(!fitHeight)} className="hover:bg-slate-200 active:bg-slate-400">{ fitHeight ?  <div>Fit Width <IconArrowAutofitWidth size={IconSize}/></div> : <div>Fit Height <IconArrowAutofitHeight size={IconSize}/></div>}</button>
                             {singlePage && <button onClick={() => setLeftToRight(!leftToRight)} className="hover:bg-slate-200 active:bg-slate-400">{ leftToRight ? <div>Right to Left <IconCircleArrowLeft size={IconSize}/></div> : <div>Left to Right <IconCircleArrowRight size={IconSize}/></div>}</button>}
                             <button className="hover:bg-slate-200 active:bg-slate-400"><div>Keybinds <IconKeyboard size={IconSize}/></div></button>
                             <button className="hover:bg-slate-200 active:bg-slate-400"><div>Settings <IconSettings size={IconSize}/></div></button>
@@ -123,9 +139,16 @@ const ReaderPage = () => {
             {
                 scans != null
                 ?
-                <div className="grid grid-cols-1">
+                <div>
                     {
-                        scans.map((scan: string, index: number) => <img src={scan} id={`${index}`}  className="flex justify-self-center"/>)
+                        singlePage ? 
+                        <img src={scans[currentPage-1]} className="flex justify-self-center"/> 
+                        :
+                        <div className="grid grid-cols-1">
+                            {
+                                scans.map((scan: string, index: number) => <img src={scan} id={`${index}`}  className={`${fitHeight ? "h-full" : "w-full"} flex justify-self-center`}/>)
+                            }
+                        </div>
                     }
                 </div>
                 :

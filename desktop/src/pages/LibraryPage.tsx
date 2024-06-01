@@ -55,7 +55,7 @@ const LibraryPage = () => {
         <div className='h-screen flex-col bg-gray-100 px-5 w-full align-baseline'>
             <div className="w-full flex">
             <h1 className="text-3xl p-4 font-bold">Library</h1>
-                <div className="inline-flex m-1 *:my-2 *:mx-1 *:p-1 *:px-3 w-full">
+                <div className="inline-flex m-1 *:my-3 *:mx-1 w-full">
                     
                     
                     
