@@ -210,8 +210,8 @@ const MangaPage = () => {
                         
                         {   chapters != null && chapters.length != 0?
                             <div>
-                                {chapters.slice().reverse().map((chapter) => (
-                                <Link to={`/reader/${manga.id}/${chapter.chapterNumber}`} className="flex justify-between p-3 items-center hover:bg-slate-100">
+                                {chapters.slice().reverse().map((chapter, index: number ) => (
+                                <Link to={`/reader/${manga.id}/${chapter.chapterNumber}`} className={`flex justify-between p-3 items-center ${index % 2 == 0 ? "bg-slate-100 hover:bg-slate-300" : "bg-slate-200 hover:bg-slate-300"}`}>
                                     <div className="flex-col">
                                         <p className="font-semibold text-md">{chapter.chapterName}</p>
                                         <p>04/20/2024</p>

@@ -10,21 +10,22 @@ const ReaderPage = () => {
 
     const [sidebarToggled, setSidebarToggled] = useState(false);
     const [mangaName, setMangaName] = useState<string>("test");
-    const [currentPage, setCurrentPage] = useState<number>(2);
+    const [currentPage, setCurrentPage] = useState<number>(1);
     const [maxChapters, setMaxChapters] = useState<number>(0);
     const [chapterName, setChapterName] = useState<string>("test");
+    const [loading, setLoading] = useState<boolean>(true);
 
-    const [singlePage, setSinglePage] = useState<boolean>(true);
-    const [fitHeight, setFitHeight] = useState<boolean>(false);
+    const [singlePage, setSinglePage] = useState<boolean>(false);
+    const [fitHeight, setFitHeight] = useState<boolean>(true);
     const [leftToRight, setLeftToRight] = useState<boolean>(false);
 
     const scanRefs = useRef<(HTMLImageElement | null)[]>([]);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const observers = useRef<IntersectionObserver[]>([]);
-    const [currentPhoto, setCurrentPhoto] = useState<string | null>(null);
 
 
     useEffect(() => {
+        
         fetch("http://127.0.0.1:8000/api/manga/"+Number(mangaId))
                 .then(response => {
                     if (!response.ok) {
@@ -40,6 +41,7 @@ const ReaderPage = () => {
     }, [mangaId]);
 
     useEffect(() => {
+        setLoading(false);
         fetch("http://127.0.0.1:8000/api/chapters/"+Number(mangaId))
             .then(response => {
                 if (!response.ok) {
@@ -48,7 +50,7 @@ const ReaderPage = () => {
             return response.json();
             }).then(data => {
                 // Map fetched data to Post model
-                setChapterName(data[Number(chapterId)-1].chapter_name)
+                setChapterName(data[Number(chapterId)].chapter_name)
             })
                 .catch(error => console.error('Error fetching chapter data:', error));
         fetch("http://127.0.0.1:8000/api/chapters/"+Number(mangaId)+"/"+Number(chapterId))
@@ -63,6 +65,7 @@ const ReaderPage = () => {
                 
                 setScans(mappedData);
                 setCurrentPage(1);
+                setLoading(true);
             })
             .catch(error => console.error('Error fetching chapter data:', error));
             
@@ -96,15 +99,19 @@ const ReaderPage = () => {
     }, [currentPage, scans.length]);
     
     useEffect(() => {
-        if(singlePage) return;
-        scanRefs.current[currentPage-1]?.scrollIntoView({ behavior: 'instant' });  
+        if(singlePage) {
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+        else {
+            scanRefs.current[currentPage-1]?.scrollIntoView({ behavior: 'instant' });  
+        }
     }, [currentPage, singlePage])
 
     useEffect(() => {
         const observerCallback: IntersectionObserverCallback = (entries) => {
             entries.forEach(entry => {
               if (entry.isIntersecting) {
-                setCurrentPage(Number(entry.target.getAttribute('key')));
+                setCurrentPage(Number(entry.target.getAttribute('key'))+1);
               }
             });
           };
@@ -141,14 +148,14 @@ const ReaderPage = () => {
                         </div>
                         <div className="flex flex-col w-full font-semibold px-5 text-lg *:w-full *:flex *:px-2 *:py-1 *:items-center *:justify-between  *:bg-slate-100 *:rounded-lg *:my-2">
                             <div className="*:rounded-lg">
-                                <Link to={`/reader/${mangaId}/${Math.max(Number(chapterId)-1, 1)}`} className={`${Number(chapterId) == 0 ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronLeft size={IconSize} color={`${Number(chapterId) != 0 ? "black" : "inherit"}`}/></Link>
+                                <Link to={`/reader/${mangaId}/${Math.max(Number(chapterId)-1, 1)}`} className={`${Number(chapterId) <= 0 ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronLeft size={IconSize} color={`${Number(chapterId) <= 0 ? "inherit" : "black"}`}/></Link>
                                     <p className="text-center">{chapterName}</p>
-                                <Link to={`/reader/${mangaId}/${Math.min(Number(chapterId)+1, maxChapters)}`}  className={`${Number(chapterId) == maxChapters ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronRight size={IconSize} color={`${Number(chapterId) != maxChapters ? "black" : "inherit"}`}/></Link>
+                                <Link to={`/reader/${mangaId}/${Math.min(Number(chapterId)+1, maxChapters)}`}  className={`${Number(chapterId) >= maxChapters ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronRight size={IconSize} color={`${Number(chapterId) >= maxChapters ? "inherit" : "black"}`}/></Link>
                             </div>
                             <div className="*:rounded-lg">
-                                <button onClick={() => setCurrentPage(Math.max(currentPage-1, 1))} className={`${currentPage == 1 ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronLeft size={IconSize} color={`${currentPage != 1 ? "black" : "inherit"}`}/></button>
+                                <button onClick={() => setCurrentPage(Math.max(currentPage-1, 1))} className={`${currentPage == 1 ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronLeft size={IconSize} color={`${currentPage <= 1 ? "inherit" : "black"}`}/></button>
                                 {currentPage}/{scans.length}
-                                <button onClick={() => setCurrentPage(Math.min(currentPage+1, scans.length))} className={`${currentPage == scans.length ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronRight size={IconSize} color={`${currentPage != scans.length ? "black" : "inherit"}`}/></button>
+                                <button onClick={() => setCurrentPage(Math.min(currentPage+1, scans.length))} className={`${currentPage >= scans.length ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronRight size={IconSize} color={`${currentPage >= scans.length ? "inherit" : "black"}`}/></button>
                                 
                             </div>
                         </div>
@@ -166,7 +173,7 @@ const ReaderPage = () => {
                 <button onClick={() => setSidebarToggled(true)} className="fixed top-10 left-14 p-3 bg-opacity-40 bg-slate-400 hover:bg-slate-600 hover:bg-opacity-40 text-white rounded-lg"><IconChevronLeft size={28} color="black"/></button>
             }
             {
-                scans.length > 0
+                scans.length > 0 || loading
                 ?
                 <div>
                     {
@@ -178,7 +185,7 @@ const ReaderPage = () => {
                                 scans.map((scan: string, index: number) => 
                                     <img 
                                         src={scan} 
-                                        key={index}
+                                        key={index+1}
                                         ref={(el) => scanRefs.current[index] = el}
                                         id={`${index}`}  
                                         className={`${fitHeight ? "h-full" : "w-full"} flex justify-self-center`}
