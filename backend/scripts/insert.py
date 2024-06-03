@@ -1,7 +1,6 @@
 import psycopg2
 import os
 import re
-from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
@@ -12,14 +11,35 @@ load_dotenv()
 firefox_options = FirefoxOptions()
 firefox_options.add_argument("--private")
 firefox_options.add_argument("--headless")
-# firefox_options.add_argument("--disable-cache")
 driver = webdriver.Firefox(options=firefox_options)
 
 def process_manga_data(cursor, manga_data):
     try:
+        # Check if manga already exists
+        cursor.execute("SELECT id, total_chapters FROM manga WHERE title = %s", (manga_data.get("Title", None),))
+        manga_record = cursor.fetchone()
+
+        if manga_record:
+            # Manga exists, get manga_id and current total_chapters
+            manga_id, current_total_chapters = manga_record
+            is_insert = False
+        else:
+            # Manga does not exist, set current_total_chapters to 0 and mark as insert
+            current_total_chapters = 0
+            is_insert = True
+
         cursor.execute("""
             INSERT INTO manga (title, alternate_names, authors, genres, description, status, total_chapters, banner_image, cover_image)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ON CONFLICT (title) DO UPDATE
+            SET alternate_names = EXCLUDED.alternate_names,
+                authors = EXCLUDED.authors,
+                genres = EXCLUDED.genres,
+                description = EXCLUDED.description,
+                status = EXCLUDED.status,
+                total_chapters = EXCLUDED.total_chapters,
+                banner_image = EXCLUDED.banner_image,
+                cover_image = EXCLUDED.cover_image
         """, (
             manga_data.get("Title", None),
             manga_data.get("Alternate Names", None),
@@ -27,27 +47,32 @@ def process_manga_data(cursor, manga_data):
             manga_data.get("Genre", None),
             manga_data.get("Description", None),
             manga_data.get("Status", None),
-            manga_data.get("Total Chapters", None),
+            manga_data.get("Total Chapters", current_total_chapters),  # Use existing total_chapters for insert
             manga_data.get("Banner Image", None),
             manga_data.get("Cover Image", None)
         ))
 
-        # Get the last inserted manga_id
-        cursor.execute("SELECT LASTVAL()")
-        manga_id = cursor.fetchone()[0]
+        # Get the manga_id after insert or update
+        cursor.execute("SELECT id, total_chapters FROM manga WHERE title = %s", (manga_data.get("Title", None),))
+        manga_id, total_chapters = cursor.fetchone()
 
         if 'RSS Link' in manga_data:
-            parse_chapter_links(cursor=cursor, 
-                                manga_id=manga_id,
-                                rss_link=manga_data['RSS Link'], 
-                                series_title=manga_data.get("Title", ""),
-                                driver=driver)
+            new_chapters = parse_chapter_links(cursor=cursor, 
+                                               manga_id=manga_id,
+                                               rss_link=manga_data['RSS Link'], 
+                                               series_title=manga_data.get("Title", ""),
+                                               driver=driver)
+            if not is_insert and new_chapters > 0:  # Only update total_chapters if it's an update
+                cursor.execute("""
+                    UPDATE manga
+                    SET total_chapters = total_chapters + %s
+                    WHERE id = %s
+                """, (new_chapters, manga_id))
 
         print(f"Processed manga '{manga_data.get('Title')}'")
     
     except Exception as e:
         print("Manga Table error occurred:", e)
-
 
 def parse_chapter_links(cursor, manga_id, rss_link, series_title, driver):
     try:
@@ -55,28 +80,57 @@ def parse_chapter_links(cursor, manga_id, rss_link, series_title, driver):
         rss_content = driver.page_source
         soup = BeautifulSoup(rss_content, 'xml')
         chapter_links = soup.find_all('item')
+        new_chapters_count = 0
+
         if chapter_links:
-            chapter_number = 1  # Initialize the chapter number counter
-            for item in reversed(chapter_links):  # Iterate over chapter_links in reverse order
+            # Fetch existing chapters from the database
+            cursor.execute("SELECT id, chapter_name, chapter_number FROM chapter WHERE manga_id = %s ORDER BY chapter_number", (manga_id,))
+            existing_chapters = cursor.fetchall()
+            existing_chapter_dict = {row[1]: row for row in existing_chapters}
+
+            # Reverse the chapter links to process them in the correct order
+            chapter_links.reverse()
+
+            # Parse and collect new chapters from the RSS feed
+            all_chapters = []
+            for item in chapter_links:
                 title = item.find('title').text.strip()
                 # Remove the series title from the chapter title
                 title = re.sub(re.escape(series_title), '', title, flags=re.IGNORECASE).strip()
-                link = item.find('link').text.strip().replace("-page-1.html", "")
-                if "https://manga4life.com/read-online/" in link:
+
+                if title in existing_chapter_dict:
+                    # Use existing chapter
+                    existing_chapter = existing_chapter_dict[title]
+                    all_chapters.append((existing_chapter[0], existing_chapter[1], existing_chapter[2], None))
+                else:
+                    link = item.find('link').text.strip().replace("-page-1.html", "")
+                    if "https://manga4life.com/read-online/" in link:
+                        new_chapters_count += 1
+                        all_chapters.append((None, title, None, link))
+
+            # Reassign chapter numbers sequentially based on the order in all_chapters
+            for index, (id, title, chapter_number, link) in enumerate(all_chapters, start=1):
+                if id:  # Existing chapter
+                    cursor.execute("""
+                        UPDATE chapter
+                        SET chapter_number = %s
+                        WHERE id = %s
+                    """, (index, id))
+                else:  # New chapter
                     cursor.execute("""
                         INSERT INTO chapter (manga_id, link, chapter_name, chapter_number)
-                        VALUES (%s, %s, %s, %s) RETURNING id
-                    """, (manga_id, link, title, chapter_number))
-                    chapter_id = cursor.fetchone()[0]
-                    print(f"Link: {link}, Title: {title}")
-                    # Increment the chapter number counter
-                    chapter_number += 1
-            print("Chapter links inserted.")
+                        VALUES (%s, %s, %s, %s)
+                    """, (manga_id, link, title, index))
+
+            print("Chapter links inserted and updated.")
         else:
             print("No chapter links found in the RSS feed.")
 
+        return new_chapters_count
+
     except Exception as e:
         print("Chapter error occurred:", e)
+        return 0
 
 # Connect to PostgreSQL
 conn = psycopg2.connect(
@@ -90,7 +144,6 @@ conn = psycopg2.connect(
 cur = conn.cursor()
 
 print('connected to db')
-cur = conn.cursor()
 
 try:
     with open('manga_data.txt', 'r') as file:
