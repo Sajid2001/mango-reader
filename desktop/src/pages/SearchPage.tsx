@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { MangaDetails } from "../models/mangaDetails";
-import { IconMoon } from "@tabler/icons-react";
+import { IconMoon, IconSearch } from "@tabler/icons-react";
 import MangaCard from "../components/MangaCard";
 
 const SearchPage = () => {
 
     const [mangaData, setMangaData] = useState<MangaDetails[]>([]);
+    const [searchTerm, setSearchTerm] = useState<string>("");
 
     useEffect(() => {
         fetch('http://127.0.0.1:8000/api/manga/')
@@ -30,7 +31,7 @@ const SearchPage = () => {
     }, []);
 
     const SearchManga = (term: string) => {
-        fetch('http://127.0.0.1:8000/manga/api/search?name=' + term)
+        fetch('http://127.0.0.1:8000/api/manga/search?name=' + term)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -43,9 +44,29 @@ const SearchPage = () => {
                     totalChapters: post.total_chapters,
                     coverImage: post.cover_image
                 }));
-                setMangaData(mappedData);
+                if(mangaData != mappedData) setMangaData(mappedData);
+                
             })
     }
+
+    const handleEnterSearch = (event: KeyboardEvent) => {
+        if (event.key === 'Enter') {
+            setSearchTerm(() => {
+                SearchManga(searchTerm);
+                return '';
+            });
+        }
+    };
+
+    useEffect(() => {
+        // Add event listener for keydown
+        window.addEventListener('keydown', handleEnterSearch); 
+
+        // Clean up event listener on component unmount
+        return () => {
+            window.removeEventListener('keydown', handleEnterSearch); 
+        };
+    }, [searchTerm]);
 
 
 
@@ -57,8 +78,10 @@ return (
 
                 <button className="font-semibold text-lg px-5 bg-slate-300 rounded-lg active:bg-slate-200">Layout</button>
                 <button className="font-semibold px-3 bg-slate-300 rounded-lg  active:bg-slate-200"><IconMoon size={24} /></button>
-                <input onChange={(e) => SearchManga(e.target.value)} className="font-semibold w-1/2  text-lg px-5 bg-slate-300 rounded-lg active:bg-slate-200 placeholder:text-black" placeholder="Search All..." >
-                </input>
+                <div className="w-full relative">
+                    <input onChange={(e) => setSearchTerm(e.target.value)} className="font-semibold h-full text-lg px-5 pl-10 bg-slate-300 rounded-lg active:bg-slate-200 placeholder:text-black" placeholder="Search All..." />
+                    <button onClick={() => SearchManga(searchTerm)} className="absolute inset-y-0 left-0 flex items-center pl-2"><IconSearch size={24}/></button>
+                </div>
 
             </div>
 

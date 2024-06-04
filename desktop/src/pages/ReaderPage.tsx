@@ -1,6 +1,6 @@
 import { current } from "@reduxjs/toolkit";
 import { IconArrowAutofitHeight, IconArrowAutofitWidth, IconArrowBackUp, IconBook, IconChevronLeft,  IconChevronRight,  IconCircleArrowLeft,  IconCircleArrowRight,  IconKeyboard,  IconPageBreak,  IconSettings,  IconX } from "@tabler/icons-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 const ReaderPage = () => {
@@ -21,7 +21,8 @@ const ReaderPage = () => {
 
     const scanRefs = useRef<(HTMLImageElement | null)[]>([]);
     const containerRef = useRef<HTMLDivElement | null>(null);
-    const observers = useRef<IntersectionObserver[]>([]);
+
+    const [resetChapter, setResetChapter] = useState<boolean>(false);
 
 
     useEffect(() => {
@@ -41,46 +42,56 @@ const ReaderPage = () => {
     }, [mangaId]);
 
     useEffect(() => {
-        setLoading(false);
-        fetch("http://127.0.0.1:8000/api/chapters/"+Number(mangaId))
-            .then(response => {
-                if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-            }).then(data => {
-                // Map fetched data to Post model
-                setChapterName(data[Number(chapterId)-1].chapter_name)
-            })
+        let isCurrent = true;
+        const getChapterData = async () => {
+        
+            setLoading(true);
+            fetch("http://127.0.0.1:8000/api/chapters/"+Number(mangaId))
+                .then(response => {
+                    if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+                }).then(data => {
+                    // Map fetched data to Post model
+                    setChapterName(data[Number(chapterId)-1].chapter_name)
+                })
+                    .catch(error => console.error('Error fetching chapter data:', error));
+            fetch("http://127.0.0.1:8000/api/chapters/"+Number(mangaId)+"/"+Number(chapterId))
+                .then(response => {
+                    if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+                }).then(data => {
+                    // Map fetched data to Post model
+                    const mappedData = data.map((chapter: any) => chapter.scan_url);
+                    if(isCurrent){
+                        setScans(mappedData);
+                        setLoading(false);
+                    } 
+                })
                 .catch(error => console.error('Error fetching chapter data:', error));
-        fetch("http://127.0.0.1:8000/api/chapters/"+Number(mangaId)+"/"+Number(chapterId))
-            .then(response => {
-                if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-            }).then(data => {
-                // Map fetched data to Post model
-                const mappedData = data.map((chapter: any) => chapter.scan_url);
-                
-                setScans(mappedData);
-                setCurrentPage(1);
-                setLoading(true);
-            })
-            .catch(error => console.error('Error fetching chapter data:', error));
-            
+        }
+        getChapterData();
+        return () => {
+            isCurrent = false;
+            setCurrentPage(1);
+        };
     }, [mangaId, chapterId]);
+
+    
 
     const handleKeyPress = (event: KeyboardEvent) => {
         switch (event.key) {
             case 'ArrowLeft':
             if (scans.length > 0) {
-                setCurrentPage(currentPage => Math.max(currentPage - 1, 1));
+                previousPage();
             }
             break;
         case 'ArrowRight':
             if (scans.length > 0 && currentPage < scans.length) {
-                setCurrentPage(currentPage => currentPage + 1);
+                nextPage();
             }
             break;
             default:
@@ -99,42 +110,48 @@ const ReaderPage = () => {
     }, [currentPage, scans.length]);
     
     useEffect(() => {
-        if(singlePage) {
-            window.scrollTo({ top: 0, behavior: 'instant' });
-        }
-        else {
-            scanRefs.current[currentPage-1]?.scrollIntoView({ behavior: 'instant' });  
-        }
-    }, [currentPage, singlePage])
+        if(!singlePage) scanRefs.current[currentPage-1]?.scrollIntoView({ behavior: 'instant' });
+    }, [singlePage])
 
-    useEffect(() => {
-        const observerCallback: IntersectionObserverCallback = (entries) => {
-            entries.forEach(entry => {
-              if (entry.isIntersecting) {
-                setCurrentPage(Number(entry.target.getAttribute('key'))+1);
-              }
+    const nextPage = () => {
+        setCurrentPage(currentPage => Math.min(currentPage + 1, scans.length));
+        if(singlePage) window.scrollTo({ top: 0, behavior: 'instant' });
+        else scanRefs.current[currentPage]?.scrollIntoView({ behavior: 'instant' });
+    }
+
+    const previousPage = () => {
+        setCurrentPage(currentPage => Math.max(currentPage - 1, 1));
+        if(singlePage) window.scrollTo({ top: 0, behavior: 'instant' });
+        else scanRefs.current[currentPage-2]?.scrollIntoView({ behavior: 'instant' }); 
+    }
+
+    useLayoutEffect(() => {
+        scanRefs.current = scanRefs.current.slice(0, scans.length);
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const visiblePageIndex = scanRefs.current.indexOf(entry.target as HTMLImageElement)+1;
+                    setCurrentPage(visiblePageIndex);
+                }
             });
-          };
-      
-          const observerOptions: IntersectionObserverInit = {
-            root: containerRef.current,
-            threshold: 0.5, // Adjust this value as needed
-          };
-      
-          const observer = new IntersectionObserver(observerCallback, observerOptions);
-      
-          scanRefs.current.forEach(photo => {
-            if (photo) {
-              observer.observe(photo);
-              observers.current.push(observer);
-            }
-          });
-      
-          return () => {
-            // Clean up observers on component unmount
-            observers.current.forEach(observer => observer.disconnect());
-          };
-    }, [scans])
+        }, {
+            root: null,
+            rootMargin: '0px',
+            threshold: [0.5, 1.0],
+        });
+
+        scanRefs.current.forEach((ref) => {
+            if (ref) observer.observe(ref);
+        });
+
+        return () => {
+            scanRefs.current.forEach((ref) => {
+            if (ref) observer.unobserve(ref);
+        });
+        observer.disconnect();
+        };
+    }, [scans, singlePage])
 
     return ( 
         <div className="flex px-4 justify-center h-screen w-screen bg-gray-200 overflow-y-auto">
@@ -153,9 +170,9 @@ const ReaderPage = () => {
                                 <Link to={`/reader/${mangaId}/${Math.min(Number(chapterId)+1, maxChapters)}`}  className={`${Number(chapterId) >= maxChapters ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronRight size={IconSize} color={`${Number(chapterId) >= maxChapters ? "inherit" : "black"}`}/></Link>
                             </div>
                             <div className="*:rounded-lg">
-                                <button onClick={() => setCurrentPage(Math.max(currentPage-1, 1))} className={`${currentPage == 1 ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronLeft size={IconSize} color={`${currentPage <= 1 ? "inherit" : "black"}`}/></button>
+                                <button onClick={() => previousPage()} className={`${currentPage == 1 ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronLeft size={IconSize} color={`${currentPage <= 1 ? "inherit" : "black"}`}/></button>
                                 {currentPage}/{scans.length}
-                                <button onClick={() => setCurrentPage(Math.min(currentPage+1, scans.length))} className={`${currentPage >= scans.length ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronRight size={IconSize} color={`${currentPage >= scans.length ? "inherit" : "black"}`}/></button>
+                                <button onClick={() => nextPage()} className={`${currentPage >= scans.length ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronRight size={IconSize} color={`${currentPage >= scans.length ? "inherit" : "black"}`}/></button>
                                 
                             </div>
                         </div>
@@ -173,7 +190,7 @@ const ReaderPage = () => {
                 <button onClick={() => setSidebarToggled(true)} className="fixed top-10 left-14 p-3 bg-opacity-40 bg-slate-400 hover:bg-slate-600 hover:bg-opacity-40 text-white rounded-lg"><IconChevronLeft size={28} color="black"/></button>
             }
             {
-                scans.length > 0 || loading
+                scans.length > 0 && !loading
                 ?
                 <div>
                     {
@@ -185,9 +202,8 @@ const ReaderPage = () => {
                                 scans.map((scan: string, index: number) => 
                                     <img 
                                         src={scan} 
-                                        key={index+1}
                                         ref={(el) => scanRefs.current[index] = el}
-                                        id={`${index}`}  
+                                        id={`${index+1}`}  
                                         className={`${fitHeight ? "h-full" : "w-full"} flex justify-self-center`}
                                     />
                                 )
