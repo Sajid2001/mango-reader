@@ -56,13 +56,9 @@ const LibraryPage = () => {
             <div className="w-full flex">
             <h1 className="text-3xl p-4 font-bold">Library</h1>
                 <div className="inline-flex m-1 *:my-3 *:mx-1 w-full">
-                    
-                    
-                    
                     <button className="font-semibold text-lg px-5 bg-slate-300 rounded-lg active:bg-slate-200">Layout</button>
                     <button className="font-semibold px-3 bg-slate-300 rounded-lg  active:bg-slate-200"><IconMoon size={24}/></button>
                     <input className="font-semibold  text-lg px-5 bg-slate-300 rounded-lg active:bg-slate-200 placeholder:text-black" placeholder="Search Library..."/>
-                
                 
                     <button onClick={clearLibrary} className="font-semibold text-lg px-5 bg-red-300 rounded-lg hover:bg-red-400 active:bg-red-600 justify-self-end">Clear Library</button>
                     

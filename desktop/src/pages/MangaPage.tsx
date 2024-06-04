@@ -1,4 +1,4 @@
-import { IconCheck, IconClock, IconDownload, IconMinus, IconPlayerPlay, IconPlus } from "@tabler/icons-react";
+import { IconArrowDown, IconArrowUp, IconCheck, IconClock, IconDownload, IconMinus, IconPlayerPlay, IconPlus, IconSwitch, IconSwitchHorizontal } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { addEntryToLibrary, getLibrary, loadLibrary, removeEntryFromLibrary } from "../fileStorage/libraryStorage";
@@ -8,8 +8,8 @@ import { ChapterDetails } from "../models/chapterDetails";
 
 const MangaPage = () => {
 
-    
-    
+
+
     interface MangaExtDetails {
         id: number;
         mangaka: string;
@@ -40,40 +40,41 @@ const MangaPage = () => {
 
     const [chapters, setChapters] = useState<ChapterDetails[]>([]);
     const [reading, setReading] = useState<LibraryEntry | null>();
+    const [ascending, setAscending] = useState(true);
 
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/api/manga/"+id)
+        fetch("http://127.0.0.1:8000/api/manga/" + id)
             .then(response => {
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
-            }
-            return response.json();
-          })
-          .then(data => {
-            // Map fetched data to Post model
-            const mappedData: MangaExtDetails = {
-                id: data.id,
-                mangaka: data.authors,
-                alternateNames: data.alternate_names,
-                name: data.title,
-                genres: data.genres.split(", "),
-                description: data.description,
-                ongoing: true,
-                totalChapters: data.total_chapters,
-                bannerImage: data.banner_image,
-                coverImage: data.cover_image
-            }
-            //console.log(mappedData)
-            setManga(mappedData);
-          })
-          .catch(error => console.error('Error fetching manga data:', error));
-          
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Map fetched data to Post model
+                const mappedData: MangaExtDetails = {
+                    id: data.id,
+                    mangaka: data.authors,
+                    alternateNames: data.alternate_names,
+                    name: data.title,
+                    genres: data.genres.split(", "),
+                    description: data.description,
+                    ongoing: true,
+                    totalChapters: data.total_chapters,
+                    bannerImage: data.banner_image,
+                    coverImage: data.cover_image
+                }
+                //console.log(mappedData)
+                setManga(mappedData);
+            })
+            .catch(error => console.error('Error fetching manga data:', error));
+
     }, []);
 
-   
+
 
     useEffect(() => {
-        if(manga.id != -1){
+        if (manga.id != -1) {
 
             loadLibrary().then(() => {
                 getLibrary().then((library) => {
@@ -84,12 +85,12 @@ const MangaPage = () => {
                 })
             })
 
-            fetch("http://127.0.0.1:8000/api/chapters/"+manga.id)
+            fetch("http://127.0.0.1:8000/api/chapters/" + manga.id)
                 .then(response => {
                     if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
                 }).then(data => {
                     // Map fetched data to Post model
                     const mappedData: ChapterDetails[] = data.map((post: any) => ({
@@ -98,7 +99,7 @@ const MangaPage = () => {
                         chapterName: post.chapter_name
                     }))
                     setChapters(mappedData);
-                    
+
                 })
                 .catch(error => console.error('Error fetching chapter data:', error));
         }
@@ -106,13 +107,13 @@ const MangaPage = () => {
 
     const [isDescriptionOverflow, setIsDescriptionOverflow] = useState(false);
     const [descriptionExpanded, setDescriptionExpanded] = useState(false);
-    
+
     const toggleDescriptionExpansion = () => {
         setDescriptionExpanded(!descriptionExpanded);
     }
 
     const startSeries = () => {
-        if(reading != null){
+        if (reading != null) {
             console.log("Already reading");
             return;
         }
@@ -133,7 +134,7 @@ const MangaPage = () => {
 
     const stopSeries = () => {
         console.log(reading);
-        if(reading == null){
+        if (reading == null) {
             console.log("Already removed from library");
             return;
         }
@@ -141,20 +142,28 @@ const MangaPage = () => {
         setReading(null);
     }
 
+    const sortChapters = () => {
+        if (ascending) {
+            setChapters(chapters.sort((a, b) => a.chapterNumber - b.chapterNumber));
+        } else {
+            setChapters(chapters.sort((a, b) => b.chapterNumber - a.chapterNumber));
+        }
+        setAscending(!ascending);
+    }
 
-    return ( 
+    return (
 
         <div>
             <div>
                 <div className="bg-slate-200 h-48 w-dull">
-                    <img src={manga.bannerImage} alt="" className="h-full object-cover w-full"/>
+                    <img src={manga.bannerImage} alt="" className="h-full object-cover w-full" />
                 </div>
                 <div className="flex flex-col mt-2">
                     <div className=" pl-4 pt-4 pr-2 pb-2 inline-block align-baseline">
                         <p className="text-3xl font-bold">{manga.name}<span className="pl-3 font-semibold text-sm">{manga.alternateNames}</span></p>
                     </div>
                     <div className="flex px-3">
-                        { manga.genres != null ?
+                        {manga.genres != null ?
                             manga.genres.map((genre) => (
                                 <div className="bg-slate-300 bg p-1 font-semibold mx-1 rounded-md">
                                     {genre}
@@ -166,60 +175,67 @@ const MangaPage = () => {
                             </div>
                         }
                     </div>
-                    
+
                     <div className="flex *:px-4 *:py-2">
-                        <p  id="description" className={`font-semibold text-md overflow-hidden ${descriptionExpanded ? "h-auto" : "max-h-20"}` }>{manga.description}</p>
-                        
+                        <p id="description" className={`font-semibold text-md overflow-hidden ${descriptionExpanded ? "h-auto" : "max-h-20"}`}>{manga.description}</p>
+
                     </div>
-                    { isDescriptionOverflow &&
-                        <button className="flex px-4 font-bold text-red-500 hover:text-red-800" onClick={toggleDescriptionExpansion}>{ descriptionExpanded ? "See Less" : "See More"}</button>
+                    {isDescriptionOverflow &&
+                        <button className="flex px-4 font-bold text-red-500 hover:text-red-800" onClick={toggleDescriptionExpansion}>{descriptionExpanded ? "See Less" : "See More"}</button>
                     }
 
                     <div className="flex *:px-4 font-semibold">
                         <p>{manga.mangaka}</p>
-                        <div className="font-bold">{manga.ongoing ? 
+                        <div className="font-bold">{manga.ongoing ?
                             <div className="flex">
-                                <IconClock /> 
+                                <IconClock />
                                 <p className="pl-1">Ongoing</p>
-                            </div>  
-                            : 
+                            </div>
+                            :
                             <div className="flex">
-                                <IconCheck /> 
+                                <IconCheck />
                                 <p className="pl-1">Completed</p>
-                            </div>  
-                            }
+                            </div>
+                        }
                         </div>
                     </div>
                     <div className="flex border-b-2 p-4 font-bold border-slate-800 justify-between">
                         <p>{manga.totalChapters == null || manga.totalChapters == 0 ? "No Chapters Available" : manga.totalChapters == 1 ? "1 Chapter" : `${manga.totalChapters} Chapters`}</p>
-                            {
-                                reading == null ?
+                        <div className="flex">
+                        <div className="flex">
+                            <button onClick={() => sortChapters()} className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700 items-center"> {ascending ? <IconArrowUp size={20}/> : <IconArrowDown size={20}/>}</button>
+                        </div>
+                        {
+                            reading == null ?
+
                                 <div className="flex">
-                                    <button className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">  Start <IconPlayerPlay className="pl-2"/></button>
-                                    <button onClick={startSeries} className="flex bg-black rounded-lg text-white py-1 px-3 hover:bg-slate-800 mr-4 justify-self-end active:bg-slate-700">  Add to Library <IconPlus className="pl-2"/></button>
+
+                                    <button className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">  Start <IconPlayerPlay className="pl-2" /></button>
+                                    <button onClick={startSeries} className="flex bg-black rounded-lg text-white py-1 px-3 hover:bg-slate-800 mr-4 justify-self-end active:bg-slate-700">  Add to Library <IconPlus className="pl-2" /></button>
                                 </div>
                                 :
                                 <div className="flex">
-                                    <button className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">  Continue <IconPlayerPlay className="pl-2"/></button>
-                                    <button onClick={stopSeries} className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">  Remove from Library <IconMinus className="pl-2"/></button>
+                                    <button className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">  Continue <IconPlayerPlay className="pl-2" /></button>
+                                    <button onClick={stopSeries} className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">  Remove from Library <IconMinus className="pl-2" /></button>
                                 </div>
-                            }
-                        
+                        }
                         </div>
+
+                    </div>
                     <div className="grid grid-cols-1 gap-1">
-                        
-                        {   chapters != null && chapters.length != 0?
+
+                        {chapters != null && chapters.length != 0 ?
                             <div>
-                                {chapters.slice().reverse().map((chapter, index: number ) => (
-                                <Link to={`/reader/${manga.id}/${chapter.chapterNumber}`} className={`flex justify-between p-3 items-center ${index % 2 == 0 ? "bg-slate-100 hover:bg-slate-300" : "bg-slate-200 hover:bg-slate-300"}`}>
-                                    <div className="flex-col">
-                                        <p className="font-semibold text-md">{chapter.chapterName}</p>
-                                        <p>04/20/2024</p>
-                                    </div>
-                                    <div className="">
-                                        <button className="bg-slate-500 rounded-lg text-white py-1 px-3 mr-4 hover:bg-slate-700 active:bg-slate-800"><IconDownload /></button>
-                                    </div>
-                                </Link>
+                                {chapters.slice().reverse().map((chapter, index: number) => (
+                                    <Link to={`/reader/${manga.id}/${chapter.chapterNumber}`} className={`flex justify-between p-3 items-center ${index % 2 == 0 ? "bg-slate-100 hover:bg-slate-300" : "bg-slate-200 hover:bg-slate-300"}`}>
+                                        <div className="flex-col">
+                                            <p className="font-semibold text-md">{chapter.chapterName}</p>
+                                            <p>{chapter.chapterNumber}</p>
+                                        </div>
+                                        <div className="">
+                                            <button className="bg-slate-500 rounded-lg text-white py-1 px-3 mr-4 hover:bg-slate-700 active:bg-slate-800"><IconDownload /></button>
+                                        </div>
+                                    </Link>
                                 ))}
                             </div>
                             :
@@ -230,15 +246,15 @@ const MangaPage = () => {
                                 </div>
                             </div>
                         }
-                            
+
                     </div>
                 </div>
             </div>
             <div>
-                
+
             </div>
         </div>
-     );
+    );
 }
- 
+
 export default MangaPage;

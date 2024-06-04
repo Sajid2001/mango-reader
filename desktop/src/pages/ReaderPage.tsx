@@ -50,7 +50,7 @@ const ReaderPage = () => {
             return response.json();
             }).then(data => {
                 // Map fetched data to Post model
-                setChapterName(data[Number(chapterId)].chapter_name)
+                setChapterName(data[Number(chapterId)-1].chapter_name)
             })
                 .catch(error => console.error('Error fetching chapter data:', error));
         fetch("http://127.0.0.1:8000/api/chapters/"+Number(mangaId)+"/"+Number(chapterId))
