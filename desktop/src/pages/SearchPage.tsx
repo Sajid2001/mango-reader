@@ -31,7 +31,8 @@ const SearchPage = () => {
     }, []);
 
     const SearchManga = (term: string) => {
-        fetch('http://127.0.0.1:8000/api/manga/search?name=' + term)
+        let link = (term == '') ? `http://127.0.0.1:8000/api/manga/` : `http://127.0.0.1:8000/api/manga/search?name=${term}`; 
+        fetch(link)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');

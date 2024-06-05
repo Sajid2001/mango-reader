@@ -204,8 +204,7 @@ const MangaPage = () => {
                         <div className="flex">
                         <div className="flex">
                             <button onClick={() => sortChapters()} className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700 items-center"> {ascending ? <IconArrowUp size={20}/> : <IconArrowDown size={20}/>}</button>
-                        </div>
-                        {
+                            {
                             reading == null ?
 
                                 <div className="flex">
@@ -219,6 +218,8 @@ const MangaPage = () => {
                                     <button onClick={stopSeries} className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">  Remove from Library <IconMinus className="pl-2" /></button>
                                 </div>
                         }
+                        </div>
+                        
                         </div>
 
                     </div>

@@ -17,7 +17,7 @@ function App() {
           <Sidebar/>
         </div>
         
-        <div className='w-full'>
+        <div className=' w-full'>
           <Routes>
             <Route path="/reader/:mangaId/:chapterId" element={<ReaderPage/>}/>
             <Route path="/manga/:id" element={<MangaPage/>}/>
