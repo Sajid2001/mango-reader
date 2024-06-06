@@ -1,46 +1,82 @@
 import { current } from "@reduxjs/toolkit";
 import { IconArrowAutofitHeight, IconArrowAutofitWidth, IconArrowBackUp, IconBook, IconChevronLeft,  IconChevronRight,  IconCircleArrowLeft,  IconCircleArrowRight,  IconKeyboard,  IconPageBreak,  IconSettings,  IconX } from "@tabler/icons-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { getLibrary, loadLibrary, updateLibraryEntry } from "../fileStorage/libraryStorage";
+import { LibraryEntry } from "../models/libraryEntry";
 
 const ReaderPage = () => {
-    const IconSize = 28;
-    const { mangaId, chapterId } = useParams();
-    const [scans, setScans] = useState<string[]>([]);
 
-    const [sidebarToggled, setSidebarToggled] = useState(false);
+    // [ VALUES ]
+    
+    //Fixed Values
+    const IconSize = 28;
+
+    //Params
+    const { mangaId, chapterId } = useParams();
+
+    //Navigation
+    const navigate = useNavigate();
+
+    //Primary Reader Values
+    const [scans, setScans] = useState<string[]>([]);
     const [mangaName, setMangaName] = useState<string>("test");
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [maxChapters, setMaxChapters] = useState<number>(0);
     const [chapterName, setChapterName] = useState<string>("test");
     const [loading, setLoading] = useState<boolean>(true);
 
+    //Sidebar Option Values
+    const [sidebarToggled, setSidebarToggled] = useState<boolean>(false);
     const [singlePage, setSinglePage] = useState<boolean>(false);
     const [fitHeight, setFitHeight] = useState<boolean>(true);
     const [leftToRight, setLeftToRight] = useState<boolean>(false);
 
+    //References
     const scanRefs = useRef<(HTMLImageElement | null)[]>([]);
     const containerRef = useRef<HTMLDivElement | null>(null);
 
-    const [resetChapter, setResetChapter] = useState<boolean>(false);
+    //Library
+    const [reading, setReading] = useState<LibraryEntry | null>(null);
 
+    // [ FUNCTIONS ]
 
+    //Use Effect for getting Manga Specifc Data
     useEffect(() => {
-        
-        fetch("http://127.0.0.1:8000/api/manga/"+Number(mangaId))
-                .then(response => {
-                    if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-                }).then(data => {
-                    // Map fetched data to Post model
-                    setMangaName(data.title)
-                    setMaxChapters(data.total_chapters)
+
+        // Checks if manga is already in library
+        if(mangaId){
+            loadLibrary().then(() => {
+                getLibrary().then((library) => {
+                    const previousReading = library.some((entry) => entry.manga.mangaId === Number(mangaId));
+                    if (previousReading) {
+                        setReading(() => {
+                            const entry = library.find((entry) => entry.manga.mangaId === Number(mangaId));
+                            if(entry) return entry
+                            else return null;
+                        })
+                    }
                 })
-                .catch(error => console.error('Error fetching chapter data:', error));
+            })
+        }
+
+        //Gets Manga Info such as name and total chapters
+        fetch("http://127.0.0.1:8000/api/manga/"+Number(mangaId))
+            .then(response => {
+                if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+            }).then(data => {
+                // Map fetched data to Post model
+                setMangaName(data.title)
+                setMaxChapters(data.total_chapters)
+            })
+            .catch(error => console.error('Error fetching chapter data:', error));
+    
     }, [mangaId]);
 
+    //Use Effect for getting Chapter Specifc Data
     useEffect(() => {
         let isCurrent = true;
         const getChapterData = async () => {
@@ -73,15 +109,17 @@ const ReaderPage = () => {
                 })
                 .catch(error => console.error('Error fetching chapter data:', error));
         }
+
         getChapterData();
+
+        //If Chapter info is late loaded, then isCurrent is set to false and the data isnt used
         return () => {
             isCurrent = false;
             setCurrentPage(1);
         };
     }, [mangaId, chapterId]);
 
-    
-
+    //Key Press Listener
     const handleKeyPress = (event: KeyboardEvent) => {
         switch (event.key) {
             case 'ArrowLeft':
@@ -99,20 +137,18 @@ const ReaderPage = () => {
         }
     }
 
+    //UseEffect for Adding/Updating Key Press Listener
     useEffect(() => {
         // Add event listener for keydown
         window.addEventListener('keydown', handleKeyPress); 
 
-        // Clean up event listener on component unmount
+        // Cleans up event listener on component unmount
         return () => {
             window.removeEventListener('keydown', handleKeyPress);
         };
     }, [currentPage, scans.length]);
-    
-    useEffect(() => {
-        if(!singlePage) scanRefs.current[currentPage-1]?.scrollIntoView({ behavior: 'instant' });
-    }, [singlePage])
 
+    //Page Change Functions
     const nextPage = () => {
         setCurrentPage(currentPage => Math.min(currentPage + 1, scans.length));
         if(singlePage) window.scrollTo({ top: 0, behavior: 'instant' });
@@ -125,6 +161,32 @@ const ReaderPage = () => {
         else scanRefs.current[currentPage-2]?.scrollIntoView({ behavior: 'instant' }); 
     }
 
+    //Chapter Change Functions
+    const nextChapter = async () => {
+        if(reading != null){
+            const updatedReading = reading
+            updatedReading.progress = Math.min(reading.progress + 1, maxChapters)
+            await updateLibraryEntry(updatedReading)
+        }
+        navigate(`/reader/${mangaId}/${Math.min(Number(chapterId)+1, maxChapters)}`)
+    }
+
+    const previousChapter = async () => {
+        if(reading != null){
+            const updatedReading = reading
+            updatedReading.progress = Math.max(reading.progress - 1, 1)
+            await updateLibraryEntry(updatedReading)
+        }
+        navigate(`/reader/${mangaId}/${Math.max(Number(chapterId)-1, 1)}`)
+    }
+
+    //UseEffect for Scrolling to Current Page if Longstrip is Turned On
+    useEffect(() => {
+        if(!singlePage) scanRefs.current[currentPage-1]?.scrollIntoView({ behavior: 'instant' });
+    }, [singlePage])
+
+    //UseEffect for Setting up Observer for Telling what Page the User is On when Longstring is Turned On
+    //is technically also active when singlePage is on but its not needed since only one page is shown at a time
     useLayoutEffect(() => {
         scanRefs.current = scanRefs.current.slice(0, scans.length);
 
@@ -139,8 +201,9 @@ const ReaderPage = () => {
             root: null,
             rootMargin: '0px',
             threshold: [0.5, 1.0],
+            
         });
-
+        
         scanRefs.current.forEach((ref) => {
             if (ref) observer.observe(ref);
         });
@@ -165,9 +228,9 @@ const ReaderPage = () => {
                         </div>
                         <div className="flex flex-col w-full font-semibold px-5 text-lg *:w-full *:flex *:px-2 *:py-1 *:items-center *:justify-between  *:bg-slate-100 *:rounded-lg *:my-2">
                             <div className="*:rounded-lg">
-                                <Link to={`/reader/${mangaId}/${Math.max(Number(chapterId)-1, 1)}`} className={`${Number(chapterId) <= 0 ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronLeft size={IconSize} color={`${Number(chapterId) <= 0 ? "inherit" : "black"}`}/></Link>
+                                <button onClick={() => previousChapter()} className={`${Number(chapterId) <= 1 ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronLeft size={IconSize} color={`${Number(chapterId) <= 1 ? "inherit" : "black"}`}/></button>
                                     <p className="text-center">{chapterName}</p>
-                                <Link to={`/reader/${mangaId}/${Math.min(Number(chapterId)+1, maxChapters)}`}  className={`${Number(chapterId) >= maxChapters ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronRight size={IconSize} color={`${Number(chapterId) >= maxChapters ? "inherit" : "black"}`}/></Link>
+                                <button onClick={() => nextChapter()} className={`${Number(chapterId) >= maxChapters ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronRight size={IconSize} color={`${Number(chapterId) >= maxChapters ? "inherit" : "black"}`}/></button>
                             </div>
                             <div className="*:rounded-lg">
                                 <button onClick={() => previousPage()} className={`${currentPage == 1 ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronLeft size={IconSize} color={`${currentPage <= 1 ? "inherit" : "black"}`}/></button>

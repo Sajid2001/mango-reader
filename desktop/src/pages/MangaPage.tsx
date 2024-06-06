@@ -1,6 +1,6 @@
 import { IconArrowDown, IconArrowUp, IconCheck, IconClock, IconDownload, IconMinus, IconPlayerPlay, IconPlus, IconSwitch, IconSwitchHorizontal } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { addEntryToLibrary, getLibrary, loadLibrary, removeEntryFromLibrary } from "../fileStorage/libraryStorage";
 import { MangaDetails } from "../models/mangaDetails";
 import { LibraryEntry } from "../models/libraryEntry";
@@ -41,6 +41,7 @@ const MangaPage = () => {
     const [chapters, setChapters] = useState<ChapterDetails[]>([]);
     const [reading, setReading] = useState<LibraryEntry | null>();
     const [ascending, setAscending] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch("http://127.0.0.1:8000/api/manga/" + id)
@@ -81,9 +82,11 @@ const MangaPage = () => {
                     const previousReading = library.some((entry) => entry.manga.mangaId === manga.id);
                     if (previousReading) {
                         setReading(library.find((entry) => entry.manga.mangaId == manga.id)!);
+                        
                     }
                 })
             })
+            
 
             fetch("http://127.0.0.1:8000/api/chapters/" + manga.id)
                 .then(response => {
@@ -103,7 +106,12 @@ const MangaPage = () => {
                 })
                 .catch(error => console.error('Error fetching chapter data:', error));
         }
+        
     }, [manga])
+
+    useEffect(() => {
+        sortChapters();
+    }, [chapters])
 
     const [isDescriptionOverflow, setIsDescriptionOverflow] = useState(false);
     const [descriptionExpanded, setDescriptionExpanded] = useState(false);
@@ -112,7 +120,7 @@ const MangaPage = () => {
         setDescriptionExpanded(!descriptionExpanded);
     }
 
-    const startSeries = () => {
+    const startSeries = async () => {
         if (reading != null) {
             console.log("Already reading");
             return;
@@ -130,6 +138,15 @@ const MangaPage = () => {
         }
         addEntryToLibrary(newEntry);
         setReading(newEntry);
+    }
+
+    const startReadingNow = () => {
+        startSeries();
+        navigate(`/reader/${manga.id}/${chapters[0].chapterNumber}`);
+    }
+
+    const continueReading = () => {
+        navigate(`/reader/${manga.id}/${reading!.progress}`);
     }
 
     const stopSeries = () => {
@@ -153,12 +170,12 @@ const MangaPage = () => {
 
     return (
 
-        <div>
+        <div className="">
             <div>
                 <div className="bg-slate-200 h-48 w-dull">
                     <img src={manga.bannerImage} alt="" className="h-full object-cover w-full" />
                 </div>
-                <div className="flex flex-col mt-2">
+                <div className="flex flex-col mt-2 max-h-screen">
                     <div className=" pl-4 pt-4 pr-2 pb-2 inline-block align-baseline">
                         <p className="text-3xl font-bold">{manga.name}<span className="pl-3 font-semibold text-sm">{manga.alternateNames}</span></p>
                     </div>
@@ -202,33 +219,34 @@ const MangaPage = () => {
                     <div className="flex border-b-2 p-4 font-bold border-slate-800 justify-between">
                         <p>{manga.totalChapters == null || manga.totalChapters == 0 ? "No Chapters Available" : manga.totalChapters == 1 ? "1 Chapter" : `${manga.totalChapters} Chapters`}</p>
                         <div className="flex">
-                        <div className="flex">
-                            <button onClick={() => sortChapters()} className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700 items-center"> {ascending ? <IconArrowUp size={20}/> : <IconArrowDown size={20}/>}</button>
-                            {
-                            reading == null ?
-
-                                <div className="flex">
-
-                                    <button className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">  Start <IconPlayerPlay className="pl-2" /></button>
+                            <div className="flex">
+                                <button onClick={() => sortChapters()} className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700 items-center"> {ascending ? <IconArrowUp size={20}/> : <IconArrowDown size={20}/>}</button>
+                                {
+                                    reading != null && reading.progress > 0?
+                                    <button onClick={continueReading} className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">  Continue <IconPlayerPlay className="pl-2" /></button>
+                                    :
+                                    <button onClick={startReadingNow} className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">  Start <IconPlayerPlay className="pl-2" /></button>
+                                }
+                                {
+                                    reading == null ?
                                     <button onClick={startSeries} className="flex bg-black rounded-lg text-white py-1 px-3 hover:bg-slate-800 mr-4 justify-self-end active:bg-slate-700">  Add to Library <IconPlus className="pl-2" /></button>
-                                </div>
-                                :
+                                    :
+                                    <button onClick={stopSeries} className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">{}  Remove from Library <IconMinus className="pl-2" /></button>
+
+                                }
                                 <div className="flex">
-                                    <button className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">  Continue <IconPlayerPlay className="pl-2" /></button>
-                                    <button onClick={stopSeries} className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">  Remove from Library <IconMinus className="pl-2" /></button>
                                 </div>
-                        }
-                        </div>
+                            </div>
                         
                         </div>
 
                     </div>
-                    <div className="grid grid-cols-1 gap-1">
+                    <div className="grid grid-cols-1 gap-1 overflow-y-auto max-h-screen">
 
                         {chapters != null && chapters.length != 0 ?
-                            <div>
+                            <div className="">
                                 {chapters.slice().reverse().map((chapter, index: number) => (
-                                    <Link to={`/reader/${manga.id}/${chapter.chapterNumber}`} className={`flex justify-between p-3 items-center ${index % 2 == 0 ? "bg-slate-100 hover:bg-slate-300" : "bg-slate-200 hover:bg-slate-300"}`}>
+                                    <Link to={`/reader/${manga.id}/${chapter.chapterNumber}`} className={`flex justify-between p-3 items-center ${reading && reading.progress >= chapter.chapterNumber ? index % 2 == 0 ? "bg-yellow-200 hover:bg-yellow-400" : " bg-yellow-300 hover:bg-yellow-500" : index % 2 == 0 ? "bg-slate-100 hover:bg-slate-300" : "bg-slate-200 hover:bg-slate-300"}`}>
                                         <div className="flex-col">
                                             <p className="font-semibold text-md">{chapter.chapterName}</p>
                                             <p>{chapter.chapterNumber}</p>
