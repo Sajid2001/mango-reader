@@ -8,8 +8,20 @@ import { ChapterDetails } from "../models/chapterDetails";
 
 const MangaPage = () => {
 
+    // [ State Variables ]
+    const [chapters, setChapters] = useState<ChapterDetails[]>([]);
+    const [reading, setReading] = useState<LibraryEntry | null>();
+    const [loadingManga, setLoadingManga] = useState<boolean>(true);
+    const [loadingChapters, setLoadingChapters] = useState<boolean>(true);
+    const [ascending, setAscending] = useState<boolean>(true);
 
+    // Navigation
+    const navigate = useNavigate();
 
+    // Params
+    const { id } = useParams();
+
+    // Page Specific Interface
     interface MangaExtDetails {
         id: number;
         mangaka: string;
@@ -23,26 +35,24 @@ const MangaPage = () => {
         coverImage: string;
     }
 
-    const { id } = useParams();
-
+    // Manga State and Default Test Data
     const [manga, setManga] = useState<MangaExtDetails>({
         id: -1,
-        mangaka: "Akira Toriyama",
-        alternateNames: "Duragon no Hoshi",
-        name: "Dragon Ball Z",
-        genres: ["Action", "Adventure", "Hispanic"],
+        mangaka: "John Doe",
+        alternateNames: "Error 404",
+        name: "No Manga Found",
+        genres: [],
         description: "",
-        ongoing: true,
-        totalChapters: 100,
-        bannerImage: "https://media.kitsu.io/manga/38/cover_image/large-bd52b8f2fb81d3cf99b4fbe4c072d2b1.jpeg",
-        coverImage: "https://media.kitsu.io/manga/38/cover_image/large-bd52b8f2fb81d3cf99b4fbe4c072d2b1.jpeg"
+        ongoing: false,
+        totalChapters: 404,
+        bannerImage: "https://static.vecteezy.com/system/resources/previews/005/337/799/non_2x/icon-image-not-found-free-vector.jpg",
+        coverImage: "https://static.vecteezy.com/system/resources/previews/005/337/799/non_2x/icon-image-not-found-free-vector.jpg"
     });
 
-    const [chapters, setChapters] = useState<ChapterDetails[]>([]);
-    const [reading, setReading] = useState<LibraryEntry | null>();
-    const [ascending, setAscending] = useState(true);
-    const navigate = useNavigate();
 
+    // [ Functions]
+
+    // Gets Manga Data on Page Load
     useEffect(() => {
         fetch("http://127.0.0.1:8000/api/manga/" + id)
             .then(response => {
@@ -73,10 +83,10 @@ const MangaPage = () => {
     }, []);
 
 
-
+    //After Manga Data is Found, Gets Chapter Data and Checks Library
     useEffect(() => {
         if (manga.id != -1) {
-
+            setLoadingChapters(true);
             loadLibrary().then(() => {
                 getLibrary().then((library) => {
                     const previousReading = library.some((entry) => entry.manga.mangaId === manga.id);
@@ -101,17 +111,18 @@ const MangaPage = () => {
                         chapterNumber: post.chapter_number,
                         chapterName: post.chapter_name
                     }))
-                    setChapters(mappedData);
-
+                    if(ascending) setChapters(mappedData);
+                    else setChapters(mappedData.reverse());
+                    setLoadingChapters(false);
                 })
-                .catch(error => console.error('Error fetching chapter data:', error));
+                .catch(error => {
+                    console.error('Error fetching chapter data:', error)
+                    setLoadingChapters(false);
+                });
+                
         }
         
     }, [manga])
-
-    useEffect(() => {
-        sortChapters();
-    }, [chapters])
 
     const [isDescriptionOverflow, setIsDescriptionOverflow] = useState(false);
     const [descriptionExpanded, setDescriptionExpanded] = useState(false);
@@ -120,7 +131,7 @@ const MangaPage = () => {
         setDescriptionExpanded(!descriptionExpanded);
     }
 
-    const startSeries = async () => {
+    const startSeries = async (startNow: boolean) => {
         if (reading != null) {
             console.log("Already reading");
             return;
@@ -134,15 +145,15 @@ const MangaPage = () => {
         console.log(mangaDetails);
         const newEntry: LibraryEntry = {
             manga: mangaDetails,
-            progress: 0
+            progress: startNow ? 0 : 1
         }
         addEntryToLibrary(newEntry);
         setReading(newEntry);
     }
 
     const startReadingNow = () => {
-        startSeries();
-        navigate(`/reader/${manga.id}/${chapters[0].chapterNumber}`);
+        startSeries(true);
+        navigate(`/reader/${manga.id}/1`);
     }
 
     const continueReading = () => {
@@ -159,11 +170,21 @@ const MangaPage = () => {
         setReading(null);
     }
 
-    const sortChapters = () => {
+    const sortChapters = async () => {
         if (ascending) {
-            setChapters(chapters.sort((a, b) => a.chapterNumber - b.chapterNumber));
+            
+            setChapters(() => {
+                const sortedChapters = chapters.sort((a, b) => b.chapterNumber - a.chapterNumber)
+                console.log(sortedChapters[0]);
+                return sortedChapters
+            });
+            
         } else {
-            setChapters(chapters.sort((a, b) => b.chapterNumber - a.chapterNumber));
+            setChapters(() => {
+                const sortedChapters = chapters.sort((a, b) => a.chapterNumber - b.chapterNumber)
+                console.log(sortedChapters[0]);
+                return sortedChapters
+            });
         }
         setAscending(!ascending);
     }
@@ -229,7 +250,7 @@ const MangaPage = () => {
                                 }
                                 {
                                     reading == null ?
-                                    <button onClick={startSeries} className="flex bg-black rounded-lg text-white py-1 px-3 hover:bg-slate-800 mr-4 justify-self-end active:bg-slate-700">  Add to Library <IconPlus className="pl-2" /></button>
+                                    <button onClick={() => startSeries(false)} className="flex bg-black rounded-lg text-white py-1 px-3 hover:bg-slate-800 mr-4 justify-self-end active:bg-slate-700">  Add to Library <IconPlus className="pl-2" /></button>
                                     :
                                     <button onClick={stopSeries} className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">{}  Remove from Library <IconMinus className="pl-2" /></button>
 
@@ -241,11 +262,11 @@ const MangaPage = () => {
                         </div>
 
                     </div>
-                    <div className="grid grid-cols-1 gap-1 overflow-y-auto max-h-screen">
+                    <div className="[scrollbarWidth:none] grid grid-cols-1 gap-1 overflow-y-auto max-h-screen">
 
                         {chapters != null && chapters.length != 0 ?
                             <div className="">
-                                {chapters.slice().reverse().map((chapter, index: number) => (
+                                {chapters.map((chapter, index: number) => (
                                     <Link to={`/reader/${manga.id}/${chapter.chapterNumber}`} className={`flex justify-between p-3 items-center ${reading && reading.progress >= chapter.chapterNumber ? index % 2 == 0 ? "bg-yellow-200 hover:bg-yellow-400" : " bg-yellow-300 hover:bg-yellow-500" : index % 2 == 0 ? "bg-slate-100 hover:bg-slate-300" : "bg-slate-200 hover:bg-slate-300"}`}>
                                         <div className="flex-col">
                                             <p className="font-semibold text-md">{chapter.chapterName}</p>
@@ -258,11 +279,19 @@ const MangaPage = () => {
                                 ))}
                             </div>
                             :
-                            <div className="flex justify-center font-bold text-center mt-6">
-                                <div className="flex-col">
-                                    <p >Oops, could not find any chapters</p>
-                                    <p className="">(╯°□°）╯ ┻━┻</p>
-                                </div>
+                            <div className="flex justify-center items-center font-bold text-center mt-6">
+                                {
+                                    loadingChapters ?
+                                    <svg aria-hidden="true" className="w-16 h-16 text-gray-200 animate-spin dark:text-gray-400 fill-slate-800" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                                        <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+                                    </svg>
+                                    :
+                                    <div className="flex-col">
+                                        <p >Oops, could not find any chapters</p>
+                                        <p className="">(╯°□°）╯ ┻━┻</p>
+                                    </div>
+                                }
                             </div>
                         }
 

@@ -52,11 +52,16 @@ const ReaderPage = () => {
                     if (previousReading) {
                         setReading(() => {
                             const entry = library.find((entry) => entry.manga.mangaId === Number(mangaId));
-                            if(entry) return entry
+                            if(entry) {
+                                entry.progress = Number(chapterId);
+                                updateLibraryEntry(entry);
+                                return entry
+                            }
                             else return null;
                         })
                     }
                 })
+                
             })
         }
 
@@ -174,7 +179,7 @@ const ReaderPage = () => {
     const previousChapter = async () => {
         if(reading != null){
             const updatedReading = reading
-            updatedReading.progress = Math.max(reading.progress - 1, 1)
+            updatedReading.progress = Math.max(reading.progress - 1, maxChapters)
             await updateLibraryEntry(updatedReading)
         }
         navigate(`/reader/${mangaId}/${Math.max(Number(chapterId)-1, 1)}`)

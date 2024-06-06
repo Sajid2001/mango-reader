@@ -13,39 +13,12 @@ const LibraryPage = () => {
 
     const [libraryData, setLibraryData] = useState<LibraryEntry[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>("");
-    const [filterTerm, setFilterTerm] = useState<string>("o");
+    const [filterTerm, setFilterTerm] = useState<string>("");
 
     useEffect(() => {
-        
         loadLibrary().then(() => {
             getLibrary().then((data) => setLibraryData(data));
-            
-            
-            //console.log(data);
-            console.log();
-
-            const ex : LibraryEntry[] = [
-                {
-                manga: {
-                    mangaId: 1,
-                    title: "test",
-                    coverImage: "test",
-                    totalChapters: 1000
-                },
-                progress: 0
-                },
-                {
-                manga: {
-                    mangaId: 2,
-                    title: "test",
-                    coverImage: "test",
-                    totalChapters: 1000
-                },
-                progress: 0
-                }
-            ]
-        })
-        
+        });
     }, []);
 
     const handleEnterSearch = (event: KeyboardEvent) => {
