@@ -79,7 +79,6 @@ const MangaPage = () => {
                 setManga(mappedData);
             })
             .catch(error => console.error('Error fetching manga data:', error));
-
     }, []);
 
 
@@ -131,7 +130,7 @@ const MangaPage = () => {
         setDescriptionExpanded(!descriptionExpanded);
     }
 
-    const startSeries = async (startNow: boolean) => {
+    const startSeries = async () => {
         if (reading != null) {
             console.log("Already reading");
             return;
@@ -145,14 +144,14 @@ const MangaPage = () => {
         console.log(mangaDetails);
         const newEntry: LibraryEntry = {
             manga: mangaDetails,
-            progress: startNow ? 0 : 1
+            progress: 0
         }
         addEntryToLibrary(newEntry);
         setReading(newEntry);
     }
 
     const startReadingNow = () => {
-        startSeries(true);
+        startSeries();
         navigate(`/reader/${manga.id}/1`);
     }
 
@@ -189,6 +188,28 @@ const MangaPage = () => {
         setAscending(!ascending);
     }
 
+    const textRef = useRef(null);
+
+    const checkOverflow = () => {
+        const element = textRef.current;
+        if (element) {
+            const isOverflowing = element.scrollHeight > element.clientHeight;
+            setIsDescriptionOverflow(isOverflowing);
+        }
+    };
+
+    useEffect(() => {
+        checkOverflow();
+
+        // Add event listener for window resize
+        window.addEventListener('resize', checkOverflow);
+
+        // Clean up event listener on component unmount
+        return () => {
+        window.removeEventListener('resize', checkOverflow);
+        };
+    }, [manga.description]);
+
     return (
 
         <div className="">
@@ -215,7 +236,7 @@ const MangaPage = () => {
                     </div>
 
                     <div className="flex *:px-4 *:py-2">
-                        <p id="description" className={`font-semibold text-md overflow-hidden ${descriptionExpanded ? "h-auto" : "max-h-20"}`}>{manga.description}</p>
+                        <p ref={textRef} id="description" className={`font-semibold text-md overflow-hidden ${descriptionExpanded ? "h-auto" : "max-h-20"}`}>{manga.description}</p>
 
                     </div>
                     {isDescriptionOverflow &&
@@ -250,7 +271,7 @@ const MangaPage = () => {
                                 }
                                 {
                                     reading == null ?
-                                    <button onClick={() => startSeries(false)} className="flex bg-black rounded-lg text-white py-1 px-3 hover:bg-slate-800 mr-4 justify-self-end active:bg-slate-700">  Add to Library <IconPlus className="pl-2" /></button>
+                                    <button onClick={startSeries} className="flex bg-black rounded-lg text-white py-1 px-3 hover:bg-slate-800 mr-4 justify-self-end active:bg-slate-700">  Add to Library <IconPlus className="pl-2" /></button>
                                     :
                                     <button onClick={stopSeries} className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">{}  Remove from Library <IconMinus className="pl-2" /></button>
 
