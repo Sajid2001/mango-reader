@@ -29,14 +29,15 @@ def process_manga_data(cursor, manga_data):
             is_insert = True
 
         cursor.execute("""
-            INSERT INTO manga (title, alternate_names, authors, genres, description, status, total_chapters, banner_image, cover_image)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO manga (title, alternate_names, authors, genres, description, scan_status, publish_status, total_chapters, banner_image, cover_image)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             ON CONFLICT (title) DO UPDATE
             SET alternate_names = EXCLUDED.alternate_names,
                 authors = EXCLUDED.authors,
                 genres = EXCLUDED.genres,
                 description = EXCLUDED.description,
-                status = EXCLUDED.status,
+                scan_status = EXCLUDED.scan_status,
+                publish_status = EXCLUDED.publish_status,
                 total_chapters = EXCLUDED.total_chapters,
                 banner_image = EXCLUDED.banner_image,
                 cover_image = EXCLUDED.cover_image
@@ -46,7 +47,8 @@ def process_manga_data(cursor, manga_data):
             manga_data.get("Author(s)", None),
             manga_data.get("Genre", None),
             manga_data.get("Description", None),
-            manga_data.get("Status", None),
+            manga_data.get("Scan Status", None),
+            manga_data.get("Publish Status", None),
             manga_data.get("Total Chapters", current_total_chapters),  # Use existing total_chapters for insert
             manga_data.get("Banner Image", None),
             manga_data.get("Cover Image", None)
@@ -146,7 +148,7 @@ cur = conn.cursor()
 print('connected to db')
 
 try:
-    with open('manga_data.txt', 'r') as file:
+    with open('manga_data.txt', 'r', encoding='utf-8') as file:  # Specify UTF-8 encoding
         manga_data = {}
         for line in file:
             line = line.strip()  # Remove leading/trailing whitespaces
