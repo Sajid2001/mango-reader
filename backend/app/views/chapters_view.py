@@ -38,7 +38,6 @@ def get_pages_for_chapter(manga_id, chapter_number):
         else:
             return jsonify({"error": "Chapter not found"}), 404
 
-
 def scrape_chapter(manga_id, chapter_number):
     firefox_options = FirefoxOptions()
     firefox_options.add_argument("--private")
