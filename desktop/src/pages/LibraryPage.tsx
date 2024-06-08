@@ -11,22 +11,30 @@ import { get } from "node:http";
 
 const LibraryPage = () => {
 
+    // [ State Variables ]
+
     const [libraryData, setLibraryData] = useState<LibraryEntry[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [filterTerm, setFilterTerm] = useState<string>("");
 
+    
+    // [ Functions ]
+
+    //Gets User Library Data on Library Page load
     useEffect(() => {
         loadLibrary().then(() => {
             getLibrary().then((data) => setLibraryData(data));
         });
     }, []);
 
+    //Enter Key Press Listener
     const handleEnterSearch = (event: KeyboardEvent) => {
         if (event.key === 'Enter') {
             setFilterTerm(() =>(searchTerm));
         }
     };
 
+    //UseEffect for Adding/Updating Enter Key Press Listener
     useEffect(() => {
         // Add event listener for keydown
         window.addEventListener('keydown', handleEnterSearch); 
@@ -37,19 +45,20 @@ const LibraryPage = () => {
         };
     }, [searchTerm]);
 
+    //Erase User Library Data Function
     const clearLibrary = () => {
         emptyLibrary();
         setLibraryData([]);
     }
 
     return ( 
-        <div className='h-screen flex-col bg-gray-100 px-5 w-full align-baseline'>
-            <div className=" flex">
-            <h1 className="text-3xl p-4 font-bold">Library</h1>
-                <div className="flex m-1 *:my-3 *:mx-1 w-full">
+        <div className='h-screen flex-col bg-gray-100 px-5 w-full align-baseline overflow-y-auto'>
+            <div className=" flex flex-wrap *:pt-3 pb-4">
+                <h1 className="text-3xl  pl-3 font-bold">Library</h1>
+                <div className="flex m-1 *:mb-3 *:mx-1 *:py-1">
                     <button className="font-semibold text-lg px-5 bg-slate-300 rounded-lg active:bg-slate-200">Layout</button>
                     <button className="font-semibold px-3 bg-slate-300 rounded-lg  active:bg-slate-200"><IconMoon size={24}/></button>
-                    <div className="flex relative shrink-0">
+                    <div className="flex relative max-w-30 ">
                         <input onChange={(e) => setSearchTerm(e.target.value)} className="grow font-semibold h-full text-lg px-5 pl-10 bg-slate-300 rounded-lg active:bg-slate-200 placeholder:text-black" placeholder="Search Library..." />
                         <button onClick={() => setFilterTerm(searchTerm)} className="absolute inset-y-0 left-0 flex items-center pl-2"><IconSearch size={24}/></button>
                     </div>
