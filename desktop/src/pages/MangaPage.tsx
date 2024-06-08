@@ -1,4 +1,4 @@
-import { IconArrowDown, IconArrowUp, IconCheck, IconChevronDown, IconChevronUp, IconClock, IconDownload, IconMinus, IconPlayerPlay, IconPlus, IconSwitch, IconSwitchHorizontal } from "@tabler/icons-react";
+import { IconArrowDown, IconArrowUp, IconCheck, IconChevronDown, IconChevronUp, IconClock, IconClockPause, IconDownload, IconMinus, IconPlayerPlay, IconPlus, IconSwitch, IconSwitchHorizontal, IconTrafficCone } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { addEntryToLibrary, getLibrary, loadLibrary, removeEntryFromLibrary } from "../fileStorage/libraryStorage";
@@ -34,7 +34,8 @@ const MangaPage = () => {
         name: string;
         genres: string[];
         description: string;
-        ongoing: boolean;
+        publishStatus: string;
+        scanStatus: string;
         totalChapters: number;
         bannerImage: string;
         coverImage: string;
@@ -48,7 +49,8 @@ const MangaPage = () => {
         name: "No Manga Found",
         genres: [],
         description: "",
-        ongoing: false,
+        publishStatus: "Unknown",
+        scanStatus: "Unknown",
         totalChapters: 0,
         bannerImage: "https://static.vecteezy.com/system/resources/previews/005/337/799/non_2x/icon-image-not-found-free-vector.jpg",
         coverImage: "https://static.vecteezy.com/system/resources/previews/005/337/799/non_2x/icon-image-not-found-free-vector.jpg"
@@ -75,7 +77,8 @@ const MangaPage = () => {
                     name: data.title,
                     genres: data.genres.split(", "),
                     description: data.description,
-                    ongoing: true,
+                    publishStatus: data.publish_status,
+                    scanStatus: data.scan_status,
                     totalChapters: data.total_chapters,
                     bannerImage: data.banner_image,
                     coverImage: data.cover_image
@@ -270,19 +273,25 @@ const MangaPage = () => {
                     <button className="flex px-4 -translate-y-3 font-bold text-slate-500 hover:text-slate-800 items-center" onClick={toggleDescriptionExpansion}>{descriptionExpanded ? "See Less" : "See More"}{descriptionExpanded ? <IconChevronUp size={16}/> : <IconChevronDown size={16}/>}</button>
                 }
 
-                <div className="flex *:px-4 font-semibold">
+                <div className="flex *:pl-4 font-semibold">
                     <p>{manga.mangaka}</p>
-                    <div className="font-bold">{manga.ongoing ?
+                    <div className="font-bold flex *:mr-2 flex-wrap">
                         <div className="flex">
-                            <IconClock />
-                            <p className="pl-1">Ongoing</p>
+                            { manga.scanStatus == "Ongoing" ? <IconClock />
+                            : manga.scanStatus == "Completed" ? <IconCheck />
+                            : manga.scanStatus == "Haitus" ? <IconClockPause />
+                            : <IconTrafficCone/>   
+                            }
+                            <p className="pl-1">{manga.scanStatus} [Scan Status]</p>
                         </div>
-                        :
                         <div className="flex">
-                            <IconCheck />
-                            <p className="pl-1">Completed</p>
+                            { manga.publishStatus == "Ongoing" ? <IconClock />
+                            : manga.publishStatus == "Completed" ? <IconCheck />
+                            : manga.publishStatus == "Haitus" ? <IconClockPause />
+                            : <IconTrafficCone/>   
+                            }
+                            <p className="pl-1">{manga.publishStatus} [Publishing Status]</p>
                         </div>
-                    }
                     </div>
                 </div>
                 <div className="flex border-b-2 p-4 font-bold border-slate-800 justify-between">

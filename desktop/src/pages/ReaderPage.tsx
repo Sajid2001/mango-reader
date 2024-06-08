@@ -269,6 +269,7 @@ const ReaderPage = () => {
                             {
                                 scans.map((scan: string, index: number) => 
                                     <img 
+                                        key={index}
                                         src={scan} 
                                         ref={(el) => scanRefs.current[index] = el}
                                         id={`${index+1}`}  
