@@ -45,8 +45,15 @@ const updateLibraryEntry = async (updatedEntry: LibraryEntry) => {
     
 }
 
+const eraseAllHistoricalData = async () => {
+    for(let i = 0; i < library.length; i++) {
+       library[i].lastViewed = undefined; 
+    }
+    await saveLibrary();
+}
+
 const getLibrary = async () => {
     return library;
 };
 
-export { loadLibrary, addEntryToLibrary, removeEntryFromLibrary, emptyLibrary, getLibrary, updateLibraryEntry};
+export { loadLibrary, addEntryToLibrary, removeEntryFromLibrary, emptyLibrary, getLibrary, updateLibraryEntry, eraseAllHistoricalData};

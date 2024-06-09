@@ -54,6 +54,7 @@ const ReaderPage = () => {
                             const entry = library.find((entry) => entry.manga.mangaId === Number(mangaId));
                             if(entry) {
                                 entry.progress = Number(chapterId);
+                                entry.lastViewed = new Date();
                                 updateLibraryEntry(entry);
                                 return entry
                             }
@@ -169,18 +170,20 @@ const ReaderPage = () => {
     //Chapter Change Functions
     const nextChapter = async () => {
         if(reading != null){
-            const updatedReading = reading
-            updatedReading.progress = Math.min(reading.progress + 1, maxChapters)
-            await updateLibraryEntry(updatedReading)
+            const updatedReading = reading;
+            updatedReading.progress = Math.min(reading.progress + 1, maxChapters);
+            updatedReading.lastViewed = new Date();
+            await updateLibraryEntry(updatedReading);
         }
         navigate(`/reader/${mangaId}/${Math.min(Number(chapterId)+1, maxChapters)}`)
     }
 
     const previousChapter = async () => {
         if(reading != null){
-            const updatedReading = reading
-            updatedReading.progress = Math.max(reading.progress - 1, maxChapters)
-            await updateLibraryEntry(updatedReading)
+            const updatedReading = reading;
+            updatedReading.progress = Math.max(reading.progress - 1, maxChapters);
+            updatedReading.lastViewed = new Date();
+            await updateLibraryEntry(updatedReading);
         }
         navigate(`/reader/${mangaId}/${Math.max(Number(chapterId)-1, 1)}`)
     }

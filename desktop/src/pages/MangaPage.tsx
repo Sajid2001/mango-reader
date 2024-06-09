@@ -173,7 +173,8 @@ const MangaPage = () => {
         console.log(mangaDetails);
         const newEntry: LibraryEntry = {
             manga: mangaDetails,
-            progress: 0
+            progress: 0,
+            lastViewed: new Date()
         }
         addEntryToLibrary(newEntry);
         setReading(newEntry);
