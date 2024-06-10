@@ -1,6 +1,6 @@
 import { current } from "@reduxjs/toolkit";
 import { IconArrowAutofitHeight, IconArrowAutofitWidth, IconArrowBackUp, IconBook, IconChevronLeft,  IconChevronRight,  IconCircleArrowLeft,  IconCircleArrowRight,  IconKeyboard,  IconPageBreak,  IconSettings,  IconX } from "@tabler/icons-react";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getLibrary, loadLibrary, updateLibraryEntry } from "../fileStorage/libraryStorage";
 import { LibraryEntry } from "../models/libraryEntry";
@@ -94,9 +94,14 @@ const ReaderPage = () => {
                     throw new Error('Network response was not ok');
                 }
                 return response.json();
-                }).then(data => {
+                }).then(async data => {
                     // Map fetched data to Post model
                     setChapterName(data[Number(chapterId)-1].chapter_name)
+                    const updatedReading = reading!;
+                    updatedReading.progress = Math.min(reading!.progress + 1, maxChapters);
+                    updatedReading.lastViewed = new Date();
+                    updatedReading.lastReadChapterName = data[Number(chapterId)-1].chapter_name;
+                    await updateLibraryEntry(updatedReading);
                 })
                     .catch(error => console.error('Error fetching chapter data:', error));
             fetch("http://127.0.0.1:8000/api/chapters/"+Number(mangaId)+"/"+Number(chapterId))
@@ -111,6 +116,7 @@ const ReaderPage = () => {
                     if(isCurrent){
                         setScans(mappedData);
                         setLoading(false);
+                        
                     } 
                 })
                 .catch(error => console.error('Error fetching chapter data:', error));
@@ -169,22 +175,10 @@ const ReaderPage = () => {
 
     //Chapter Change Functions
     const nextChapter = async () => {
-        if(reading != null){
-            const updatedReading = reading;
-            updatedReading.progress = Math.min(reading.progress + 1, maxChapters);
-            updatedReading.lastViewed = new Date();
-            await updateLibraryEntry(updatedReading);
-        }
         navigate(`/reader/${mangaId}/${Math.min(Number(chapterId)+1, maxChapters)}`)
     }
 
     const previousChapter = async () => {
-        if(reading != null){
-            const updatedReading = reading;
-            updatedReading.progress = Math.max(reading.progress - 1, maxChapters);
-            updatedReading.lastViewed = new Date();
-            await updateLibraryEntry(updatedReading);
-        }
         navigate(`/reader/${mangaId}/${Math.max(Number(chapterId)-1, 1)}`)
     }
 

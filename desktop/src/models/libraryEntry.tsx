@@ -4,4 +4,5 @@ export interface LibraryEntry {
     manga: MangaDetails
     progress: number
     lastViewed?: Date
+    lastReadChapterName?: string
 }

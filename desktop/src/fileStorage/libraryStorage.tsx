@@ -48,6 +48,7 @@ const updateLibraryEntry = async (updatedEntry: LibraryEntry) => {
 const eraseAllHistoricalData = async () => {
     for(let i = 0; i < library.length; i++) {
        library[i].lastViewed = undefined; 
+       library[i].lastReadChapterName = undefined; 
     }
     await saveLibrary();
 }
