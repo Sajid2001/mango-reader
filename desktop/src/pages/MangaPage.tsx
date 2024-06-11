@@ -325,7 +325,7 @@ const MangaPage = () => {
                     {chapters != null && chapters.length != 0 ?
                         <div className="">
                             {chapters.map((chapter, index: number) => (
-                                <Link to={`/reader/${manga.id}/${chapter.chapterNumber}`} className={`flex justify-between p-3 items-center ${reading && reading.progress >= chapter.chapterNumber ? index % 2 == 0 ? "bg-yellow-200 hover:bg-yellow-400" : " bg-yellow-300 hover:bg-yellow-500" : index % 2 == 0 ? "bg-slate-100 hover:bg-slate-300" : "bg-slate-200 hover:bg-slate-300"}`}>
+                                <Link to={`/reader/${manga.id}/${chapter.chapterNumber}`} className={`flex justify-between p-3 items-center ${reading && reading.progress >= chapter.chapterNumber ? index % 2 == 0 ? "bg-blue-200 hover:bg-blue-400 " : " bg-blue-300 hover:bg-blue-500 hover:bg-opacity-70" : index % 2 == 0 ? "bg-slate-100 hover:bg-slate-300" : "bg-slate-200 hover:bg-slate-300"}`}>
                                     <div className="flex-col">
                                         <p className="font-semibold text-md">{chapter.chapterName}</p>
                                         <p>{chapter.chapterNumber}</p>

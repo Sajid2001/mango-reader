@@ -1,52 +1,33 @@
 import { LibraryEntry } from "../models/libraryEntry";
+import { UserSettings } from "../models/settings";
 
 import { readDataFromFile, writeDataToFile } from './dataManager';
 
-let library: LibraryEntry[] = [];
-const filepath = "library.json";
+let settings: UserSettings;
+const filepath = "settings.json";
 
-const loadLibrary = async () => {
+const loadSettings = async () => {
     const data = readDataFromFile(filepath);
     if (data) {
-        library = data;
+        settings = data;
     }
-    return library;
+    return settings;
 
 };
 
-const saveLibrary = async () => {
-    writeDataToFile(filepath, JSON.stringify(library));
+const saveSettings = async () => {
+    writeDataToFile(filepath, JSON.stringify(settings));
 };
 
-const addEntryToLibrary = async (entry: LibraryEntry) => {
-    library.push(entry);
-    await saveLibrary();
-};
-
-const removeEntryFromLibrary = async (removedEntryId: number) => {
-    library = library.filter((entry) => entry.manga.mangaId != removedEntryId);
-    await saveLibrary();
+const clearSettings = async () => {
+    settings.theme = "light";
+    settings.fontSize = 14;
+    await saveSettings();
 }
 
-const emptyLibrary = async () => {
-    library = [];
-    await saveLibrary();
-}
 
-const updateLibraryEntry = async (updatedEntry: LibraryEntry) => {
-    const index = library.findIndex((entry) => entry.manga.mangaId === updatedEntry.manga.mangaId);
-    if(index !== -1) {
-        library[index] = updatedEntry;
-        await saveLibrary();
-    }
-    else{
-        throw new Error('Library Error: Tried to update entry not found in library');
-    }
-    
-}
-
-const getLibrary = async () => {
-    return library;
+const getSettings = async () => {
+    return settings;
 };
 
-export { loadLibrary, addEntryToLibrary, removeEntryFromLibrary, emptyLibrary, getLibrary, updateLibraryEntry};
+export { loadSettings, saveSettings, clearSettings, getSettings };

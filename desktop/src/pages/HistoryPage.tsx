@@ -1,4 +1,4 @@
-import { IconBook, IconMoon, IconTrash } from "@tabler/icons-react";
+import { IconBook, IconMoon, IconPlayerPlayFilled, IconTrash } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { eraseAllHistoricalData, getLibrary, loadLibrary, updateLibraryEntry } from "../fileStorage/libraryStorage";
 import { LibraryEntry } from "../models/libraryEntry";
@@ -9,6 +9,7 @@ const HistoryPage = () => {
     const [historicalData, setHistoricalData] = useState<LibraryEntry[]>([]);
 
     const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const buttonIconSize = 48;
     let prevDate: Date | undefined = undefined;
 
     const navigate = useNavigate();
@@ -75,10 +76,10 @@ const HistoryPage = () => {
                                                 <p className="text-2xl px-4 border-slate-300">{entry.lastReadChapterName}</p>
                                             </div>
                                         </div>
-                                        <div className="flex items-center m-1 md:m-8 ">
-                                            <button onClick={() => navigate(`/reader/${entry.manga.mangaId}/${entry.progress}`)} className="text-center items-center  text-2xl flex font-semibold m-8 py-1 px-2 bg-slate-300 rounded-lg  active:bg-slate-200 ">Continue<IconBook className="ml-1" size={36}/></button>
+                                        <div className="flex items-center mx-1 md:mx-8 ">
+                                            <button onClick={() => navigate(`/reader/${entry.manga.mangaId}/${entry.progress}`)} className="text-center items-center  text-2xl flex font-semibold m-8 py-1 px-2  rounded-lg hover:bg-slate-300 active:bg-slate-400 "><IconPlayerPlayFilled className="" size={buttonIconSize}/></button>
 
-                                            <button onClick={() => removeFromHistory(entry)} className="font-semibold  py-1 px-2 bg-slate-300 rounded-lg  active:bg-slate-200 "><IconTrash size={36}/></button>
+                                            <button onClick={() => removeFromHistory(entry)} className="font-semibold  py-1 px-2  hover:bg-slate-300 rounded-lg  active:bg-slate-400 "><IconTrash size={buttonIconSize}/></button>
 
                                         </div>
                                     </div>
