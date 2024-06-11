@@ -284,7 +284,7 @@ const ReaderPage = () => {
                                         src={scan} 
                                         ref={(el) => scanRefs.current[index] = el}
                                         id={`${index+1}`}  
-                                        className={`${fitHeight ? "h-full" : "w-full"} flex justify-self-center`}
+                                        className={`${fitHeight ? "h-screen" : "w-full"} flex justify-self-center`}
                                     />
                                 )
                             }

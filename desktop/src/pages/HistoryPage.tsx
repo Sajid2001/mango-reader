@@ -1,8 +1,8 @@
 import { IconBook, IconMoon, IconTrash } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
-import { eraseAllHistoricalData, getLibrary, loadLibrary } from "../fileStorage/libraryStorage";
+import { eraseAllHistoricalData, getLibrary, loadLibrary, updateLibraryEntry } from "../fileStorage/libraryStorage";
 import { LibraryEntry } from "../models/libraryEntry";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const HistoryPage = () => {
 
@@ -11,11 +11,13 @@ const HistoryPage = () => {
     const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
     let prevDate: Date | undefined = undefined;
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         loadLibrary().then(() => {
             getLibrary().then((data) => {
                 setHistoricalData(() => {
-                const filteredData = data.filter(x => x.lastViewed !== undefined || x.lastViewed !== null)
+                const filteredData = data.filter(x => x.lastViewed != undefined || x.lastViewed != null)
                 return filteredData.sort((a, b) => new Date(b.lastViewed!).getTime() - new Date(a.lastViewed!).getTime())
             })});
         });
@@ -26,13 +28,21 @@ const HistoryPage = () => {
         setHistoricalData([]);
     };
 
+    const removeFromHistory = (entry: LibraryEntry) => {
+        entry.lastViewed = undefined;
+        entry.lastReadChapterName = undefined;
+        setHistoricalData(historicalData.filter(x => x.manga.mangaId !== entry.manga.mangaId));
+        updateLibraryEntry(entry);
+
+    }
+
     return (  
         <div className="h-screen bg-gray-100 px-5 w-full align-baseline overflow-y-auto">
             <div className="w-full flex flex-col">
                 <div className="w-full flex tems-stretch">
                     <h1 className="text-3xl p-4 font-bold ">History</h1>
                     <div className="inline-flex m-1 *:my-3 *:mx-1 w-2/3">
-                        <button className="font-semibold text-lg px-5 text-white bg-slate-900 rounded-lg active:bg-slate-700">Clear History</button>
+                        <button onClick={clearHistory} className="font-semibold text-lg px-5 text-white bg-slate-900 rounded-lg active:bg-slate-700">Clear History</button>
                         <button className="font-semibold text-lg px-5 bg-slate-300 rounded-lg active:bg-slate-200">Layout</button>
                         <button className="font-semibold px-3 bg-slate-300 rounded-lg  active:bg-slate-200"><IconMoon size={24} /></button>
 
@@ -65,8 +75,11 @@ const HistoryPage = () => {
                                                 <p className="text-2xl px-4 border-slate-300">{entry.lastReadChapterName}</p>
                                             </div>
                                         </div>
-                                        <div className="flex items-center">
-                                            <button className="font-semibold m-8 py-1 px-2 bg-slate-300 rounded-lg  active:bg-slate-200 "><IconTrash size={42}/></button>
+                                        <div className="flex items-center m-1 md:m-8 ">
+                                            <button onClick={() => navigate(`/reader/${entry.manga.mangaId}/${entry.progress}`)} className="text-center items-center  text-2xl flex font-semibold m-8 py-1 px-2 bg-slate-300 rounded-lg  active:bg-slate-200 ">Continue<IconBook className="ml-1" size={36}/></button>
+
+                                            <button onClick={() => removeFromHistory(entry)} className="font-semibold  py-1 px-2 bg-slate-300 rounded-lg  active:bg-slate-200 "><IconTrash size={36}/></button>
+
                                         </div>
                                     </div>
                                 )
