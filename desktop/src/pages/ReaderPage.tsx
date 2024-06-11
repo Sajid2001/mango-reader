@@ -97,7 +97,6 @@ const ReaderPage = () => {
                 return response.json();
                 }).then(async data => {
                     // Map fetched data to Post model
-                    console.log("Updated")
                     setChapterName(data[Number(chapterId)-1].chapter_name)
                     
                 })
@@ -136,7 +135,6 @@ const ReaderPage = () => {
         updatedReading.lastReadChapterName = chapterName;
         setReading(updatedReading);
         updateLibraryEntry(updatedReading);
-        console.log("done")
     }
 
     useMemo(() => {
@@ -196,10 +194,10 @@ const ReaderPage = () => {
         navigate(`/reader/${mangaId}/${Math.max(Number(chapterId)-1, 1)}`)
     }
 
-    //UseEffect for Scrolling to Current Page if Longstrip is Turned On
+    //UseEffect for Keeping View at Current Page if Longstrip is Turned On and Settings are Changed
     useEffect(() => {
         if(!singlePage) scanRefs.current[currentPage-1]?.scrollIntoView({ behavior: 'instant' });
-    }, [singlePage])
+    }, [singlePage ,fitHeight])
 
     //UseEffect for Setting up Observer for Telling what Page the User is On when Longstring is Turned On
     //is technically also active when singlePage is on but its not needed since only one page is shown at a time
