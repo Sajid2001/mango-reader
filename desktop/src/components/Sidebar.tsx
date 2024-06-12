@@ -4,8 +4,10 @@ import SidebarButton from "./SidebarButton";
 const Sidebar = () => {
 
     const strikeWidth = 1.7;
-    const color = "white";
+    const color = "black";
     const size = 42;
+
+    
 
     return (  
         <div className=' grid grid-cols-1 mt-2'>

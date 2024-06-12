@@ -229,6 +229,33 @@ const MangaPage = () => {
         
     };
 
+    const [showScrollToTop, setShowScrollToTop] = useState(false);
+    const chapterScroll = useRef(null);
+  
+    const handleScroll = () => {
+      if (chapterScroll.current.scrollTop > 100) {
+        setShowScrollToTop(true);
+      } else {
+        setShowScrollToTop(false);
+      }
+    };
+  
+    const scrollToTop = () => {
+        chapterScroll.current.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    };
+  
+    useEffect(() => {
+      const scrollableDiv = chapterScroll.current;
+      scrollableDiv.addEventListener('scroll', handleScroll);
+  
+      return () => {
+        scrollableDiv.removeEventListener('scroll', handleScroll);
+      };
+    }, []);
+
     useEffect(() => {
         checkOverflow();
 
@@ -320,7 +347,7 @@ const MangaPage = () => {
                     </div>
 
                 </div>
-                <div className="[scrollbarWidth:none] grid grid-cols-1 gap-1 overflow-y-auto max-h-screen">
+                <div ref={chapterScroll} className="[scrollbarWidth:none] grid grid-cols-1 gap-1 overflow-y-auto max-h-screen">
 
                     {chapters != null && chapters.length != 0 ?
                         <div className="">
@@ -335,7 +362,9 @@ const MangaPage = () => {
                                     </div>
                                 </Link>
                             ))}
+                            <button onClick={() => scrollToTop()}  disabled={!showScrollToTop} className="fixed justify-center transition ease-in-out bottom-3 disabled:translate-y-20 bg-black text-white px-2 py-1 rounded-lg left-[47%]">Scroll to Top</button>
                         </div>
+                        
                         :
                         <div className="flex justify-center items-center font-bold text-center mt-6">
                             {
