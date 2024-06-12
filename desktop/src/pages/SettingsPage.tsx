@@ -16,21 +16,37 @@ const SettingsPage = () => {
 
             <div className="p-4">
                 <h3 className="text-lg font-bold">Update</h3>
-                <ul className="px-4 *:font-semibold ">
+                <ul className="ml-4 *:font-semibold ">
                     <li><input type="checkbox" className=" w-6 h-6 bg-slate-100 border-slate-100 rounded-full focus:ring-blue-500 focus:ring-2"/> Update Automatically</li>
                     <li><input type="checkbox" className=" w-6 h-6 bg-slate-100 border-slate-100 rounded-full focus:ring-blue-500 focus:ring-2" /> Refresh on startup</li>
                 </ul>
             </div>
 
-            <div>
-            
+            <div className="p-4">
+                <h3 className="text-lg font-bold">Download Path</h3>
+                <a className="ml-4 bg-slate-200 px-2 py-1 rounded-lg" href="./library.json" download>Download</a>
+            </div> 
+
+            <div className="p-4">
+                <h3 className="text-lg font-bold">Appearance</h3>
+                <select className="ml-4 p-1 bg-slate-200 *:bg-slate-100 rounded-lg">
+                    <option value="mango">Mango</option>
+                    <option value="peach">Peach</option>
+                    <option value="honeydew">Honeydew</option>
+                    <option value="starfruit">Starfruit</option>
+                    <option value="plum">Plum</option>
+                    <option value="coconut">Coconut</option>
+                    <option value="grapefruit">Grapefruit</option>
+                    <option value="avocado">Avocado</option>
+                    <option value="licorice">Licorice</option>
+                    <option value="ancientfruit">Ancientfruit</option>
+                    <option value="devilfruit">Devilfruit</option>
+                </select>
             </div>
 
             <div>
                 
-                <button id="dropdownHelperRadioButton" data-dropdown-toggle="dropdownHelperRadio" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Dropdown radio <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                </svg></button>
+                
 
                 
 
