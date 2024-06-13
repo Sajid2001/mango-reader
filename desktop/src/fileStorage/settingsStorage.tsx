@@ -1,5 +1,5 @@
 import { LibraryEntry } from "../models/libraryEntry";
-import { UserSettings } from "../models/settings";
+import { UserSettings } from "../models/userSettings";
 
 import { readDataFromFile, writeDataToFile } from './dataManager';
 

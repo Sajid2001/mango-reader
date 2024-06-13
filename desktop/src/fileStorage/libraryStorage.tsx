@@ -1,6 +1,6 @@
 import { LibraryEntry } from "../models/libraryEntry";
 
-import { readDataFromFile, writeDataToFile } from './dataManager';
+import { readDataFromFile, replaceFileData, writeDataToFile } from './dataManager';
 
 let library: LibraryEntry[] = [];
 const filepath = "library.json";
@@ -57,4 +57,8 @@ const getLibrary = async () => {
     return library;
 };
 
-export { loadLibrary, addEntryToLibrary, removeEntryFromLibrary, emptyLibrary, getLibrary, updateLibraryEntry, eraseAllHistoricalData};
+const importLibraryFromFile = async (newLibraryFilepath: string) => {
+    await replaceFileData(filepath, newLibraryFilepath);
+}
+
+export { loadLibrary, addEntryToLibrary, removeEntryFromLibrary, emptyLibrary, getLibrary, updateLibraryEntry, eraseAllHistoricalData, importLibraryFromFile};

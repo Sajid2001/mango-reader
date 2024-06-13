@@ -1,5 +1,4 @@
-import { current } from "@reduxjs/toolkit";
-import { IconArrowAutofitHeight, IconArrowAutofitWidth, IconArrowBackUp, IconBook, IconChevronLeft,  IconChevronRight,  IconCircleArrowLeft,  IconCircleArrowRight,  IconKeyboard,  IconPageBreak,  IconSettings,  IconX } from "@tabler/icons-react";
+import { IconArrowAutofitHeight, IconArrowAutofitWidth, IconArrowBackUp, IconBook, IconChevronLeft,  IconChevronRight,  IconCircleArrowLeft,  IconCircleArrowRight,  IconKeyboard, IconSettings,  IconSpacingVertical, IconX } from "@tabler/icons-react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getLibrary, loadLibrary, updateLibraryEntry } from "../fileStorage/libraryStorage";
@@ -254,7 +253,7 @@ const ReaderPage = () => {
                             </div>
                         </div>
                         <div className="flex flex-col w-full font-semibold px-5 text-lg  *:*::w-full *:*:flex *:px-2 *:py-1 *:*:items-center *:*:justify-between  *:bg-slate-100 *:rounded-lg *:my-2">
-                            <button onClick={() => setSinglePage(!singlePage)} className="hover:bg-slate-200 active:bg-slate-400">{ singlePage ? <div>Longstrip <IconPageBreak size={IconSize}/></div> : <div>Single Page <IconBook size={IconSize}/></div>}</button>
+                            <button onClick={() => setSinglePage(!singlePage)} className="hover:bg-slate-200 active:bg-slate-400">{ singlePage ? <div>Longstrip <IconSpacingVertical size={IconSize}/></div> : <div>Single Page <IconBook size={IconSize}/></div>}</button>
                             <button onClick={() => setFitHeight(!fitHeight)} className="hover:bg-slate-200 active:bg-slate-400">{ fitHeight ?  <div>Fit Width <IconArrowAutofitWidth size={IconSize}/></div> : <div>Fit Height <IconArrowAutofitHeight size={IconSize}/></div>}</button>
                             {singlePage && <button onClick={() => setLeftToRight(!leftToRight)} className="hover:bg-slate-200 active:bg-slate-400">{ leftToRight ? <div>Right to Left <IconCircleArrowLeft size={IconSize}/></div> : <div>Left to Right <IconCircleArrowRight size={IconSize}/></div>}</button>}
                             <button className="hover:bg-slate-200 active:bg-slate-400"><div>Keybinds <IconKeyboard size={IconSize}/></div></button>

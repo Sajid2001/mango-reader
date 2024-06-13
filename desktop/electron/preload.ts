@@ -22,3 +22,12 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   // You can expose other APTs you need here.
   // ...
 })
+
+contextBridge.exposeInMainWorld('electron', {
+  openFileDialog: async () => {
+    const fileContent = await ipcRenderer.invoke('open-file-dialog');
+    console.log(fileContent); // You can handle the file content here
+  },
+});
+
+

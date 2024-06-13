@@ -1,6 +1,33 @@
+import React, { useEffect, useMemo } from "react";
+import { useRef, useState } from "react";
+import { importLibraryFromFile, loadLibrary } from "../fileStorage/libraryStorage";
 
 
 const SettingsPage = () => {
+
+    useEffect(() => {
+        loadLibrary()
+    }, [])
+
+    const [file, setFile] = useState<File | null>(null);    
+    const importLibrary = useRef<HTMLInputElement>(null);
+    
+    
+    const useFileImporter = () => {
+        importLibrary.current?.click();
+    }
+
+    const getFile = (event: any) => {
+        setFile(event.target.files[0]);
+    }
+
+    useMemo( async () => {
+        if(file !== undefined && file !== null){
+            importLibraryFromFile(file.path)
+        }
+    }, [file])
+    
+
     return (  
         <div className="w-full flex-col">
             <div className="flex">
@@ -22,9 +49,14 @@ const SettingsPage = () => {
                 </ul>
             </div>
 
-            <div className="p-4">
-                <h3 className="text-lg font-bold">Download Path</h3>
-                <a className="ml-4 bg-slate-200 px-2 py-1 rounded-lg" href="./library.json" download>Download</a>
+            <div className="p-4 ">
+                <h3 className="ml-0 text-lg font-bold">Download Path</h3>
+                <input type="text" placeholder="library filepath" className="bg-slate-200 rounded-lg p-1 px-2 my-2 ml-4 w-96" />
+                <div className="ml-4">
+                    <a className=" bg-slate-200 px-2 py-[5px] rounded-lg" href="./library.json" download>Export Library</a>
+                    <button onClick={useFileImporter} className="ml-2 bg-slate-200 px-2 py-1 h-full rounded-lg">Import Library</button>
+                    <input ref={importLibrary} onChange={getFile} type="file" id="file-input" className="hidden" accept=".json"></input>
+                </div>
             </div> 
 
             <div className="p-4">

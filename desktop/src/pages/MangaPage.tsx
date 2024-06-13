@@ -170,7 +170,6 @@ const MangaPage = () => {
             totalChapters: manga.totalChapters,
             coverImage: manga.coverImage
         }
-        console.log(mangaDetails);
         const newEntry: LibraryEntry = {
             manga: mangaDetails,
             progress: 0,
@@ -190,7 +189,6 @@ const MangaPage = () => {
     }
 
     const stopSeries = () => {
-        console.log(reading);
         if (reading == null) {
             console.log("Already removed from library");
             return;
@@ -204,14 +202,12 @@ const MangaPage = () => {
             
             setChapters(() => {
                 const sortedChapters = chapters.sort((a, b) => b.chapterNumber - a.chapterNumber)
-                console.log(sortedChapters[0]);
                 return sortedChapters
             });
             
         } else {
             setChapters(() => {
                 const sortedChapters = chapters.sort((a, b) => a.chapterNumber - b.chapterNumber)
-                console.log(sortedChapters[0]);
                 return sortedChapters
             });
         }
@@ -230,7 +226,7 @@ const MangaPage = () => {
     };
 
     const [showScrollToTop, setShowScrollToTop] = useState(false);
-    const chapterScroll = useRef(null);
+    const chapterScroll = useRef<any>(null);
   
     const handleScroll = () => {
       if (chapterScroll.current.scrollTop > 100) {
@@ -362,7 +358,7 @@ const MangaPage = () => {
                                     </div>
                                 </Link>
                             ))}
-                            <button onClick={() => scrollToTop()}  disabled={!showScrollToTop} className="fixed justify-center transition ease-in-out bottom-3 disabled:translate-y-20 bg-black text-white px-2 py-1 rounded-lg left-[47%]">Scroll to Top</button>
+                            <button onClick={scrollToTop}  disabled={!showScrollToTop} className="flex items-center fixed justify-center transition ease-in-out bottom-3 disabled:translate-y-20 hover:bg-slate-800 bg-black text-white px-2 py-1 rounded-lg left-[47%] gap-1 font-semibold"><IconArrowUp size={20}/>Scroll to Top</button>
                         </div>
                         
                         :

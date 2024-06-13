@@ -1,7 +1,8 @@
-import { writeDataToFile } from './../src/fileStorage/dataManager';
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain, dialog } from 'electron'
 import path from 'node:path'
 const fs = require('fs');
+
+
 
 // The built directory structure
 //
@@ -12,6 +13,7 @@ const fs = require('fs');
 // │ │ ├── main.js
 // │ │ └── preload.js
 // │
+
 process.env.DIST = path.join(__dirname, '../dist')
 process.env.VITE_PUBLIC = app.isPackaged ? process.env.DIST : path.join(process.env.DIST, '../public')
 
@@ -65,6 +67,19 @@ app.on('window-all-closed', () => {
     win = null
   }
 })
+
+ipcMain.handle('open-file-dialog', async (event) => {
+  const result = await dialog.showOpenDialog({
+    properties: ['openFile'],
+  });
+  if (result.canceled) {
+    return;
+  } else {
+    const filePath = result.filePaths[0];
+    const fileContent = fs.readFileSync(filePath, 'utf8');
+    return fileContent;
+  }
+});
 
 app.on('activate', () => {
   // On OS X it's common to re-create a window in the app when the

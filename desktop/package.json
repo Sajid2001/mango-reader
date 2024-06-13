@@ -7,7 +7,8 @@
     "build": "tsc && vite build && electron-builder",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "start:server": "json-server --watch db.json --port 3001"
+    "start:server": "json-server --watch db.json --port 3001",
+    "electron": "electron ."
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.3",
