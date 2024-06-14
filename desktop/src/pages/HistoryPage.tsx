@@ -56,7 +56,7 @@ const HistoryPage = () => {
                     historicalData.length > 0 && historicalData.some((entry) => entry.lastViewed !== null || entry.lastViewed !== undefined) ? 
                     <div>
                         {
-                            historicalData.map((entry) => {
+                            historicalData.map((entry, index ) => {
                                 let header = null;
                                 if (prevDate === undefined || new Date(entry.lastViewed!).toLocaleDateString() !== new Date(prevDate).toLocaleDateString()) {
                                     prevDate = entry.lastViewed;
@@ -68,7 +68,7 @@ const HistoryPage = () => {
                                     );
                                 }
                                 const history = (
-                                    <div className="flex my-4 justify-between">
+                                    <div className="flex my-4 justify-between" key={index}> 
                                         <div className="flex items-center">
                                             <img src={entry.manga.coverImage} className=" aspect-[2/3] rounded-2xl object-fit w-40" alt="" />
                                             <div className="flex flex-col">

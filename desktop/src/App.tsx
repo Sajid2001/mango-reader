@@ -7,6 +7,8 @@ import SettingsPage from './pages/SettingsPage'
 import AskAIPage from './pages/AskAIPage'
 import MangaPage from './pages/MangaPage'
 import ReaderPage from './pages/ReaderPage'
+import GeneralSettings from './pages/GeneralSettings'
+import ReaderSettings from './pages/ReaderSettings'
 function App() {
 
   return (
@@ -23,7 +25,10 @@ function App() {
             <Route path="/manga/:id" element={<MangaPage/>}/>
             <Route path="/search" element={<SearchPage/>}/>
             <Route path="/history" element={<HistoryPage/>}/>
-            <Route path="/settings" element={<SettingsPage/>}/>
+            <Route path="/settings" element={<SettingsPage/>}>
+              <Route path='general' element={<GeneralSettings/>}/> 
+              <Route path='reader' element={<ReaderSettings/>}/> 
+            </Route>
             <Route path="/askai" element={<AskAIPage/>}/>
             <Route path="/" element={<LibraryPage/>}/>
 
