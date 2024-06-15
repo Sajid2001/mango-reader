@@ -20,7 +20,7 @@ class Pages(db.Model):
         print("Parsing")
         try:
             driver.get(chapter_link)
-            img_tags = WebDriverWait(driver, 3).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'img.img-fluid')))
+            img_tags = WebDriverWait(driver, 4).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'img.img-fluid')))
             
             if img_tags:
                 for img_tag in img_tags:

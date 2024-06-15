@@ -1,17 +1,18 @@
 from flask import Blueprint, jsonify
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
-import psycopg2
 import os
 from dotenv import load_dotenv
-
 from .. import db
 from ..models.chapters import Chapter
 from ..models.pages import Pages
+from ..tasks.surrounding_chapters import scrape_surrounding_chapters
+from ..scrape import scrape_chapter
 
 load_dotenv()
 
 chapters_blueprint = Blueprint('chapters', __name__)
+
 
 # Route to get chapters for a manga
 @chapters_blueprint.route('/<int:manga_id>', methods=['GET'])
@@ -20,55 +21,37 @@ def get_all_chapters_by_manga_id(manga_id):
     chapters_list = [c.to_dict() for c in chapters]
     return jsonify(chapters_list)
 
-
 # Route to get pages for a chapter of a manga
-@chapters_blueprint.route('/<int:manga_id>/<chapter_number>', methods=['GET'])
+@chapters_blueprint.route('/<int:manga_id>/<int:chapter_number>', methods=['GET'])
 def get_pages_for_chapter(manga_id, chapter_number):
     chapter_pages = Pages.query.filter_by(manga_id=manga_id, chapter_number=chapter_number).all()
     chapters_page_list = [p.to_dict() for p in chapter_pages]
+    
     if chapters_page_list and len(chapters_page_list) > 0:
+        # If the chapter is found, also check and scrape surrounding chapters
+        surrounding_chapters = get_surrounding_chapters(manga_id, chapter_number)
+        scrape_surrounding_chapters.delay(manga_id, surrounding_chapters)
         return jsonify(chapters_page_list)
     else:
-        # Chapter not found in the database, scrape it
-        # return jsonify({"error": "Chapter Pages not found"}), 404
+        # Chapter not found in the database, scrape it first
         scraped_pages = scrape_chapter(manga_id, chapter_number)
         scraped_page_list = [p.to_dict() for p in scraped_pages]
+        
         if scraped_page_list and len(scraped_page_list) > 0:
+            # After scraping the main chapter, check and scrape surrounding chapters
+            surrounding_chapters = get_surrounding_chapters(manga_id, chapter_number)
+            scrape_surrounding_chapters(manga_id, surrounding_chapters)
             return jsonify(scraped_page_list)
         else:
             return jsonify({"error": "Chapter not found"}), 404
 
-def scrape_chapter(manga_id, chapter_number):
-    firefox_options = FirefoxOptions()
-    firefox_options.add_argument("--private")
-    firefox_options.add_argument("--headless")
-    driver = webdriver.Firefox(options=firefox_options)
-    load_dotenv()
+def get_surrounding_chapters(manga_id, chapter_number):
+    # Query for chapters around the specified chapter number
+    chapter_numbers = db.session.query(Chapter.chapter_number).filter(
+        Chapter.manga_id == manga_id,
+        Chapter.chapter_number.between(chapter_number - 2, chapter_number + 2)
+    ).all()
 
-    try:
-        # Get the database session
-        db_session = db.session
-
-        # Query the chapter link using SQLAlchemy
-        chapter_link = db_session.query(Chapter.link).filter_by(manga_id=manga_id, chapter_number=chapter_number).scalar()
-
-        if not chapter_link:
-            print("No link for chapter number " + str(chapter_number) + " in manga " + str(manga_id) + " in database")
-            return None 
-
-        # Parse and insert pages using SQLAlchemy
-        Pages.parse_pages(manga_id, chapter_link, chapter_number, driver)
-
-        # Commit changes
-        db_session.commit()
-
-        # Query and return pages using SQLAlchemy
-        pages = db_session.query(Pages).filter_by(manga_id=manga_id, chapter_number=chapter_number).all()
-        return pages
-        
-    except Exception as e:
-        print("Error fetching chapter link from database:", e)
-
-    finally:
-        driver.quit()
-
+    # Convert to a flat list of chapter numbers, excluding the current chapter
+    surrounding_chapters = [num for (num,) in chapter_numbers if num != chapter_number]
+    return surrounding_chapters

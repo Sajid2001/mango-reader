@@ -21,8 +21,8 @@ class Manga(db.Model):
     authors = db.Column(db.String(200))
     genres = db.Column(db.String(200))
     description = db.Column(db.Text)
-    scan_status = db.Column(db.String(100)),
-    publish_status = db.Column(db.String(100)), 
+    scan_status = db.Column(db.String(100))
+    publish_status = db.Column(db.String(100)) 
     # status = db.Column(db.String(100))
     total_chapters = db.Column(db.Integer)
     # rss_link = db.Column(db.String(200))
