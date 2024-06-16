@@ -1,9 +1,11 @@
-# from ..middleware.celery_app import celery_app
-# from ..views.chapters_view import scrape_chapter
+from celery import shared_task
+from dotenv import load_dotenv
 from ..models.pages import Pages
 from ..scrape.scrape_chapter import scrape_chapter
-from run import celery_app
-@celery_app.task
+
+load_dotenv()
+
+@shared_task(ignore_result=True)
 def scrape_surrounding_chapters(manga_id, surrounding_chapters):
     for chapter_number in surrounding_chapters:
         chapter_pages = Pages.query.filter_by(manga_id=manga_id, chapter_number=chapter_number).all()

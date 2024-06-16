@@ -1,15 +1,9 @@
 from flask import Blueprint, jsonify
-from selenium import webdriver
-from selenium.webdriver.firefox.options import Options as FirefoxOptions
-import os
-from dotenv import load_dotenv
 from .. import db
 from ..models.chapters import Chapter
 from ..models.pages import Pages
 from ..tasks.surrounding_chapters import scrape_surrounding_chapters
-from ..scrape import scrape_chapter
-
-load_dotenv()
+from ..scrape.scrape_chapter import scrape_chapter
 
 chapters_blueprint = Blueprint('chapters', __name__)
 

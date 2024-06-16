@@ -39,27 +39,25 @@ CREATE TABLE manga (
     authors VARCHAR(200),
     genres VARCHAR(200),
     description TEXT,
-    status VARCHAR(100),
+    scan_status VARCHAR(100),
+    publish_status VARCHAR(100),
     total_chapters INTEGER,
     banner_image VARCHAR(500),
     cover_image VARCHAR(500)
 );
-
 CREATE TABLE chapter (
     id SERIAL PRIMARY KEY,
-    manga_id INTEGER NOT NULL,
+    manga_id INTEGER NOT NULL REFERENCES manga(id),
     link VARCHAR(500) NOT NULL,
-    chapter_number FLOAT NOT NULL,
-    FOREIGN KEY (manga_id) REFERENCES manga(id)
+    chapter_name VARCHAR(500) NOT NULL,
+    chapter_number FLOAT NOT NULL
 );
-
 CREATE TABLE pages (
     id SERIAL PRIMARY KEY,
-    manga_id INTEGER NOT NULL,
+    manga_id INTEGER NOT NULL REFERENCES manga(id),
     chapter_number INTEGER NOT NULL,
     scan_url VARCHAR(500) NOT NULL,
-    page_number INTEGER NOT NULL,
-    FOREIGN KEY (manga_id) REFERENCES manga(id)
+    page_number INTEGER NOT NULL
 );
 ```
 
@@ -68,4 +66,9 @@ CREATE TABLE pages (
 1. Navigate your terminal to the `scripts` folder inside the `backend`
 2. Run the angular_spider script inside the scripts folder using scrapy -> ex: `scrapy runspider angular_spider.py`
     * You should see a new .txt file named `manga_data.txt` inside the scripts folder once this script is finished
-3. Navigate back to the backend folder and run `python insert.py` to insert the data from the .txt file into your database
+3. Run `python insert.py` to insert the data from the .txt file into your database
+
+### Running The Server
+1. After doing all of the above, run the command `python run.py`
+2. To run the celery worker, run `celery -A run.celery worker --loglevel INFO`
+

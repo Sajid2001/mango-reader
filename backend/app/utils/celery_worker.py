@@ -1,4 +1,4 @@
-from celery import Celery, Task
+from celery import Celery
 from dotenv import load_dotenv
 import os
 
@@ -11,12 +11,11 @@ def make_celery(app):
         broker=os.getenv('CELERY_BROKER_URL')
     )
     celery.conf.update(app.config)
-    TaskBase = celery.Task
 
-    class ContextTask(TaskBase):
+    class ContextTask(celery.Task):
         def __call__(self, *args, **kwargs):
             with app.app_context():
-                return TaskBase.__call__(self, *args, **kwargs)
-
+                return self.run(*args, **kwargs)
+    
     celery.Task = ContextTask
     return celery

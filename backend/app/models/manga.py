@@ -1,17 +1,5 @@
-import psycopg2
-import os
-import re
-from flask_sqlalchemy import SQLAlchemy
-from dotenv import load_dotenv
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.firefox.options import Options as FirefoxOptions
-from bs4 import BeautifulSoup
+from .. import db
 
-db = SQLAlchemy()
-load_dotenv()
 
 class Manga(db.Model):
     __tablename__ = 'manga'
