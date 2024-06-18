@@ -10,9 +10,16 @@ const SettingsPage = () => {
 
     return (  
         <div className="h-screen w-full flex-col overflow-y-auto">
-            <div className="flex">
-                <h1 className="text-3xl p-4 font-bold">Settings</h1>
-                <button className="font-semibold text-lg px-4 m-5 text-white  bg-slate-900 rounded-lg active:bg-slate-700">Reset</button>
+            <div className=" flex flex-wrap *:pt-3 pb-4">
+                <h1 className="text-3xl pl-7 mr-2 font-bold ">Settings</h1>
+                <div className="flex m-1 *:mr-2">
+                    <button className="py-1  mb-3 font-semibold text-lg px-5 text-white bg-slate-900 rounded-lg active:bg-slate-700">Reset To Default</button>
+                    <button className="py-1  mb-3 font-semibold text-lg px-5 bg-slate-300 rounded-lg active:bg-slate-200">Revert</button>
+                    <button className="py-1  mb-3 font-semibold text-lg px-5 bg-slate-300 rounded-lg active:bg-slate-200">Save Changes</button>
+                </div>
+
+                
+                
             </div>
 
                 
