@@ -11,3 +11,4 @@ def scrape_surrounding_chapters(manga_id, surrounding_chapters):
         chapter_pages = Pages.query.filter_by(manga_id=manga_id, chapter_number=chapter_number).all()
         if not chapter_pages:
             scrape_chapter(manga_id, chapter_number)
+            print(f'Scraped chapter {chapter_number}')

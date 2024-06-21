@@ -28,9 +28,3 @@ def create_app():
     app.register_blueprint(chapters_view.chapters_blueprint, url_prefix='/api/chapters')
 
     return app, celery
-
-# r = redis.Redis(
-#   host='redis-19568.c265.us-east-1-2.ec2.redns.redis-cloud.com',
-#   port=19568,
-#   password='sjDWkdi1bduvgOpe1dBv3nhh7QnZefFo')
-# redis-cli -u redis://default:sjDWkdi1bduvgOpe1dBv3nhh7QnZefFo@redis-19568.c265.us-east-1-2.ec2.redns.redis-cloud.com:19568
