@@ -8,6 +8,7 @@ const SettingsPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
+
     return (  
         <div className="h-screen w-full flex-col overflow-y-auto">
             <div className=" flex flex-wrap *:pt-3 pb-4">
@@ -28,11 +29,8 @@ const SettingsPage = () => {
                 <button onClick={() => navigate("/settings/reader")}  disabled={location.pathname === "/settings/reader"}  className="transition ease-in-out disabled:border-b-4 disabled:border-black text-2xl p-4 border-1 border-slate-300">Reader</button>
             </div>
             <div className="">
-            <Outlet/>
+                <Outlet />
             </div>
-        
-            
-            
             
         </div>
     );
