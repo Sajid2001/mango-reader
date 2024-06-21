@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getLibrary, loadLibrary, updateLibraryEntry } from "../fileStorage/libraryStorage";
 import { LibraryEntry } from "../models/libraryEntry";
+import { getSettings, loadSettings } from "../fileStorage/settingsStorage";
 
 const ReaderPage = () => {
 
@@ -30,6 +31,7 @@ const ReaderPage = () => {
     const [singlePage, setSinglePage] = useState<boolean>(false);
     const [fitHeight, setFitHeight] = useState<boolean>(true);
     const [leftToRight, setLeftToRight] = useState<boolean>(false);
+    const [pageGap, setPageGap] = useState<number>(90)
 
     //References
     const scanRefs = useRef<(HTMLImageElement | null)[]>([]);
@@ -43,8 +45,21 @@ const ReaderPage = () => {
     //Use Effect for getting Manga Specifc Data
     useEffect(() => {
 
-        // Checks if manga is already in library
+        
         if(mangaId){
+
+            //Loads User Settings else default Settings are employed
+            loadSettings().then(() => {
+                getSettings().then((settings) => {
+                    if(settings){
+                        setSinglePage(settings.defaultSinglePage ? settings.defaultSinglePage : false);
+                        setFitHeight(settings.defaultFitHeight ? settings.defaultFitHeight : true);
+                        setLeftToRight(settings.defaultLeftToRight ? settings.defaultLeftToRight : false);
+                    }
+                })
+            })
+
+            // Checks if manga is already in library
             loadLibrary().then(() => {
                 getLibrary().then((library) => {
                     const previousReading = library.some((entry) => entry.manga.mangaId === Number(mangaId));
@@ -150,14 +165,31 @@ const ReaderPage = () => {
                 previousPage();
             }
             break;
-        case 'ArrowRight':
-            if (scans.length > 0 && currentPage < scans.length) {
-                nextPage();
-            }
-            break;
+            case 'ArrowRight':
+                if (scans.length > 0 && currentPage < scans.length) {
+                    nextPage();
+                }
+                break;
+            case '[':
+                if (Number(chapterId) > 1) {
+                    previousChapter();
+                }
+                break;
+            case ']':
+                if (Number(chapterId) < maxChapters) {
+                    nextChapter();
+                }
+                break;
+            case 's':
+                setSidebarToggled((sidebarToggled) => !sidebarToggled);
+                break;
+            case 'Escape':
+                navigate('/manga/' + mangaId);
+                break;
             default:
                 break;
         }
+        
     }
 
     //UseEffect for Adding/Updating Key Press Listener
@@ -213,7 +245,7 @@ const ReaderPage = () => {
         }, {
             root: null,
             rootMargin: '0px',
-            threshold: [0.5, 1.0],
+            threshold: [0.25, 0.5, 0.75],
             
         });
         
@@ -241,14 +273,14 @@ const ReaderPage = () => {
                         </div>
                         <div className="flex flex-col w-full font-semibold px-5 text-lg *:w-full *:flex *:px-2 *:py-1 *:items-center *:justify-between  *:bg-slate-100 *:rounded-lg *:my-2">
                             <div className="*:rounded-lg">
-                                <button onClick={() => previousChapter()} className={`${Number(chapterId) <= 1 ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronLeft size={IconSize} color={`${Number(chapterId) <= 1 ? "inherit" : "black"}`}/></button>
+                                <button onClick={() => previousChapter()} tabIndex={Number(chapterId) <= 1 ? -1 : 0} className={`${Number(chapterId) <= 1 ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronLeft size={IconSize} color={`${Number(chapterId) <= 1 ? "inherit" : "black"}`}/></button>
                                     <p className="text-center">{chapterName}</p>
-                                <button onClick={() => nextChapter()} className={`${Number(chapterId) >= maxChapters ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronRight size={IconSize} color={`${Number(chapterId) >= maxChapters ? "inherit" : "black"}`}/></button>
+                                <button onClick={() => nextChapter()} tabIndex={Number(chapterId) >= maxChapters ? -1 : 0} className={`${Number(chapterId) >= maxChapters ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronRight size={IconSize} color={`${Number(chapterId) >= maxChapters ? "inherit" : "black"}`}/></button>
                             </div>
                             <div className="*:rounded-lg">
-                                <button onClick={() => previousPage()} className={`${currentPage == 1 ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronLeft size={IconSize} color={`${currentPage <= 1 ? "inherit" : "black"}`}/></button>
+                                <button onClick={() => previousPage()} tabIndex={currentPage <= 1 ? -1 : 0} className={`${currentPage <= 1 ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`} ><IconChevronLeft size={IconSize} color={`${currentPage <= 1 ? "inherit" : "black"}`}/></button>
                                 {currentPage}/{scans.length}
-                                <button onClick={() => nextPage()} className={`${currentPage >= scans.length ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronRight size={IconSize} color={`${currentPage >= scans.length ? "inherit" : "black"}`}/></button>
+                                <button onClick={() => nextPage()} tabIndex={currentPage >= scans.length ? -1 : 0} className={`${currentPage >= scans.length ? "pointer-events-none" : "hover:bg-slate-200 active:bg-slate-400"}`}><IconChevronRight size={IconSize} color={`${currentPage >= scans.length ? "inherit" : "black"}`}/></button>
                                 
                             </div>
                         </div>
@@ -281,7 +313,7 @@ const ReaderPage = () => {
                                         src={scan} 
                                         ref={(el) => scanRefs.current[index] = el}
                                         id={`${index+1}`}  
-                                        className={`${fitHeight ? "h-screen" : "w-[70%]"} flex justify-self-center`}
+                                        className={`${fitHeight ? "h-screen" : "w-[70%]"} mb-[${pageGap.toString()}px] flex justify-self-center`}
                                     />
                                 )
                             }
