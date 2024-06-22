@@ -36,7 +36,7 @@ COPY . .
 EXPOSE 8000
 
 # Set executable permissions on start.sh script if needed
-# RUN chmod +x ./scripts/start.sh
+RUN chmod +x ./scripts/start.sh
 
 # Use the start script as the entrypoint
 CMD ["./scripts/start.sh"]

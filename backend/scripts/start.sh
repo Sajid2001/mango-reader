@@ -9,4 +9,4 @@ python scripts/create_tables.py
 python scripts/insert.py
 
 # Start the web server
-gunicorn -w 4 -b 0.0.0.0:8000 run:app
+gunicorn -w 4 -b 0.0.0.0:8000 -k sync run:app
