@@ -3,15 +3,19 @@ import os
 import re
 from dotenv import load_dotenv
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.chrome.options import Options as ChromeOptions
 from bs4 import BeautifulSoup
 
 load_dotenv()
 
-firefox_options = FirefoxOptions()
-firefox_options.add_argument("--private")
-firefox_options.add_argument("--headless")
-driver = webdriver.Firefox(options=firefox_options)
+chrome_options = ChromeOptions()
+chrome_options.add_argument("--incognito")
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--remote-debugging-port=9222")
+driver = webdriver.Chrome(options=chrome_options)
 
 def process_manga_data(cursor, manga_data):
     try:
@@ -148,7 +152,7 @@ cur = conn.cursor()
 print('connected to db')
 
 try:
-    with open('manga_data.txt', 'r', encoding='utf-8') as file:  # Specify UTF-8 encoding
+    with open('scripts/manga_data.txt', 'r', encoding='utf-8') as file:  # Specify UTF-8 encoding
         manga_data = {}
         for line in file:
             line = line.strip()  # Remove leading/trailing whitespaces

@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.chrome.options import Options as ChromeOptions
 import psycopg2
 import os
 from dotenv import load_dotenv
@@ -39,10 +39,14 @@ def get_pages_for_chapter(manga_id, chapter_number):
             return jsonify({"error": "Chapter not found"}), 404
 
 def scrape_chapter(manga_id, chapter_number):
-    firefox_options = FirefoxOptions()
-    firefox_options.add_argument("--private")
-    firefox_options.add_argument("--headless")
-    driver = webdriver.Firefox(options=firefox_options)
+    chrome_options = ChromeOptions()
+    chrome_options.add_argument("--incognito")
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--remote-debugging-port=9222")
+    driver = webdriver.Chrome(options=chrome_options)
     load_dotenv()
 
     try:
