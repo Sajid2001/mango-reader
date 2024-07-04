@@ -12,12 +12,19 @@ chapters_blueprint = Blueprint('chapters', __name__)
 @chapters_blueprint.route('/<int:manga_id>', methods=['GET'])
 def get_all_chapters_by_manga_id(manga_id):
     chapters = Chapter.query.filter_by(manga_id=manga_id).all()
-    chapters_list = [c.to_dict() for c in chapters]
+    chapters_sorted = sorted(chapters, key=lambda p: p.chapter_number)
+    chapters_list = [c.to_dict() for c in chapters_sorted]
     return jsonify(chapters_list)
 
-# Route to get pages for a chapter of a manga
 @chapters_blueprint.route('/<int:manga_id>/<int:chapter_number>', methods=['GET'])
+def get_chapter_by_manga_id_and_chapter_number(manga_id, chapter_number):
+    chapter = Chapter.query.filter_by(manga_id=manga_id, chapter_number=chapter_number).first_or_404()
+    return jsonify(chapter.to_dict())
+
+# Route to get pages for a chapter of a manga
+@chapters_blueprint.route('/<int:manga_id>/<int:chapter_number>/pages', methods=['GET'])
 def get_pages_for_chapter(manga_id, chapter_number):
+    chapter = Chapter.query.filter_by(manga_id=manga_id, chapter_number=chapter_number).first()
     chapter_pages = Pages.query.filter_by(manga_id=manga_id, chapter_number=chapter_number).all()
     chapters_page_list = [p.to_dict() for p in chapter_pages]
     
@@ -27,6 +34,8 @@ def get_pages_for_chapter(manga_id, chapter_number):
         scrape_surrounding_chapters.delay(manga_id, surrounding_chapters)
         return jsonify(chapters_page_list)
     else:
+        if chapter.is_processing:
+            return jsonify({"error": "Chapter is already being processed"}), 400
         # Chapter not found in the database, scrape it first
         scraped_pages = scrape_chapter(manga_id, chapter_number)
         scraped_page_list = [p.to_dict() for p in scraped_pages]

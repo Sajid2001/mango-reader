@@ -1,8 +1,14 @@
 from .. import db
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from bs4 import BeautifulSoup
+from sqlalchemy import Enum
+import enum
+
+
+# class ChapterStates(enum.Enum):
+#     unprocessed = 'unprocessed'
+#     processing = 'processing'
+#     processed = 'processed'
+#     error = 'error'
+
 
 class Chapter(db.Model):
     __tablename__ = 'chapter'
@@ -11,6 +17,8 @@ class Chapter(db.Model):
     link = db.Column(db.String(500), nullable=False)
     chapter_name = db.Column(db.String(500), nullable=False)
     chapter_number = db.Column(db.Float, nullable=False)
+    is_processing = db.Column(db.Boolean, default=False)
+    # chapter_state = db.Column(Enum(ChapterStates, name="chapter_states"), nullable=False, default=ChapterStates.unprocessed)
 
     def __repr__(self):
         return f"Chapter('{self.link}')"
@@ -21,5 +29,7 @@ class Chapter(db.Model):
         'manga_id': self.manga_id,
         'link': self.link,
         'chapter_name': self.chapter_name,
-        'chapter_number': self.chapter_number
+        'chapter_number': self.chapter_number,
+        #'chapter_state': self.chapter_state.value
+        'is_processing':self.is_processing,
     }

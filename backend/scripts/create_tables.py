@@ -7,7 +7,6 @@ load_dotenv()
 # Connection parameters
 DATABASE_URI = os.getenv('POSTGRES_CONNECTION_URI')
 
-# SQL statements to create tables
 create_table_queries = [
     """
     CREATE TABLE IF NOT EXISTS manga (
@@ -25,13 +24,14 @@ create_table_queries = [
     );
     """,
     """
-    CREATE TABLE IF NOT EXISTS chapter (
-        id SERIAL PRIMARY KEY,
-        manga_id INTEGER NOT NULL REFERENCES manga(id),
-        link VARCHAR(500) NOT NULL,
-        chapter_name VARCHAR(500) NOT NULL,
-        chapter_number FLOAT NOT NULL
-    );
+	CREATE TABLE IF NOT EXISTS chapter (
+		id SERIAL PRIMARY KEY,
+		manga_id INTEGER NOT NULL REFERENCES manga(id),
+		link VARCHAR(500) NOT NULL,
+		chapter_name VARCHAR(500) NOT NULL,
+		chapter_number FLOAT NOT NULL,
+		is_processing BOOLEAN DEFAULT FALSE
+	);
     """,
     """
     CREATE TABLE IF NOT EXISTS pages (

@@ -1,6 +1,12 @@
 #!/bin/sh
 
-# scrapy runspider scripts/angular_spider.py
+# Check if the manga_data.txt file does not exist
+if [ ! -f "scripts/manga_data.txt" ]; then
+    # Run the scrapy command if the file does not exist
+    scrapy runspider scripts/angular_spider.py
+else
+    echo "The file scripts/manga_data.txt exists. Skipping scrapy command."
+fi
 
 # Insert database tables into postgres
 python scripts/create_tables.py

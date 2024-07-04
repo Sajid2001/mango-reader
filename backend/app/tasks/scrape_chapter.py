@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
+from celery import shared_task
 import time
 from .. import db
 from ..models.chapters import Chapter
@@ -12,11 +13,12 @@ chrome_options.add_argument("--disable-gpu")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 
+@shared_task(ignore_result=True)
 def scrape_chapter(manga_id, chapter_number):
-
     chapter = Chapter.query.filter_by(manga_id=manga_id, chapter_number=chapter_number).first()
     chapter.is_processing = True
     db.session.commit() 
+    time.sleep(4)
     driver = webdriver.Chrome(options=chrome_options)
 
     try:

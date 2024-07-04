@@ -3,6 +3,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from sqlalchemy import UniqueConstraint
+from bs4 import BeautifulSoup
+from .chapters import Chapter
+import requests 
+
 
 class Pages(db.Model):
     __tablename__ = 'pages'
@@ -15,16 +19,47 @@ class Pages(db.Model):
     def __repr__(self):
         return f"Pages('{self.scan_url}')"
     
+    # @staticmethod
+    # def parse_pages(manga_id, chapter_link, chapter_number, driver):
+    #     print("Parsing")
+    #     try:
+    #         driver.get(chapter_link)
+    #         img_tags = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'img.img-fluid')))
+            
+    #         if img_tags:
+    #             for img_tag in img_tags:
+    #                 img_src = img_tag.get_attribute('src')
+    #                 scan_url = img_src
+    #                 page_number = int(scan_url.split('-')[-1].split('.')[0].lstrip('0'))  # Extract the page number
+
+    #                 # Create a Pages object and add it to the session
+    #                 page = Pages(manga_id=manga_id, chapter_number=chapter_number, scan_url=scan_url, page_number=page_number)
+    #                 db.session.add(page)
+
+    #             # Commit changes
+    #             db.session.commit()
+
+    #     except Exception as e:
+    #         print("An error occurred:", e)
+
     @staticmethod
     def parse_pages(manga_id, chapter_link, chapter_number, driver):
         print("Parsing")
+        chapter = Chapter.query.filter_by(manga_id=manga_id, chapter_number=chapter_number).first()
         try:
+            # Use Selenium to get the page
             driver.get(chapter_link)
-            img_tags = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'img.img-fluid')))
+            
+            # Wait for the page to load and the image tags to be present
+            WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'img.img-fluid')))
+            
+            # Get the page source and pass it to BeautifulSoup
+            soup = BeautifulSoup(driver.page_source, 'html.parser')
+            img_tags = soup.select('img.img-fluid')
             
             if img_tags:
                 for img_tag in img_tags:
-                    img_src = img_tag.get_attribute('src')
+                    img_src = img_tag.get('src')
                     scan_url = img_src
                     page_number = int(scan_url.split('-')[-1].split('.')[0].lstrip('0'))  # Extract the page number
 
@@ -37,6 +72,8 @@ class Pages(db.Model):
 
         except Exception as e:
             print("An error occurred:", e)
+            chapter.is_processing = False
+            db.session.commit()
 
         
     def to_dict(self):

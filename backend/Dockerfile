@@ -2,7 +2,7 @@
 FROM python:3.10.3-slim-buster
 
 # Set the working directory inside the container
-WORKDIR /api 
+WORKDIR /api
 
 # Install gnupg and other system dependencies
 RUN apt-get update \
@@ -32,11 +32,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application code
 COPY . .
 
+# Ensure the start.sh script has execute permissions
+RUN chmod +x ./scripts/start.sh
+
 # Expose port 8000 to allow external access
 EXPOSE 8000
-
-# Set executable permissions on start.sh script if needed
-RUN chmod +x ./scripts/start.sh
 
 # Use the start script as the entrypoint
 CMD ["./scripts/start.sh"]

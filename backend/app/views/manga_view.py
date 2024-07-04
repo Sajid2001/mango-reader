@@ -7,7 +7,8 @@ manga_blueprint = Blueprint('mangas', __name__)
 @manga_blueprint.route('/', methods=['GET'])
 def get_all_manga():
     all_manga = Manga.query.all()
-    manga_list = [m.to_dict() for m in all_manga]
+    manga_sorted = sorted(all_manga, key=lambda p: p.id)
+    manga_list = [m.to_dict() for m in manga_sorted]
     return jsonify(manga_list)
 
 

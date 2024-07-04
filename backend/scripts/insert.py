@@ -151,8 +151,16 @@ cur = conn.cursor()
 
 print('connected to db')
 
+# Determine the absolute path of the directory containing the script
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Construct the absolute path to the manga_data.txt file
+file_path = os.path.join(script_dir, 'manga_data.txt')
+
 try:
-    with open('scripts/manga_data.txt', 'r', encoding='utf-8') as file:  # Specify UTF-8 encoding
+    # with open('manga_data.txt', 'r', encoding='utf-8') as file:
+    # with open('scripts/manga_data.txt', 'r', encoding='utf-8') as file: 
+    with open(file_path, 'r', encoding='utf-8') as file:
         manga_data = {}
         for line in file:
             line = line.strip()  # Remove leading/trailing whitespaces
