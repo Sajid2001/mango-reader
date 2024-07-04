@@ -36,6 +36,9 @@ def get_pages_for_chapter(manga_id, chapter_number):
     else:
         if chapter.is_processing:
             return jsonify({"error": "Chapter is already being processed"}), 400
+        
+        chapter.is_processing = True 
+        db.session.commit()
         # Chapter not found in the database, scrape it first
         scraped_pages = scrape_chapter(manga_id, chapter_number)
         scraped_page_list = [p.to_dict() for p in scraped_pages]
@@ -49,12 +52,30 @@ def get_pages_for_chapter(manga_id, chapter_number):
             return jsonify({"error": "Chapter not found"}), 404
 
 def get_surrounding_chapters(manga_id, chapter_number):
-    # Query for chapters around the specified chapter number
-    chapter_numbers = db.session.query(Chapter.chapter_number).filter(
+    # Query for chapters around the specified chapter number that have no pages
+    surrounding_chapter_numbers = db.session.query(Chapter.chapter_number).filter(
         Chapter.manga_id == manga_id,
-        Chapter.chapter_number.between(chapter_number - 1, chapter_number + 1)
+        Chapter.chapter_number.between(chapter_number - 1, chapter_number + 1),
+        Chapter.chapter_number != chapter_number,
+        ~db.session.query(Pages).filter(
+            Pages.manga_id == manga_id,
+            Pages.chapter_number == Chapter.chapter_number
+        ).exists()
     ).all()
 
-    # Convert to a flat list of chapter numbers, excluding the current chapter
-    surrounding_chapters = [num for (num,) in chapter_numbers if num != chapter_number]
-    return surrounding_chapters
+    # Extract chapter numbers
+    surrounding_chapter_numbers_list = [num for (num,) in surrounding_chapter_numbers]
+
+    # Query for Chapter objects
+    surrounding_chapters = Chapter.query.filter(
+        Chapter.manga_id == manga_id,
+        Chapter.chapter_number.in_(surrounding_chapter_numbers_list)
+    ).all()
+
+    # Set is_processing to True for the surrounding chapters
+    for chapter in surrounding_chapters:
+        chapter.is_processing = True 
+    
+    db.session.commit()
+
+    return surrounding_chapter_numbers_list

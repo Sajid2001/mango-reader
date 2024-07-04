@@ -14,17 +14,10 @@ def scrape_surrounding_chapters(manga_id, surrounding_chapters):
     task_group = []
 
     for chapter_number in surrounding_chapters:
-        chapter_pages = Pages.query.filter_by(manga_id=manga_id, chapter_number=chapter_number).all()
-        if not chapter_pages:
-            #try:
-            print(f'Scraping chapter {chapter_number}')
-            task_group.append(scrape_chapter.s(manga_id, chapter_number))
-            # scrape_chapter.apply_async(args=[manga_id, chapter_number]).get()
-            print(f'Scraped chapter')
-            #except:
-                #print('Something went wrong')
+        print(f'Scraping chapter {chapter_number}')
+        task_group.append(scrape_chapter.s(manga_id, chapter_number))
+        print(f'Scraped chapter')
     if task_group:
-        # Run all tasks concurrently using Celery's group primitive
         group(task_group).apply_async()
 
 

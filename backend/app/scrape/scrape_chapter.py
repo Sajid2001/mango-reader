@@ -15,8 +15,6 @@ chrome_options.add_argument("--disable-dev-shm-usage")
 def scrape_chapter(manga_id, chapter_number):
 
     chapter = Chapter.query.filter_by(manga_id=manga_id, chapter_number=chapter_number).first()
-    chapter.is_processing = True
-    db.session.commit() 
     driver = webdriver.Chrome(options=chrome_options)
 
     try:
@@ -29,7 +27,6 @@ def scrape_chapter(manga_id, chapter_number):
             return []
         # Parse and insert pages using SQLAlchemy
         Pages.parse_pages(manga_id, chapter_link, chapter_number, driver)
-        # Pages.parse_pages(manga_id, chapter_link, chapter_number)
 
         chapter.is_processing = False
         # Commit changes
