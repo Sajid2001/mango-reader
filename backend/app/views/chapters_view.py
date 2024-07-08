@@ -3,7 +3,7 @@ from .. import db
 from ..models.chapters import Chapter
 from ..models.pages import Pages
 from ..tasks.surrounding_chapters import scrape_surrounding_chapters
-from ..scrape.scrape_chapter import scrape_chapter
+from ..tasks.scrape_chapter import scrape_chapter
 
 chapters_blueprint = Blueprint('chapters', __name__)
 
@@ -27,10 +27,9 @@ def get_pages_for_chapter(manga_id, chapter_number):
     chapter = Chapter.query.filter_by(manga_id=manga_id, chapter_number=chapter_number).first()
     chapter_pages = Pages.query.filter_by(manga_id=manga_id, chapter_number=chapter_number).all()
     chapters_page_list = [p.to_dict() for p in chapter_pages]
+    surrounding_chapters = get_surrounding_chapters(manga_id, chapter_number)
     
     if chapters_page_list and len(chapters_page_list) > 0:
-        # If the chapter is found, also check and scrape surrounding chapters
-        surrounding_chapters = get_surrounding_chapters(manga_id, chapter_number)
         scrape_surrounding_chapters.delay(manga_id, surrounding_chapters)
         return jsonify(chapters_page_list)
     else:
@@ -40,12 +39,10 @@ def get_pages_for_chapter(manga_id, chapter_number):
         chapter.is_processing = True 
         db.session.commit()
         # Chapter not found in the database, scrape it first
-        scraped_pages = scrape_chapter(manga_id, chapter_number)
+        scraped_pages = scrape_chapter(manga_id, chapter_number, False)
         scraped_page_list = [p.to_dict() for p in scraped_pages]
         
         if scraped_page_list and len(scraped_page_list) > 0:
-            # After scraping the main chapter, check and scrape surrounding chapters
-            surrounding_chapters = get_surrounding_chapters(manga_id, chapter_number)
             scrape_surrounding_chapters.delay(manga_id, surrounding_chapters)
             return jsonify(scraped_page_list)
         else:
@@ -57,6 +54,7 @@ def get_surrounding_chapters(manga_id, chapter_number):
         Chapter.manga_id == manga_id,
         Chapter.chapter_number.between(chapter_number - 1, chapter_number + 1),
         Chapter.chapter_number != chapter_number,
+        Chapter.is_processing == False,
         ~db.session.query(Pages).filter(
             Pages.manga_id == manga_id,
             Pages.chapter_number == Chapter.chapter_number
@@ -74,7 +72,8 @@ def get_surrounding_chapters(manga_id, chapter_number):
 
     # Set is_processing to True for the surrounding chapters
     for chapter in surrounding_chapters:
-        chapter.is_processing = True 
+        if not chapter.is_processing:
+            chapter.is_processing = True 
     
     db.session.commit()
 

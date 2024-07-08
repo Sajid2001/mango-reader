@@ -14,9 +14,10 @@ chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 
 @shared_task(ignore_result=True)
-def scrape_chapter(manga_id, chapter_number):
+def scrape_chapter(manga_id, chapter_number, delay):
     chapter = Chapter.query.filter_by(manga_id=manga_id, chapter_number=chapter_number).first()
-    time.sleep(4)
+    if delay:
+        time.sleep(4)
     driver = webdriver.Chrome(options=chrome_options)
 
     try:
