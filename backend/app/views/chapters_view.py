@@ -39,7 +39,7 @@ def get_pages_for_chapter(manga_id, chapter_number):
         chapter.is_processing = True 
         db.session.commit()
         # Chapter not found in the database, scrape it first
-        scraped_pages = scrape_chapter(manga_id, chapter_number, False)
+        scraped_pages = scrape_chapter(manga_id, chapter_number)
         scraped_page_list = [p.to_dict() for p in scraped_pages]
         
         if scraped_page_list and len(scraped_page_list) > 0:

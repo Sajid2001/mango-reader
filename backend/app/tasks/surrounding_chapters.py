@@ -15,7 +15,7 @@ def scrape_surrounding_chapters(manga_id, surrounding_chapters):
 
     for chapter_number in surrounding_chapters:
         print(f'Scraping chapter {chapter_number}')
-        task_group.append(scrape_chapter.s(manga_id, chapter_number, True))
+        task_group.append(scrape_chapter.s(manga_id, chapter_number, 4))
         print(f'Scraped chapter')
     if task_group:
         group(task_group).apply_async()
