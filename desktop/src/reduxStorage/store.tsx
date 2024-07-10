@@ -1,10 +1,10 @@
 // store.js
 import { configureStore } from '@reduxjs/toolkit';
-import managReducer from "./mangaSlice";
+import settingsReducer from "./settingsSlice";
 
 export const store = configureStore({
     reducer: {
-        manga: managReducer
+        manga: settingsReducer
     },
 });
 
