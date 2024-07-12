@@ -7,6 +7,7 @@ WORKDIR /api
 # Install gnupg and other system dependencies
 RUN apt-get update \
     && apt-get install -y gnupg \
+        && apt-get install -y postgresql-client\
                            libpq-dev gcc libc-dev \
                            unzip wget curl \
                            libxpm4 libxrender1 libgtk2.0-0 libnss3 libgconf-2-4 xvfb \
@@ -19,7 +20,7 @@ RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add
     && apt-get update \
     && apt-get install -y google-chrome-stable
 
-# Install Chromedriver (version 97, adjust as needed)
+# Install Chromedriver
 RUN wget -q "https://storage.googleapis.com/chrome-for-testing-public/126.0.6478.63/linux64/chromedriver-linux64.zip" \
     && unzip chromedriver-linux64.zip \
     && mv chromedriver-linux64/chromedriver /usr/local/bin/ \

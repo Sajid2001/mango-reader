@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 from ..models.pages import Pages
 from ..models.chapters import Chapter
 from .scrape_chapter import scrape_chapter
-import time
 
 load_dotenv()
 
@@ -14,9 +13,8 @@ def scrape_surrounding_chapters(manga_id, surrounding_chapters):
     task_group = []
 
     for chapter_number in surrounding_chapters:
-        print(f'Scraping chapter {chapter_number}')
+        print(f'Adding chapter {chapter_number} to group')
         task_group.append(scrape_chapter.s(manga_id, chapter_number, 4))
-        print(f'Scraped chapter')
     if task_group:
         group(task_group).apply_async()
 
