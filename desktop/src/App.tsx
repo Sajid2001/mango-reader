@@ -1,10 +1,43 @@
-
+import Sidebar from './components/Sidebar'
+import {Route, HashRouter, Routes } from 'react-router-dom'
+import LibraryPage from './pages/LibraryPage'
+import SearchPage from './pages/SearchPage'
+import HistoryPage from './pages/HistoryPage'
+import SettingsPage from './pages/SettingsPage'
+import AskAIPage from './pages/AskAIPage'
+import MangaPage from './pages/MangaPage'
+import ReaderPage from './pages/ReaderPage'
+import GeneralSettings from './pages/GeneralSettings'
+import ReaderSettings from './pages/ReaderSettings'
 function App() {
 
   return (
-    <h1 className="p-2 text-3xl font-bold underline">
-      Hello World!!!!
-    </h1>
+    <div className='flex'>
+      <HashRouter >
+
+        <div className=' min-h-screen bg-gray-200'>
+          <Sidebar/>
+        </div>
+        
+        <div className=' w-full'>
+          <Routes>
+            <Route path="/reader/:mangaId/:chapterId" element={<ReaderPage/>}/>
+            <Route path="/manga/:id" element={<MangaPage/>}/>
+            <Route path="/search" element={<SearchPage/>}/>
+            <Route path="/history" element={<HistoryPage/>}/>
+            <Route path="/settings" element={<SettingsPage/>}>
+              <Route path='general' element={<GeneralSettings/>}/> 
+              <Route path='reader' element={<ReaderSettings/>}/> 
+            </Route>
+            <Route path="/askai" element={<AskAIPage/>}/>
+            <Route path="/" element={<LibraryPage/>}/>
+
+          </Routes>
+        </div>
+
+      </HashRouter>
+
+    </div>
   )
 }
 
