@@ -115,7 +115,7 @@ const ReaderPage = () => {
                     
                 })
                     .catch(error => console.error('Error fetching chapter data:', error));
-            fetch("http://127.0.0.1:8000/api/chapters/"+Number(mangaId)+"/"+Number(chapterId))
+            fetch("http://127.0.0.1:8000/api/chapters/"+Number(mangaId)+"/"+Number(chapterId)+"/pages")
                 .then(response => {
                     if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -156,6 +156,12 @@ const ReaderPage = () => {
             updateCurrentLibraryEntry();
         }
     }, [reading, chapterName]);
+
+    useMemo(() => {
+        setCurrentPage(1);
+        if(singlePage) window.scrollTo({ top: 0, behavior: 'instant' });
+        else scanRefs.current[1]?.scrollIntoView({ behavior: 'instant' }); 
+    }, [scans])
 
     //Key Press Listener
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -245,7 +251,7 @@ const ReaderPage = () => {
         }, {
             root: null,
             rootMargin: '0px',
-            threshold: [0.25, 0.5, 0.75],
+            threshold: [0.2],
             
         });
         
