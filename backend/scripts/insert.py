@@ -100,7 +100,7 @@ def parse_chapter_links(cursor, manga_id, rss_link, series_title, driver):
             # Parse and collect new chapters from the RSS feed
             all_chapters = []
             for item in chapter_links:
-                title = item.find('title').text.strip()
+                title = item.find('title').text.strip().replace('’', '\'')
                 # Remove the series title from the chapter title
                 title = re.sub(re.escape(series_title), '', title, flags=re.IGNORECASE).strip()
 
