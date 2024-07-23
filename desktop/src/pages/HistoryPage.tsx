@@ -38,14 +38,14 @@ const HistoryPage = () => {
     }
 
     return (  
-        <div className="h-screen bg-gray-100 px-5 w-full align-baseline overflow-y-auto">
+        <div className="h-screen bg-background px-5 w-full align-baseline overflow-y-auto">
             <div className="w-full flex flex-col">
                 <div className=" flex flex-wrap *:pt-3 pb-4">
                     <h1 className="text-3xl pl-3 mr-2 font-bold ">History</h1>
                     <div className="flex m-1 *:mr-2">
-                        <button onClick={clearHistory} className="py-1  mb-3 font-semibold text-lg px-5 text-white bg-slate-900 rounded-lg active:bg-slate-700">Clear History</button>
-                        <button className="py-1  mb-3 font-semibold text-lg px-5 bg-slate-300 rounded-lg active:bg-slate-200">Layout</button>
-                        <button className="py-1 mb-3 font-semibold px-3 bg-slate-300 rounded-lg  active:bg-slate-200"><IconMoon size={24}/></button>
+                        <button onClick={clearHistory} className="py-1  mb-3 font-semibold text-lg px-5 text-white bg-primary rounded-lg active:bg-slate-700">Clear History</button>
+                        <button className="py-1  mb-3 font-semibold text-lg px-5 bg-secondary rounded-lg active:bg-slate-200">Layout</button>
+                        <button className="py-1 mb-3 font-semibold px-3 bg-secondary rounded-lg  active:bg-slate-200"><IconMoon size={24}/></button>
                     </div>
 
                     
@@ -63,7 +63,7 @@ const HistoryPage = () => {
                                     prevDate = entry.lastViewed;
                                     header = (
                                         <div>
-                                            <p className="text-2xl p-2 my-6 border-b-4 border-slate-300 font-semibold">{months[new Date(entry.lastViewed!).getMonth()]} {new Date(entry.lastViewed!).getDate()} {new Date(entry.lastViewed!).getFullYear()}</p>
+                                            <p className="text-2xl p-2 my-6 border-b-4 border-secondary font-semibold">{months[new Date(entry.lastViewed!).getMonth()]} {new Date(entry.lastViewed!).getDate()} {new Date(entry.lastViewed!).getFullYear()}</p>
                                         </div>
                                         
                                     );
@@ -73,14 +73,14 @@ const HistoryPage = () => {
                                         <div className="flex items-center">
                                             <img src={entry.manga.coverImage} className=" aspect-[2/3] rounded-2xl object-fit w-40" alt="" />
                                             <div className="flex flex-col">
-                                                <p className="text-2xl px-4 border-slate-300 font-bold">{entry.manga.title}</p>
-                                                <p className="text-2xl px-4 border-slate-300">{entry.lastReadChapterName}</p>
+                                                <p className="text-2xl px-4 border-secondary font-bold">{entry.manga.title}</p>
+                                                <p className="text-2xl px-4 border-secondary">{entry.lastReadChapterName}</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center mx-1 md:mx-8 ">
-                                            <button onClick={() => navigate(`/reader/${entry.manga.mangaId}/${entry.progress}`)} className="text-center items-center  text-2xl flex font-semibold m-8 py-1 px-2  rounded-lg hover:bg-slate-300 active:bg-slate-400 "><IconPlayerPlayFilled className="" size={buttonIconSize}/></button>
+                                            <button onClick={() => navigate(`/reader/${entry.manga.mangaId}/${entry.progress}`)} className="text-center items-center  text-2xl flex font-semibold m-8 py-1 px-2  rounded-lg hover:bg-secondary active:bg-slate-400 "><IconPlayerPlayFilled className="" size={buttonIconSize}/></button>
 
-                                            <button onClick={() => removeFromHistory(entry)} className="font-semibold  py-1 px-2  hover:bg-slate-300 rounded-lg  active:bg-slate-400 "><IconTrash size={buttonIconSize}/></button>
+                                            <button onClick={() => removeFromHistory(entry)} className="font-semibold  py-1 px-2  hover:bg-secondary rounded-lg  active:bg-slate-400 "><IconTrash size={buttonIconSize}/></button>
 
                                         </div>
                                     </div>
@@ -103,7 +103,7 @@ const HistoryPage = () => {
                             <p className="text-xl justify-self-center">This page is for keeping track of your reading progress for manga in your library. You dont have any reading history right now.</p>
                             
                             <div className="flex m-1 mt-4 justify-center">
-                                <Link to="/" ><button className="flex font-semibold text-lg px-5 bg-slate-300 rounded-lg hover:bg-slate-200 p-1">Go Read Some Manga <IconBook className="ml-1 my-1" size={24}/></button></Link>
+                                <Link to="/" ><button className="flex font-semibold text-lg px-5 bg-secondary rounded-lg hover:bg-slate-200 p-1">Go Read Some Manga <IconBook className="ml-1 my-1" size={24}/></button></Link>
                             </div>
                         </div>
                     </div>

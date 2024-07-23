@@ -9,17 +9,19 @@ import MangaPage from './pages/MangaPage'
 import ReaderPage from './pages/ReaderPage'
 import GeneralSettings from './pages/GeneralSettings'
 import ReaderSettings from './pages/ReaderSettings'
+import { useSelector } from 'react-redux'
 function App() {
+  const theme = useSelector((state: any) => state.userSettings.theme)
 
   return (
-    <div className='flex'>
+    <div className={`${theme} flex text-text`}>
       <HashRouter >
 
-        <div className=' min-h-screen bg-gray-200'>
+        <div className=' min-h-screen bg-secondary text-text'>
           <Sidebar/>
         </div>
         
-        <div className=' w-full'>
+        <div className=' w-full bg-background'>
           <Routes>
             <Route path="/reader/:mangaId/:chapterId" element={<ReaderPage/>}/>
             <Route path="/manga/:id" element={<MangaPage/>}/>

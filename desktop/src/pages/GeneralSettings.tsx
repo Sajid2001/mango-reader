@@ -1,8 +1,13 @@
 import React, { useEffect, useMemo } from "react";
 import { useRef, useState } from "react";
 import { importLibraryFromFile, loadLibrary } from "../fileStorage/libraryStorage";
+import { useDispatch, useSelector } from "react-redux";
+import { setTheme } from "../reduxStorage/settingsSlice";
 
 const GeneralSettings = () => {
+
+    const dispatch = useDispatch();
+    const theme = useSelector((state: any) => state.userSettings.theme)
 
     useEffect(() => {
         loadLibrary()
@@ -29,6 +34,10 @@ const GeneralSettings = () => {
         }
     }, [file])
 
+    const changeTheme = (newTheme: string) => {
+        dispatch(setTheme(newTheme));
+    }
+
     return ( 
         <div className="*:py-3 *:px-4 ml-4">
             <div className="">
@@ -53,15 +62,15 @@ const GeneralSettings = () => {
 
             <div className="">
                 <h3 className="text-xl font-bold pb-2">Theme</h3>
-                <select className="border-2 border-slate-200 p-1 bg-background  rounded-lg font-semibold">
-                    <option className="bg-background" value="default">Default</option>
+                <select onChange={(e) => changeTheme(e.target.value)} className="border-2 border-text p-1 bg-background  rounded-lg font-semibold">
+                    <option className="default bg-background text-text" value="default">Default</option>
                     <option className="mango bg-background text-text" value="mango">Mango</option>
                     <option className="peach bg-background text-text" value="peach">Peach</option>
                     <option className="honeydew bg-background text-text" value="honeydew">Honeydew</option>
                     <option className="starfruit bg-background text-text" value="starfruit">Starfruit</option>
                     <option className="grape bg-background text-text" value="grape">Grape</option>
                     <option className="coconut bg-background text-text" value="coconut">Coconut</option>
-                    <option className="cherry bg-background text-text" value="grapefruit">Cherry</option>
+                    <option className="cherry bg-background text-text" value="cherry">Cherry</option>
                     <option className="avocado bg-background text-text" value="avocado">Avocado</option>
                     <option className="licorice bg-background text-text" value="licorice">Licorice</option>
                     <option className="ancientFruit bg-background text-text" value="ancientFruit">Ancient Fruit</option>

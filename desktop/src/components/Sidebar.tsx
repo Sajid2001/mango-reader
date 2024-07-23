@@ -7,40 +7,40 @@ const Sidebar = () => {
     const location = useLocation();
 
     const strikeWidth = 1.7;
-    const color = "black";
     const size = 42;
 
     
 
     return (  
-        <div className=' grid grid-cols-1 mt-2'>
+        <div className='grid grid-cols-1 mt-2'>
             
             <SidebarButton 
-                icon={<IconBooks strokeWidth={strikeWidth} color={color} size={size} />} 
+                icon={<IconBooks className="text-text" strokeWidth={strikeWidth} size={size} />} 
                 routeName="/"
                 pageName="Library"
+                
                 alreadyOn={location.pathname === "/"}
             />
             <SidebarButton 
-                icon={<IconSearch strokeWidth={strikeWidth} color={color} size={size} />} 
+                icon={<IconSearch className="text-text" strokeWidth={strikeWidth} size={size} />} 
                 routeName="/search"
                 pageName="Search"
                 alreadyOn={location.pathname === "/search"}
             />
             <SidebarButton 
-                icon={<IconHistory strokeWidth={strikeWidth} color={color} size={size} />} 
+                icon={<IconHistory className="text-text" strokeWidth={strikeWidth} size={size} />} 
                 routeName="/history"
                 pageName="History"
                 alreadyOn={location.pathname === "/history"}
             />
             <SidebarButton 
-                icon={<IconSettings strokeWidth={strikeWidth}  color={color} size={size} />} 
+                icon={<IconSettings className="text-text" strokeWidth={strikeWidth} size={size} />} 
                 routeName="/settings/general"
                 pageName="Settings"
                 alreadyOn={location.pathname.includes("/settings")}
             />
             <SidebarButton 
-                icon={<IconRobot strokeWidth={strikeWidth} color={color} size={size} />} 
+                icon={<IconRobot className="text-text" strokeWidth={strikeWidth} size={size} />} 
                 routeName="/askai"
                 pageName="Ask AI"
                 alreadyOn={location.pathname === "/askai"}

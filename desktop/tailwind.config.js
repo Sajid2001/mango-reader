@@ -6,6 +6,12 @@ module.exports = {
   ],
   theme: {
     extend: {
+      backgroundOpacity: {
+        '10': '0.1',
+        '20': '0.2',
+        '90': '0.9',
+        '95': '0.95',
+      },
       colors: {
         'text': 'var(--text)',
         'background': 'var(--background)',

@@ -278,7 +278,7 @@ const MangaPage = () => {
                 <div className="flex px-3 flex-wrap *:mt-2">
                     {manga.genres != null ?
                         manga.genres.map((genre) => (
-                            <div className="bg-slate-300 bg p-1 font-semibold mx-1 rounded-md px-2">
+                            <div className="bg-secondary bg p-1 font-semibold mx-1 rounded-md px-2">
                                 {genre}
                             </div>
                         ))
@@ -290,11 +290,11 @@ const MangaPage = () => {
                 </div>
 
                 <div className="flex *:px-4 py-2">
-                    <p ref={textRef} className={`font-semibold text-md overflow-hidden ${descriptionExpanded ? "h-auto " : "max-h-20"} ${(isDescriptionOverflowing && !descriptionExpanded) && "bg-gradient-to-b from-black from-80% to-white to-98% inline-block text-transparent bg-clip-text"}`}>{manga.description}</p>
+                    <p ref={textRef} className={`font-semibold text-md overflow-hidden ${descriptionExpanded ? "h-auto " : "max-h-20"} ${(isDescriptionOverflowing && !descriptionExpanded) && "bg-gradient-to-b from-text from-80% to-background to-98% inline-block text-transparent bg-clip-text"}`}>{manga.description}</p>
 
                 </div>
                 {(isDescriptionOverflowing || descriptionExpanded) &&
-                    <button className="flex px-4 -translate-y-3 font-bold text-slate-500 hover:text-slate-800 items-center" onClick={toggleDescriptionExpansion}>{descriptionExpanded ? "See Less" : "See More"}{descriptionExpanded ? <IconChevronUp size={16}/> : <IconChevronDown size={16}/>}</button>
+                    <button className="flex px-4 -translate-y-3 font-bold text-primary hover:text-slate-800 items-center" onClick={toggleDescriptionExpansion}>{descriptionExpanded ? "See Less" : "See More"}{descriptionExpanded ? <IconChevronUp size={16}/> : <IconChevronDown size={16}/>}</button>
                 }
 
                 <div className="flex *:pl-4 font-semibold">
@@ -322,18 +322,18 @@ const MangaPage = () => {
                     <p>{manga.totalChapters == null || manga.totalChapters == 0 ? "No Chapters Available" : manga.totalChapters == 1 ? "1 Chapter" : `${manga.totalChapters} Chapters`}</p>
                     <div className="flex">
                         <div className="flex">
-                            <button onClick={() => sortChapters()} className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700 items-center"> {ascending ? <IconArrowUp size={20}/> : <IconArrowDown size={20}/>}</button>
+                            <button onClick={() => sortChapters()} className="flex bg-primary rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700 items-center"> {ascending ? <IconArrowUp size={20}/> : <IconArrowDown size={20}/>}</button>
                             {
                                 reading != null && reading.progress > 0?
-                                <button onClick={continueReading} className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">  Continue <IconPlayerPlay className="pl-2" /></button>
+                                <button onClick={continueReading} className="flex bg-primary rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">  Continue <IconPlayerPlay className="pl-2" /></button>
                                 :
-                                <button onClick={startReadingNow} className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">  Start <IconPlayerPlay className="pl-2" /></button>
+                                <button onClick={startReadingNow} className="flex bg-primary rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">  Start <IconPlayerPlay className="pl-2" /></button>
                             }
                             {
                                 reading == null ?
-                                <button onClick={startSeries} className="flex bg-black rounded-lg text-white py-1 px-3 hover:bg-slate-800 mr-4 justify-self-end active:bg-slate-700">  Add to Library <IconPlus className="pl-2" /></button>
+                                <button onClick={startSeries} className="flex bg-primary rounded-lg text-white py-1 px-3 hover:bg-slate-800 mr-4 justify-self-end active:bg-slate-700">  Add to Library <IconPlus className="pl-2" /></button>
                                 :
-                                <button onClick={stopSeries} className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">{}  Remove from Library <IconMinus className="pl-2" /></button>
+                                <button onClick={stopSeries} className="flex bg-primary rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700">{}  Remove from Library <IconMinus className="pl-2" /></button>
 
                             }
                             <div className="flex">

@@ -5,7 +5,7 @@ import { UserSettings } from "../models/userSettings";
 
 
 const initialState: UserSettings = {
-    theme: "light",
+    theme: "grape",
     fontSize: 14,
     chapterDownloadPath: "",
     libraryDownloadPath: "",
@@ -25,60 +25,60 @@ const settingsSlice = createSlice({
     name: "userSettings",
     initialState,
     reducers: {
-        setTheme: (state, action: PayloadAction<UserSettings>) => {
-            state.theme = action.payload.theme;
+        setTheme: (state, action: PayloadAction<string>) => {
+            state.theme = action.payload;
         },
 
-        setFontSize: (state, action: PayloadAction<UserSettings>) => {
-            state.fontSize = action.payload.fontSize;
+        setFontSize: (state, action: PayloadAction<number>) => {
+            state.fontSize = action.payload;
         },
 
-        setDownloadPath: (state, action: PayloadAction<UserSettings>) => {
-            state.chapterDownloadPath = action.payload.chapterDownloadPath;
+        setDownloadPath: (state, action: PayloadAction<string>) => {
+            state.chapterDownloadPath = action.payload;
         },
 
-        setLibraryDownloadPath: (state, action: PayloadAction<UserSettings>) => {
-            state.libraryDownloadPath = action.payload.libraryDownloadPath;
+        setLibraryDownloadPath: (state, action: PayloadAction<string>) => {
+            state.libraryDownloadPath = action.payload;
         },
 
-        setDefaultSinglePage: (state, action: PayloadAction<UserSettings>) => {
-            state.defaultSinglePage = action.payload.defaultSinglePage;
+        setDefaultSinglePage: (state, action: PayloadAction<boolean>) => {
+            state.defaultSinglePage = action.payload;
         },
 
-        setDefaultFitHeight: (state, action: PayloadAction<UserSettings>) => {
-            state.defaultFitHeight = action.payload.defaultFitHeight;
+        setDefaultFitHeight: (state, action: PayloadAction<boolean>) => {
+            state.defaultFitHeight = action.payload;
         },
 
-        setDefaultLeftToRight: (state, action: PayloadAction<UserSettings>) => {
-            state.defaultLeftToRight = action.payload.defaultLeftToRight;
+        setDefaultLeftToRight: (state, action: PayloadAction<boolean>) => {
+            state.defaultLeftToRight = action.payload;
         },
 
-        setPageGap: (state, action: PayloadAction<UserSettings>) => {
-            state.pageGap = action.payload.pageGap;
+        setPageGap: (state, action: PayloadAction<number>) => {
+            state.pageGap = action.payload;
         },
 
-        setLeftPageKeybind: (state, action: PayloadAction<UserSettings>) => {
-            state.leftPageKeybind = action.payload.leftPageKeybind;
+        setLeftPageKeybind: (state, action: PayloadAction<string>) => {
+            state.leftPageKeybind = action.payload;
         },
 
-        setRightPageKeybind: (state, action: PayloadAction<UserSettings>) => {
-            state.rightPageKeybind = action.payload.rightPageKeybind;
+        setRightPageKeybind: (state, action: PayloadAction<string>) => {
+            state.rightPageKeybind = action.payload;
         },
 
-        setLeftChapterKeybind: (state, action: PayloadAction<UserSettings>) => {
-            state.leftChapterKeybind = action.payload.leftChapterKeybind;
+        setLeftChapterKeybind: (state, action: PayloadAction<string>) => {
+            state.leftChapterKeybind = action.payload;
         },
 
-        setRightChapterKeybind: (state, action: PayloadAction<UserSettings>) => {
-            state.rightChapterKeybind = action.payload.rightChapterKeybind;
+        setRightChapterKeybind: (state, action: PayloadAction<string>) => {
+            state.rightChapterKeybind = action.payload;
         },
 
-        setSidebarKeybind: (state, action: PayloadAction<UserSettings>) => {
-            state.sidebarKeybind = action.payload.sidebarKeybind;
+        setSidebarKeybind: (state, action: PayloadAction<string>) => {
+            state.sidebarKeybind = action.payload;
         },
 
-        setExitKeybind: (state, action: PayloadAction<UserSettings>) => {
-            state.exitKeybind = action.payload.exitKeybind;
+        setExitKeybind: (state, action: PayloadAction<string>) => {
+            state.exitKeybind = action.payload;
         },
 
         resetUserSettings: (state) => {
@@ -100,5 +100,22 @@ const settingsSlice = createSlice({
         
     }
 });
+export const {
+    setTheme,
+    setFontSize,
+    setDownloadPath,
+    setLibraryDownloadPath,
+    setDefaultSinglePage,
+    setDefaultFitHeight,
+    setDefaultLeftToRight,
+    setPageGap,
+    setLeftPageKeybind,
+    setRightPageKeybind,
+    setLeftChapterKeybind,
+    setRightChapterKeybind,
+    setSidebarKeybind,
+    setExitKeybind,
+    resetUserSettings   
+} = settingsSlice.actions;
 
 export default settingsSlice.reducer;

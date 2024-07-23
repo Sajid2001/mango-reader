@@ -85,7 +85,7 @@ const SearchPage = () => {
 
 
 return (
-    <div className='h-screen bg-gray-100 px-5 w-full align-baseline overflow-y-auto'>
+    <div className='h-screen px-5 w-full align-baseline overflow-y-auto'>
 
         <div className=" flex flex-wrap *:pt-3 pb-4">
             <h1 className="text-3xl pl-3 mr-2 font-bold ">Search</h1>

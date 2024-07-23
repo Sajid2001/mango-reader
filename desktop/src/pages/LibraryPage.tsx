@@ -52,7 +52,7 @@ const LibraryPage = () => {
     }
 
     return ( 
-        <div className='h-screen flex-col bg-gray-100 px-5 w-full align-baseline overflow-y-auto'>
+        <div className='h-screen flex-col px-5 w-full align-baseline overflow-y-auto'>
             <div className=" flex flex-wrap *:pt-3 pb-4">
                 <h1 className="text-3xl pl-3 mr-2 font-bold ">Library</h1>
                 <div className="flex m-1 *:mr-2">

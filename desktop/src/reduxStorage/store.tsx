@@ -4,7 +4,7 @@ import settingsReducer from "./settingsSlice";
 
 export const store = configureStore({
     reducer: {
-        manga: settingsReducer
+        userSettings: settingsReducer
     },
 });
 

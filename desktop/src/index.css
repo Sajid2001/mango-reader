@@ -83,8 +83,8 @@
     .honeydew {
         --text: #363636;
         --background: #f2e5ca;
-        --primary: #cccea9;
-        --secondary: #92ce17;
+        --primary: #92ce17;
+        --secondary: #cccea9;
         --accent: #e3ad16;
     }
     .cherry {
@@ -94,6 +94,8 @@
         --secondary: #9f0b0b;
         --accent: #060606;
     }
+
+
     
   }
   

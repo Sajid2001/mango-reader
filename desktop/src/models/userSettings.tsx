@@ -3,7 +3,8 @@ export interface UserSettings {
     //General Preferences
     theme: string
     fontSize: number
-    downloadPath: string
+    chapterDownloadPath: string
+    libraryDownloadPath: string
 
     //Reader Preferences
     defaultSinglePage: boolean
