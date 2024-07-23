@@ -43,7 +43,7 @@ const HistoryPage = () => {
                 <div className=" flex flex-wrap *:pt-3 pb-4">
                     <h1 className="text-3xl pl-3 mr-2 font-bold ">History</h1>
                     <div className="flex m-1 *:mr-2">
-                        <button onClick={clearHistory} className="py-1  mb-3 font-semibold text-lg px-5 text-white bg-primary rounded-lg active:bg-slate-700">Clear History</button>
+                        <button onClick={clearHistory} className="py-1  mb-3 font-semibold text-lg px-5 text-background bg-primary rounded-lg active:bg-slate-700">Clear History</button>
                         <button className="py-1  mb-3 font-semibold text-lg px-5 bg-secondary rounded-lg active:bg-slate-200">Layout</button>
                         <button className="py-1 mb-3 font-semibold px-3 bg-secondary rounded-lg  active:bg-slate-200"><IconMoon size={24}/></button>
                     </div>

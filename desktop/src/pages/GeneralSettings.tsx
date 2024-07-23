@@ -62,7 +62,7 @@ const GeneralSettings = () => {
 
             <div className="">
                 <h3 className="text-xl font-bold pb-2">Theme</h3>
-                <select onChange={(e) => changeTheme(e.target.value)} className="border-2 border-text p-1 bg-background  rounded-lg font-semibold">
+                <select onChange={(e) => changeTheme(e.target.value)} value={theme} className="border-2 border-text p-1 bg-background  rounded-lg font-semibold">
                     <option className="default bg-background text-text" value="default">Default</option>
                     <option className="mango bg-background text-text" value="mango">Mango</option>
                     <option className="peach bg-background text-text" value="peach">Peach</option>

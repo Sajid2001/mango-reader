@@ -14,7 +14,7 @@ const MangaCard = ({ mangaId, title, chapters, image }: MangaCardProps) => {
                 <img className=" aspect-[2/3] rounded-2xl object-fit h-full w-full" src={image} alt="" />
                 <div className="flex flex-col items-stretch h-full w-full rounded-2xl absolute bottom-0 z-10 bg-slate-500 bg-opacity-35 transition ease-in-out duration-300 opacity-0 hover:opacity-100">
                     {chapters != null &&
-                        <div className=" mx-3 pt-2 text-2xl font-bold bg-slate-500 text-white h-14 w-14 text-center align-middle  justify-items-center bg-opacity-90">
+                        <div className=" mx-3 pt-2 text-2xl font-bold bg-secondary text-text h-14 w-14 text-center align-middle  justify-items-center bg-opacity-90">
                             {chapters/1000 < 1 ? chapters : `${Math.round(chapters/1000)}K+`}
                         </div>
                     }
