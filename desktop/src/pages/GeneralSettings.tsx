@@ -53,18 +53,19 @@ const GeneralSettings = () => {
 
             <div className="">
                 <h3 className="text-xl font-bold pb-2">Theme</h3>
-                <select className="p-1 bg-slate-200 *:bg-slate-100 rounded-lg font-semibold">
-                    <option value="mango">Mango</option>
-                    <option value="peach">Peach</option>
-                    <option value="honeydew">Honeydew</option>
-                    <option value="starfruit">Starfruit</option>
-                    <option value="plum">Plum</option>
-                    <option value="coconut">Coconut</option>
-                    <option value="grapefruit">Grapefruit</option>
-                    <option value="avocado">Avocado</option>
-                    <option value="licorice">Licorice</option>
-                    <option value="ancientfruit">Ancientfruit</option>
-                    <option value="devilfruit">Devilfruit</option>
+                <select className="border-2 border-slate-200 p-1 bg-background  rounded-lg font-semibold">
+                    <option className="bg-background" value="default">Default</option>
+                    <option className="mango bg-background text-text" value="mango">Mango</option>
+                    <option className="peach bg-background text-text" value="peach">Peach</option>
+                    <option className="honeydew bg-background text-text" value="honeydew">Honeydew</option>
+                    <option className="starfruit bg-background text-text" value="starfruit">Starfruit</option>
+                    <option className="grape bg-background text-text" value="grape">Grape</option>
+                    <option className="coconut bg-background text-text" value="coconut">Coconut</option>
+                    <option className="cherry bg-background text-text" value="grapefruit">Cherry</option>
+                    <option className="avocado bg-background text-text" value="avocado">Avocado</option>
+                    <option className="licorice bg-background text-text" value="licorice">Licorice</option>
+                    <option className="ancientFruit bg-background text-text" value="ancientFruit">Ancient Fruit</option>
+                    <option className="devilFruit bg-background text-text" value="devilFruit">Devil Fruit</option>
                 </select>
             </div>
 
