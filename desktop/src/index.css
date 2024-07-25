@@ -3,99 +3,103 @@
 @tailwind utilities;
 
 @layer base {
-    :root {
-        --text: #0a0c0e;
-        --background: #ffffff;
-        --primary: #0f172a;
-        --secondary: #c4cbd6;
-        --accent: #62a2e1;
-    }
-    .default {
-        --text: #0a0c0e;
-        --background: #ffffff;
-        --primary: #0f172a;
-        --secondary: #c4cbd6;
-        --accent: #62a2e1;
-    }
-    .peach {
-        --text: #0a0c0e;
-        --background: #dab58b;
-        --primary: #000000;
-        --secondary: #e8d1b7;
-        --accent: #92dd7b;
-    }
-    .grape {
-        --text: #fedaf5;
-        --background: #21021a;
-        --primary: #4b0238;
-        --secondary: #752f63;
-        --accent: #c5f65c;
-    }
-    .mango {
-        --text: #1f1f1f;
-        --background: #ecb542;
-        --primary: #0f172a;
-        --secondary: #ff8518;
-        --accent: #d8bf25;
-    }
-    .avocado {
-        --text: #0f172a;
-        --background: #9be88d;
-        --primary: #0f172a;
-        --secondary: #57bb33;
-        --accent: #4c360a;
-    }
-    .starfruit {
-        --text: #0f172a;
-        --background: #f8ec7c;
-        --primary: #0f172a;
-        --secondary: #ffffff;
-        --accent: #ff9336;
-    }
-    .ancientFruit {
-        --text: #040909;
-        --background: #7febe7;
-        --primary: #042570;
-        --secondary: #ffffff;
-        --accent: #86c400;
-    }
-    .devilFruit {
-        --text: #f5fafa;
-        --background: #574785;
-        --primary: #fcfcfc;
-        --secondary: #281c59;
-        --accent: #050400;
-    }
-    .coconut {
-        --text: #ffffff;
-        --background: #8d5a30;
-        --primary: #ffffff;
-        --secondary: #4b2c16;
-        --accent: #5cab44;
-    }
-    .licorice {
-        --text: #ffffff;
-        --background: #1f1f1f;
-        --primary: #ffffff;
-        --secondary: #363636;
-        --accent: #a31f1f;
-    }
-    .honeydew {
-        --text: #363636;
-        --background: #f2e5ca;
-        --primary: #92ce17;
-        --secondary: #cccea9;
-        --accent: #e3ad16;
-    }
-    .cherry {
-        --text: #ffffff;
-        --background: #f25f5c;
-        --primary: #ffffff;
-        --secondary: #9f0b0b;
-        --accent: #060606;
-    }
-
-
-    
+  :root {
+    --text: #0a0c0e;
+    --background: #ffffff;
+    --primary: #0f172a;
+    --secondary: #c4cbd6;
+    --accent: #62a2e1;
   }
-  
+  .default {
+    --text: #0a0c0e;
+    --background: #ffffff;
+    --primary: #0f172a;
+    --secondary: #c4cbd6;
+    --accent: #62a2e1;
+  }
+  .peach {
+    --text: #0a0c0e;
+    --background: #dab58b;
+    --primary: #000000;
+    --secondary: #e8d1b7;
+    --accent: #92dd7b;
+  }
+  .grape {
+    --text: #fedaf5;
+    --background: #21021a;
+    --primary: #4b0238;
+    --secondary: #752f63;
+    --accent: black;
+  }
+  .mango {
+    --text: #1f1f1f;
+    --background: #ecb542;
+    --primary: #0f172a;
+    --secondary: #ff8518;
+    --accent: #d8bf25;
+  }
+  .avocado {
+    --text: #0f172a;
+    --background: #9be88d;
+    --primary: #0f172a;
+    --secondary: #57bb33;
+    --accent: #9c7527;
+  }
+  .starfruit {
+    --text: #0f172a;
+    --background: #fefed6;
+    --primary: #f6b72d;
+    --secondary: #fad249;
+    --accent: #a8e657;
+  }
+  .ancientFruit {
+    --text: #0a0f0e;
+    --background: #87d3e8;
+    --primary: #68fcff;
+    --secondary: #11a6c4;
+    --accent: #78ec09;
+  }
+  .devilFruit {
+    --text: #f5fafa;
+    --background: #574785;
+    --primary: #fcfcfc;
+    --secondary: #281c59;
+    --accent: #050400;
+  }
+  .coconut {
+    --text: #ffffff;
+    --background: #8d5a30;
+    --primary: #ffffff;
+    --secondary: #4b2c16;
+    --accent: #5cab44;
+  }
+  .licorice {
+    --text: #f8d6da;
+    --background: #300309;
+    --primary: #9d0113;
+    --secondary: #7e1d2a;
+    --accent: #200427;
+  }
+  .honeydew {
+    --text: #363636;
+    --background: #f2e5ca;
+    --primary: #92ce17;
+    --secondary: #cccea9;
+    --accent: #e3ad16;
+  }
+  .cherry {
+    --text: #ffffff;
+    --background: #f25f5c;
+    --primary: #ffffff;
+    --secondary: #9f0b0b;
+    --accent: #060606;
+  }
+}
+
+input {
+  @apply bg-secondary placeholder:text-text placeholder:opacity-100 rounded-lg p-1 px-2 text-text outline-none;
+}
+
+select {
+  @apply p-1 bg-secondary *:bg-secondary rounded-lg;
+}
