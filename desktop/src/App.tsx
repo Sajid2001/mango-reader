@@ -19,7 +19,7 @@ function App() {
   return (
     <div className={`${theme} flex text-text`}>
       <HashRouter>
-        <div className="min-h-screen bg-secondary text-text">
+        <div className="min-h-screen bg-primary text-text">
           <Sidebar />
         </div>
 

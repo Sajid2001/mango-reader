@@ -6,6 +6,7 @@ import {
 } from "../fileStorage/libraryStorage";
 import { useDispatch, useSelector } from "react-redux";
 import { setTheme } from "../reduxStorage/settingsSlice";
+import themeOptions from "../themeOptions";
 
 const GeneralSettings = () => {
   const dispatch = useDispatch();
@@ -98,51 +99,14 @@ const GeneralSettings = () => {
           value={theme}
           className="border-2 border-text p-1 bg-secondary  rounded-lg font-semibold"
         >
-          <option className="default bg-background text-text" value="default">
-            Default
-          </option>
-          <option className="mango bg-background text-text" value="mango">
-            Mango
-          </option>
-          <option className="peach bg-background text-text" value="peach">
-            Peach
-          </option>
-          <option className="honeydew bg-background text-text" value="honeydew">
-            Honeydew
-          </option>
-          <option
-            className="starfruit bg-background text-text"
-            value="starfruit"
-          >
-            Starfruit
-          </option>
-          <option className="grape bg-background text-text" value="grape">
-            Grape
-          </option>
-          <option className="coconut bg-background text-text" value="coconut">
-            Coconut
-          </option>
-          <option className="cherry bg-background text-text" value="cherry">
-            Cherry
-          </option>
-          <option className="avocado bg-background text-text" value="avocado">
-            Avocado
-          </option>
-          <option className="licorice bg-background text-text" value="licorice">
-            Licorice
-          </option>
-          <option
-            className="ancientFruit bg-background text-text"
-            value="ancientFruit"
-          >
-            Ancient Fruit
-          </option>
-          <option
-            className="devilFruit bg-background text-text"
-            value="devilFruit"
-          >
-            Devil Fruit
-          </option>
+          {themeOptions.map((option) => (
+            <option
+              className={`${option.value} bg-background text-text`}
+              value={option.value}
+            >
+              {option.name}
+            </option>
+          ))}
         </select>
       </div>
     </div>

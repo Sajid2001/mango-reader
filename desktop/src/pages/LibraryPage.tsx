@@ -56,11 +56,11 @@ const LibraryPage = () => {
       <div className=" flex flex-wrap *:pt-3 pb-4">
         <h1 className="text-3xl pl-3 mr-2 font-bold ">Library</h1>
         <div className="flex m-1 *:mr-2">
-          <button className="py-1  mb-3 font-semibold text-lg px-5 bg-secondary rounded-lg active:bg-slate-200">
-            Layout
-          </button>
-          <button className="py-1 mb-3 font-semibold px-3 bg-secondary rounded-lg  active:bg-slate-200">
-            <IconMoon size={24} />
+          <button
+            onClick={clearLibrary}
+            className="py-1 mb-3 font-semibold text-lg px-5 bg-accent text-background rounded-lg hover:opacity-80 justify-self-end"
+          >
+            Clear Library
           </button>
           <div className="flex relative max-w-30">
             <input
@@ -75,12 +75,11 @@ const LibraryPage = () => {
               <IconSearch size={24} />
             </button>
           </div>
-
-          <button
-            onClick={clearLibrary}
-            className="py-1 mb-3 font-semibold text-lg px-5 bg-accent rounded-lg hover:opacity-80 text-text justify-self-end"
-          >
-            Clear Library
+          <button className="py-1  mb-3 font-semibold text-lg px-5 bg-secondary rounded-lg active:bg-slate-200">
+            Layout
+          </button>
+          <button className="py-1 mb-3 font-semibold px-3 bg-secondary rounded-lg  active:bg-slate-200">
+            <IconMoon size={24} />
           </button>
         </div>
       </div>

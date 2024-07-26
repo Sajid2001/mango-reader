@@ -38,7 +38,7 @@ const ReaderSettings = () => {
           <button
             disabled={singlePage}
             onClick={() => setSinglePage(true)}
-            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-l-lg disabled:rounded-lg disabled:bg-black disabled:text-white font-semibold "
+            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-l-lg disabled:rounded-lg disabled:bg-primary font-semibold disabled:border-2 disabled:border-text disabled:ring-0 disabled:ring-offset-0"
           >
             <IconBook size={iconSize} />
             Single Page
@@ -46,7 +46,7 @@ const ReaderSettings = () => {
           <button
             disabled={!singlePage}
             onClick={() => setSinglePage(false)}
-            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-r-lg disabled:rounded-lg disabled:bg-black disabled:text-white font-semibold"
+            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-r-lg disabled:rounded-lg disabled:bg-primary font-semibold disabled:border-2 disabled:border-text disabled:ring-0 disabled:ring-offset-0"
           >
             <IconSpacingVertical size={iconSize} />
             Long Strip
@@ -74,7 +74,7 @@ const ReaderSettings = () => {
           <button
             disabled={!leftToRight}
             onClick={() => setLeftToRight(false)}
-            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-l-lg disabled:rounded-lg disabled:bg-black disabled:text-white font-semibold "
+            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-l-lg disabled:rounded-lg disabled:bg-primary font-semibold disabled:border-2 disabled:border-text disabled:ring-0 disabled:ring-offset-0"
           >
             <IconCircleArrowLeft size={iconSize} />
             Right To Left
@@ -82,7 +82,7 @@ const ReaderSettings = () => {
           <button
             disabled={leftToRight}
             onClick={() => setLeftToRight(true)}
-            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-r-lg disabled:rounded-lg disabled:bg-black disabled:text-white font-semibold"
+            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-r-lg disabled:rounded-lg disabled:bg-primary font-semibold disabled:border-2 disabled:border-text disabled:ring-0 disabled:ring-offset-0"
           >
             <IconCircleArrowRight size={iconSize} />
             Left To Right
@@ -94,7 +94,7 @@ const ReaderSettings = () => {
           <button
             disabled={!fitHeight}
             onClick={() => setFitHeight(false)}
-            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-l-lg disabled:rounded-lg disabled:bg-black disabled:text-white font-semibold "
+            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-l-lg disabled:rounded-lg disabled:bg-primary font-semibold disabled:border-2 disabled:border-text disabled:ring-0 disabled:ring-offset-0"
           >
             <IconArrowsHorizontal size={iconSize} />
             Fit Width
@@ -102,7 +102,7 @@ const ReaderSettings = () => {
           <button
             disabled={fitHeight}
             onClick={() => setFitHeight(true)}
-            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-r-lg disabled:rounded-lg disabled:bg-black disabled:text-white font-semibold"
+            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-r-lg disabled:rounded-lg disabled:bg-primary font-semibold disabled:border-2 disabled:border-text disabled:ring-0 disabled:ring-offset-0"
           >
             <IconArrowsVertical size={iconSize} />
             Fit Height

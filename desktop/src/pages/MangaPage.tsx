@@ -325,7 +325,7 @@ const MangaPage = () => {
             <div className="flex">
               <button
                 onClick={() => sortChapters()}
-                className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700 items-center"
+                className="flex bg-primary rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700 items-center"
               >
                 {" "}
                 {ascending ? (
@@ -354,7 +354,7 @@ const MangaPage = () => {
               {reading == null ? (
                 <button
                   onClick={startSeries}
-                  className="flex bg-black rounded-lg text-white py-1 px-3 hover:bg-slate-800 mr-4 justify-self-end active:bg-slate-700"
+                  className="flex bg-accent rounded-lg text-white py-1 px-3 hover:bg-slate-800 mr-4 justify-self-end active:bg-slate-700"
                 >
                   {" "}
                   Add to Library <IconPlus className="pl-2" />
@@ -362,7 +362,7 @@ const MangaPage = () => {
               ) : (
                 <button
                   onClick={stopSeries}
-                  className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700"
+                  className="flex bg-accent rounded-lg text-background py-1 px-3 mr-4 justify-self-end hover:opacity-70 active:bg-slate-700"
                 >
                   {} Remove from Library <IconMinus className="pl-2" />
                 </button>
@@ -380,7 +380,7 @@ const MangaPage = () => {
               {chapters.map((chapter, index: number) => (
                 <Link
                   to={`/reader/${manga.id}/${chapter.chapterNumber}`}
-                  className={`flex justify-between p-3 items-center hover:bg-accent ${
+                  className={`flex justify-between p-3 items-center hover:bg-secondary ${
                     reading &&
                     reading.progress >= chapter.chapterNumber &&
                     "opacity-50"
@@ -393,7 +393,7 @@ const MangaPage = () => {
                     <p>{chapter.chapterNumber}</p>
                   </div>
                   <div className="">
-                    <button className="bg-secondary rounded-lg text-text py-1 px-3 mr-4 hover:bg-primary active:bg-accent">
+                    <button className="bg-primary border-2 border-background rounded-lg text-text py-1 px-3 mr-4 hover:bg-primary active:bg-accent">
                       <IconDownload />
                     </button>
                   </div>

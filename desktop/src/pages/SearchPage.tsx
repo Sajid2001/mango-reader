@@ -86,12 +86,6 @@ const SearchPage = () => {
       <div className=" flex flex-wrap *:pt-3 pb-4">
         <h1 className="text-3xl pl-3 mr-2 font-bold ">Search</h1>
         <div className="flex m-1 *:mr-2">
-          <button className="py-1  mb-3 font-semibold text-lg px-5 bg-secondary rounded-lg active:bg-accent">
-            Layout
-          </button>
-          <button className="py-1 mb-3 font-semibold px-3 bg-secondary rounded-lg  active:bg-accent">
-            <IconMoon size={24} />
-          </button>
           <div className="flex relative max-w-30">
             <input
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -105,6 +99,12 @@ const SearchPage = () => {
               <IconSearch size={24} />
             </button>
           </div>
+          <button className="py-1  mb-3 font-semibold text-lg px-5 bg-secondary rounded-lg active:bg-accent">
+            Layout
+          </button>
+          <button className="py-1 mb-3 font-semibold px-3 bg-secondary rounded-lg  active:bg-accent">
+            <IconMoon size={24} />
+          </button>
         </div>
       </div>
 

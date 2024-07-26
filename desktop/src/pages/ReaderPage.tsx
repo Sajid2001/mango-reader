@@ -335,17 +335,15 @@ const ReaderPage = () => {
   return (
     <div className="flex px-4 justify-center h-screen w-screen overflow-y-auto">
       {sidebarToggled ? (
-        <div className=" fixed top-0 left-0 h-screen w-72 bg-gray-300 text-text overflow-y-auto bg-opacity-65">
+        <div className=" fixed top-0 left-0 h-screen w-72 bg-primary text-text overflow-y-auto">
           <div className="flex flex-col p-6 *:mb-3">
-            <div className="flex font-bold text-2xl">
+            <div className="flex font-bold text-2xl gap-1">
               <button onClick={() => setSidebarToggled(false)}>
-                <IconX size={IconSize} color="black" />
+                <IconX size={IconSize} />
               </button>
-              <p className="truncate">
-                {mangaName} {chapterId}
-              </p>
+              <p className="truncate">{mangaName}</p>
             </div>
-            <div className="flex flex-col w-full font-semibold px-5 text-lg *:w-full *:flex *:px-2 *:py-1 *:items-center *:justify-between  *:bg-slate-300 *:rounded-lg *:my-2">
+            <div className="flex flex-col w-full font-semibold px-5 text-lg *:w-full *:flex *:px-2 *:py-1 *:items-center *:justify-between  *:bg-secondary *:rounded-lg *:my-2">
               <div className="*:rounded-lg">
                 <button
                   onClick={() => previousChapter()}
@@ -353,12 +351,14 @@ const ReaderPage = () => {
                   className={`${
                     Number(chapterId) <= 1
                       ? "pointer-events-none"
-                      : "hover:bg-slate-200 active:bg-slate-400"
+                      : "hover:bg-primary"
                   }`}
                 >
                   <IconChevronLeft
                     size={IconSize}
-                    color={`${Number(chapterId) <= 1 ? "inherit" : "black"}`}
+                    className={
+                      Number(chapterId) <= 1 ? "text-secondary" : "text-text"
+                    }
                   />
                 </button>
                 <p className="text-center">{chapterName}</p>
@@ -368,14 +368,16 @@ const ReaderPage = () => {
                   className={`${
                     Number(chapterId) >= maxChapters
                       ? "pointer-events-none"
-                      : "hover:bg-slate-200 active:bg-slate-400"
+                      : "hover:bg-primary"
                   }`}
                 >
                   <IconChevronRight
                     size={IconSize}
-                    color={`${
-                      Number(chapterId) >= maxChapters ? "inherit" : "black"
-                    }`}
+                    className={
+                      Number(chapterId) >= maxChapters
+                        ? "text-secondary"
+                        : "text-text"
+                    }
                   />
                 </button>
               </div>
@@ -386,12 +388,14 @@ const ReaderPage = () => {
                   className={`${
                     currentPage <= 1
                       ? "pointer-events-none"
-                      : "hover:bg-slate-200 active:bg-slate-400"
+                      : "hover:bg-primary"
                   }`}
                 >
                   <IconChevronLeft
                     size={IconSize}
-                    color={`${currentPage <= 1 ? "inherit" : "black"}`}
+                    className={`${
+                      currentPage <= 1 ? "text-secondary" : "text-text"
+                    }`}
                   />
                 </button>
                 {currentPage}/{scans.length}
@@ -401,22 +405,24 @@ const ReaderPage = () => {
                   className={`${
                     currentPage >= scans.length
                       ? "pointer-events-none"
-                      : "hover:bg-slate-200 active:bg-slate-400"
+                      : "hover:bg-primary "
                   }`}
                 >
                   <IconChevronRight
                     size={IconSize}
-                    color={`${
-                      currentPage >= scans.length ? "inherit" : "black"
+                    className={`${
+                      currentPage >= scans.length
+                        ? "text-secondary"
+                        : "text-text"
                     }`}
                   />
                 </button>
               </div>
             </div>
-            <div className="flex flex-col w-full font-semibold px-5 text-lg  *:*::w-full *:*:flex *:px-2 *:py-1 *:*:items-center *:*:justify-between  *:bg-slate-100 *:rounded-lg *:my-2">
+            <div className="flex flex-col w-full font-semibold px-5 text-lg  *:*::w-full *:*:flex *:px-2 *:py-1 *:*:items-center *:*:justify-between  *:bg-secondary *:rounded-lg *:my-2">
               <button
                 onClick={() => setSinglePage(!singlePage)}
-                className="hover:bg-slate-200 active:bg-slate-400"
+                className="hover:bg-primary"
               >
                 {singlePage ? (
                   <div>
@@ -430,7 +436,7 @@ const ReaderPage = () => {
               </button>
               <button
                 onClick={() => setFitHeight(!fitHeight)}
-                className="hover:bg-slate-200 active:bg-secondary"
+                className="hover:bg-primary"
               >
                 {fitHeight ? (
                   <div>
@@ -445,7 +451,7 @@ const ReaderPage = () => {
               {singlePage && (
                 <button
                   onClick={() => setLeftToRight(!leftToRight)}
-                  className="hover:bg-slate-200 active:bg-slate-400"
+                  className="hover:bg-primary active:bg-slate-400"
                 >
                   {leftToRight ? (
                     <div>
@@ -458,12 +464,12 @@ const ReaderPage = () => {
                   )}
                 </button>
               )}
-              <button className="hover:bg-slate-200 active:bg-slate-400">
+              <button className="hover:bg-primary active:bg-slate-400">
                 <div>
                   Keybinds <IconKeyboard size={IconSize} />
                 </div>
               </button>
-              <button className="hover:bg-slate-200 active:bg-slate-400">
+              <button className="hover:bg-primary active:bg-slate-400">
                 <div>
                   Settings <IconSettings size={IconSize} />
                 </div>
@@ -529,9 +535,9 @@ const ReaderPage = () => {
       )}
       <Link
         to={`/manga/${mangaId}`}
-        className="fixed top-10 right-14 text-3xl p-3 font-bold bg-slate-900 hover:bg-slate-600 text-white rounded-lg"
+        className="fixed top-10 right-14 text-3xl p-3 font-bold bg-accent hover:opacity-80 rounded-lg"
       >
-        <IconArrowBackUp size={28} color="white" />
+        <IconArrowBackUp size={28} className="text-background" />
       </Link>
     </div>
   );
