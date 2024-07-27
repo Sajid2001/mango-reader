@@ -131,3 +131,7 @@ input {
 select {
   @apply p-1 bg-secondary *:bg-secondary rounded-lg;
 }
+
+button {
+  @apply focus:outline-none active:outline-none;
+}

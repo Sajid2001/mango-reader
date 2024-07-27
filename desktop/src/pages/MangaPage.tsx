@@ -4,14 +4,13 @@ import {
   IconCheck,
   IconClock,
   IconClockPause,
-  IconDownload,
   IconMinus,
   IconPlayerPlay,
   IconPlus,
   IconTrafficCone,
 } from "@tabler/icons-react";
-import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   addEntryToLibrary,
   getLibrary,
@@ -21,6 +20,7 @@ import {
 import { MangaDetails } from "../models/mangaDetails";
 import { LibraryEntry } from "../models/libraryEntry";
 import { ChapterDetails } from "../models/chapterDetails";
+import ChapterList from "../components/ChapterList";
 
 const MangaPage = () => {
   // [ State Variables ]
@@ -80,6 +80,8 @@ const MangaPage = () => {
         return response.json();
       })
       .then((data) => {
+        console.log(data);
+
         // Map fetched data to Post model
         const mappedData: MangaExtDetails = {
           id: data.id,
@@ -189,27 +191,21 @@ const MangaPage = () => {
     setReading(null);
   };
 
-  const sortChapters = async () => {
-    if (ascending) {
-      setChapters(() => {
-        const sortedChapters = chapters.sort(
-          (a, b) => b.chapterNumber - a.chapterNumber
-        );
-        return sortedChapters;
-      });
-    } else {
-      setChapters(() => {
-        const sortedChapters = chapters.sort(
-          (a, b) => a.chapterNumber - b.chapterNumber
-        );
-        return sortedChapters;
-      });
-    }
-    setAscending(!ascending);
-  };
+  const sortChapters = useCallback(() => {
+    setChapters((prevChapters) => {
+      const sortedChapters = [...prevChapters].sort((a, b) =>
+        ascending
+          ? b.chapterNumber - a.chapterNumber
+          : a.chapterNumber - b.chapterNumber
+      );
+      return sortedChapters;
+    });
+    setAscending((prevAscending) => !prevAscending);
+  }, [ascending]);
 
   const [showScrollToTop, setShowScrollToTop] = useState(false);
   const chapterScroll = useRef<any>(null);
+  const targetRef = useRef<any>(null);
 
   const handleScroll = () => {
     if (chapterScroll.current.scrollTop > 100) {
@@ -219,12 +215,27 @@ const MangaPage = () => {
     }
   };
 
-  const scrollToTop = () => {
-    chapterScroll.current.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+  const scrollToTarget = () => {
+    if (chapterScroll.current && targetRef.current) {
+      const targetPosition = targetRef.current.offsetTop;
+      chapterScroll.current.scrollTo({
+        top: targetPosition,
+        behavior: "smooth",
+      });
+    }
   };
+
+  function getStatusIcon(status: string) {
+    if (status === "Ongoing") {
+      return <IconClock />;
+    } else if (status === "Complete") {
+      return <IconCheck />;
+    } else if (status === "Hiatus") {
+      return <IconClockPause />;
+    } else {
+      return <IconTrafficCone />;
+    }
+  }
 
   useEffect(() => {
     const scrollableDiv = chapterScroll.current;
@@ -236,205 +247,152 @@ const MangaPage = () => {
   }, []);
 
   return (
-    <div className="h-screen overflow-y-auto">
-      <div className="bg-slate-200 h-48 w-dull">
+    <div ref={chapterScroll} className="h-screen overflow-y-auto">
+      <div className="h-48 w-dull">
         <img
           src={manga.bannerImage}
           alt=""
           className="h-full object-cover w-full"
         />
       </div>
-      <div className="flex flex-col mt-2 max-h-screen">
-        <div className=" pl-4 pt-4 pr-2 inline-block align-baseline">
-          <p className="text-3xl font-bold">
-            {manga.name}
-            <span className="pl-3 font-semibold text-sm">
-              {manga.alternateNames}
-            </span>
-          </p>
-        </div>
-        <div className="flex px-3 flex-wrap *:mt-2">
-          {manga.genres != null ? (
-            manga.genres.map((genre) => (
-              <div className="bg-secondary bg p-1 font-semibold mx-1 rounded-md px-2">
-                {genre}
-              </div>
-            ))
-          ) : (
-            <div className="bg-slate-300 bg p-1 font-semibold mx-1 rounded-md">
-              No Associated Genres
-            </div>
-          )}
-        </div>
-
-        <div className="flex px-4 py-2">
-          {manga.description.length > 580 && !descriptionExpanded
-            ? manga.description.slice(0, 580) + "..."
-            : manga.description}
-        </div>
-
-        {manga.description.length > 580 && (
-          <div>
-            <button
-              onClick={toggleDescriptionExpansion}
-              className="flex px-4 -translate-y-3 font-bold text-primary hover:text-slate-800 items-center"
-            >
-              Show more
-            </button>
+      <div ref={targetRef} className="flex flex-col mt-2">
+        <div className="sticky top-0 z-30 bg-background">
+          <div className=" pl-4 pt-4 pr-2 inline-block align-baseline">
+            <p className="text-3xl font-bold">
+              {manga.name}
+              {!showScrollToTop && (
+                <span className="pl-3 font-semibold text-sm">
+                  {manga.alternateNames}
+                </span>
+              )}
+            </p>
           </div>
-        )}
-
-        <div className="flex *:pl-4 font-semibold">
-          <p>{manga.mangaka}</p>
-          <div className="font-bold flex *:mr-2 flex-wrap">
-            <div className="flex">
-              {manga.scanStatus == "Ongoing" ? (
-                <IconClock />
-              ) : manga.scanStatus == "Completed" ? (
-                <IconCheck />
-              ) : manga.scanStatus == "Haitus" ? (
-                <IconClockPause />
-              ) : (
-                <IconTrafficCone />
-              )}
-              <p className="pl-1">{manga.scanStatus} [Scan Status]</p>
-            </div>
-            <div className="flex">
-              {manga.publishStatus == "Ongoing" ? (
-                <IconClock />
-              ) : manga.publishStatus == "Completed" ? (
-                <IconCheck />
-              ) : manga.publishStatus == "Haitus" ? (
-                <IconClockPause />
-              ) : (
-                <IconTrafficCone />
-              )}
-              <p className="pl-1">{manga.publishStatus} [Publishing Status]</p>
-            </div>
-          </div>
-        </div>
-        <div className="flex border-b-2 p-4 font-bold border-slate-800 justify-between">
-          <p>
-            {manga.totalChapters == null || manga.totalChapters == 0
-              ? "No Chapters Available"
-              : manga.totalChapters == 1
-              ? "1 Chapter"
-              : `${manga.totalChapters} Chapters`}
-          </p>
-          <div className="flex">
-            <div className="flex">
-              <button
-                onClick={() => sortChapters()}
-                className="flex bg-primary rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700 items-center"
-              >
-                {" "}
-                {ascending ? (
-                  <IconArrowUp size={20} />
-                ) : (
-                  <IconArrowDown size={20} />
-                )}
-              </button>
-              {reading != null && reading.progress > 0 ? (
-                <button
-                  onClick={continueReading}
-                  className="flex bg-primary rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700"
-                >
-                  {" "}
-                  Continue <IconPlayerPlay className="pl-2" />
-                </button>
-              ) : (
-                <button
-                  onClick={startReadingNow}
-                  className="flex bg-black rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700"
-                >
-                  {" "}
-                  Start <IconPlayerPlay className="pl-2" />
-                </button>
-              )}
-              {reading == null ? (
-                <button
-                  onClick={startSeries}
-                  className="flex bg-accent rounded-lg text-white py-1 px-3 hover:bg-slate-800 mr-4 justify-self-end active:bg-slate-700"
-                >
-                  {" "}
-                  Add to Library <IconPlus className="pl-2" />
-                </button>
-              ) : (
-                <button
-                  onClick={stopSeries}
-                  className="flex bg-accent rounded-lg text-background py-1 px-3 mr-4 justify-self-end hover:opacity-70 active:bg-slate-700"
-                >
-                  {} Remove from Library <IconMinus className="pl-2" />
-                </button>
-              )}
-              <div className="flex"></div>
-            </div>
-          </div>
-        </div>
-        <div
-          ref={chapterScroll}
-          className="[scrollbarWidth:none] grid grid-cols-1 gap-1 overflow-y-auto max-h-screen"
-        >
-          {chapters != null && chapters.length != 0 ? (
-            <div className="">
-              {chapters.map((chapter, index: number) => (
-                <Link
-                  to={`/reader/${manga.id}/${chapter.chapterNumber}`}
-                  className={`flex justify-between p-3 items-center hover:bg-secondary ${
-                    reading &&
-                    reading.progress >= chapter.chapterNumber &&
-                    "opacity-50"
-                  }`}
-                >
-                  <div className="flex-col">
-                    <p className="font-semibold text-md">
-                      {chapter.chapterName}
-                    </p>
-                    <p>{chapter.chapterNumber}</p>
+          {!showScrollToTop && (
+            <div className="flex px-3 flex-wrap *:mt-2">
+              {manga.genres != null ? (
+                manga.genres.map((genre) => (
+                  <div className="bg-secondary bg p-1 font-semibold mx-1 rounded-md px-2">
+                    {genre}
                   </div>
-                  <div className="">
-                    <button className="bg-primary border-2 border-background rounded-lg text-text py-1 px-3 mr-4 hover:bg-primary active:bg-accent">
-                      <IconDownload />
-                    </button>
-                  </div>
-                </Link>
-              ))}
-              <button
-                onClick={scrollToTop}
-                disabled={!showScrollToTop}
-                className="flex items-center fixed justify-center transition ease-in-out bottom-3 disabled:translate-y-20 hover:bg-slate-800 bg-black text-white px-2 py-1 rounded-lg left-[47%] gap-1 font-semibold"
-              >
-                <IconArrowUp size={20} />
-                Scroll to Top
-              </button>
-            </div>
-          ) : (
-            <div className="flex justify-center items-center font-bold text-center mt-6">
-              {loadingChapters ? (
-                <svg
-                  aria-hidden="true"
-                  className="w-16 h-16 text-gray-200 animate-spin dark:text-gray-400 fill-slate-800"
-                  viewBox="0 0 100 101"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                    fill="currentColor"
-                  />
-                  <path
-                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                    fill="currentFill"
-                  />
-                </svg>
+                ))
               ) : (
-                <div className="flex-col">
-                  <p>Oops, could not find any chapters</p>
-                  <p className="">(╯°□°）╯ ┻━┻</p>
+                <div className="bg-slate-300 bg p-1 font-semibold mx-1 rounded-md">
+                  No Associated Genres
                 </div>
               )}
             </div>
           )}
+          {!showScrollToTop && (
+            <div className="flex px-4 py-2">
+              {manga.description.length > 580 && !descriptionExpanded
+                ? manga.description.slice(0, 580) + "..."
+                : manga.description}
+            </div>
+          )}
+
+          {!showScrollToTop && manga.description.length > 580 && (
+            <div>
+              <button
+                onClick={toggleDescriptionExpansion}
+                className="flex px-4 -translate-y-3 font-bold text-primary hover:text-slate-800 items-center"
+              >
+                Show more
+              </button>
+            </div>
+          )}
+
+          {!showScrollToTop && (
+            <div className="flex *:pl-4 font-semibold">
+              <p>{manga.mangaka}</p>
+              <div className="font-bold flex *:mr-2 flex-wrap">
+                <div className="flex">
+                  {getStatusIcon(manga.scanStatus)}
+                  <p className="pl-1">{manga.scanStatus} [Scan Status]</p>
+                </div>
+                <div className="flex">
+                  {getStatusIcon(manga.publishStatus)}
+                  <p className="pl-1">
+                    {manga.publishStatus} [Publishing Status]
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="flex items-center m-auto border-b-2 p-4 font-bold border-primary justify-between">
+            <p>
+              {manga.totalChapters == null || manga.totalChapters == 0
+                ? "No Chapters Available"
+                : manga.totalChapters == 1
+                ? "1 Chapter"
+                : `${manga.totalChapters} Chapters`}
+            </p>
+            <div className="flex">
+              <div className="flex">
+                <button
+                  onClick={() => sortChapters()}
+                  className="flex bg-primary rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700 items-center"
+                >
+                  {" "}
+                  {ascending ? (
+                    <IconArrowUp size={20} />
+                  ) : (
+                    <IconArrowDown size={20} />
+                  )}
+                </button>
+                {reading != null && reading.progress > 0 ? (
+                  <button
+                    onClick={continueReading}
+                    className="flex bg-primary rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700"
+                  >
+                    {" "}
+                    Continue <IconPlayerPlay className="pl-2" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={startReadingNow}
+                    className="flex bg-primary rounded-lg text-text py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700"
+                  >
+                    {" "}
+                    Start <IconPlayerPlay className="pl-2" />
+                  </button>
+                )}
+                {reading == null ? (
+                  <button
+                    onClick={startSeries}
+                    className="flex bg-accent rounded-lg text-background py-1 px-3 hover:opacity-70 mr-4 justify-self-end"
+                  >
+                    {" "}
+                    Add to Library <IconPlus className="pl-2" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={stopSeries}
+                    className="flex bg-accent rounded-lg text-background py-1 px-3 mr-4 justify-self-end hover:opacity-70"
+                  >
+                    {} Remove from Library <IconMinus className="pl-2" />
+                  </button>
+                )}
+                <div className="flex"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="[scrollbarWidth:none] grid grid-cols-1 gap-1">
+          <ChapterList
+            chapters={chapters}
+            manga={manga}
+            reading={reading}
+            loadingChapters={loadingChapters}
+          />
+          <button
+            onClick={scrollToTarget}
+            disabled={!showScrollToTop}
+            className="flex items-center fixed justify-center transition ease-in-out bottom-3 disabled:translate-y-20 hover:opacity-70 bg-primary text-text px-2 py-1 rounded-lg left-[47%] gap-1 font-semibold"
+          >
+            <IconArrowUp size={20} />
+            Scroll to Top
+          </button>
         </div>
       </div>
     </div>

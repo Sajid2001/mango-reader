@@ -157,16 +157,14 @@ const HistoryPage = () => {
           </div>
         ) : (
           <div className="grid  font-bold text-center mt-6 place-content-center m-4">
-            <div className="flex-col text-center bg-slate-400 rounded-lg p-4">
+            <div className="flex-col max-w-xl text-center bg-primary rounded-lg p-4">
               <p className="text-xl justify-self-center">
-                This page is for keeping track of your reading progress for
-                manga in your library. You dont have any reading history right
-                now.
+                You don't have any reading history right now.
               </p>
 
               <div className="flex m-1 mt-4 justify-center">
                 <Link to="/">
-                  <button className="flex font-semibold text-lg px-5 bg-secondary rounded-lg hover:bg-slate-200 p-1">
+                  <button className="flex font-semibold text-lg px-5 bg-secondary rounded-lg hover:opacity-80 p-1">
                     Go Read Some Manga{" "}
                     <IconBook className="ml-1 my-1" size={24} />
                   </button>

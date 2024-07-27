@@ -102,14 +102,14 @@ const LibraryPage = () => {
         </div>
       ) : (
         <div className="grid  font-bold text-center mt-6 place-content-center m-4">
-          <div className="flex-col text-center bg-slate-400 rounded-lg p-4">
+          <div className="flex-col text-center bg-primary rounded-lg p-4">
             <p className="text-xl justify-self-center">
-              You dont have any manga in your library{" "}
+              You don't have any manga in your library{" "}
             </p>
 
             <div className="flex m-1 mt-4 justify-center">
               <Link to="/search">
-                <button className="flex font-semibold text-lg px-5 bg-slate-300 rounded-lg hover:bg-slate-200 p-1">
+                <button className="flex font-semibold text-lg px-5 bg-secondary rounded-lg hover:opacity-70 p-1">
                   Go Find Some <IconSearch className="ml-1 my-1" size={24} />
                 </button>
               </Link>

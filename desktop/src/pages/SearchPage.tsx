@@ -128,7 +128,7 @@ const SearchPage = () => {
           </svg>
         </div>
       ) : mangaData != null && mangaData.length != 0 ? (
-        <div className="grid xs:grids-col-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+        <div className="grid mb-3 xs:grids-col-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {mangaData.map((item) => (
             <MangaCard
               mangaId={item.mangaId}
@@ -140,14 +140,14 @@ const SearchPage = () => {
         </div>
       ) : (
         <div className="grid  font-bold text-center mt-6 place-content-center m-4">
-          <div className="flex-col text-center bg-slate-400 rounded-lg p-4  justify-content-center">
+          <div className="flex-col text-center bg-primary rounded-lg p-4  justify-content-center">
             <p className="text-xl mb-2">
               Sorry! We cant seem to find anything right now
             </p>
             <div className="flex justify-center">
               <button
                 onClick={refreshPage}
-                className="flex font-semibold text-lg px-5 bg-slate-300 rounded-lg hover:bg-slate-200 active:bg-slate-500 p-1 m-1 justify-center"
+                className="flex font-semibold text-lg px-5 bg-secondary rounded-lg hover:opacity-80 p-1 m-1 justify-center"
               >
                 {!isRefreshing ? (
                   <p>Refresh</p>

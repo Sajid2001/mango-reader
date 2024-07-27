@@ -40,7 +40,6 @@ const ReaderPage = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [maxChapters, setMaxChapters] = useState<number>(0);
   const [chapterName, setChapterName] = useState<string>("test");
-  const [chapterNumber, setChapterNumber] = useState<number>(1);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -140,7 +139,6 @@ const ReaderPage = () => {
           // Map fetched data to Post model
           console.log(data);
           setChapterName(data.chapter_name);
-          setChapterNumber(data.chapter_number);
           setIsProcessing(data.is_processing);
 
           if (!data.is_processing) {
@@ -196,17 +194,11 @@ const ReaderPage = () => {
     updateLibraryEntry(updatedReading);
   };
 
-  useMemo(() => {
+  useEffect(() => {
     if (reading != null && chapterName != null) {
       updateCurrentLibraryEntry();
     }
   }, [reading, chapterName]);
-
-  useMemo(() => {
-    setCurrentPage(1);
-    if (singlePage) window.scrollTo({ top: 0, behavior: "instant" });
-    else scanRefs.current[1]?.scrollIntoView({ behavior: "instant" });
-  }, [scans]);
 
   //Key Press Listener
   const handleKeyPress = (event: KeyboardEvent) => {
@@ -248,6 +240,16 @@ const ReaderPage = () => {
   };
 
   //UseEffect for Adding/Updating Key Press Listener
+  // useEffect(() => {
+  //   // Add event listener for keydown
+  //   window.addEventListener("keydown", handleKeyPress);
+
+  //   // Cleans up event listener on component unmount
+  //   return () => {
+  //     window.removeEventListener("keydown", handleKeyPress);
+  //   };
+  // }, [currentPage, scans.length]);
+
   useEffect(() => {
     // Add event listener for keydown
     window.addEventListener("keydown", handleKeyPress);
@@ -256,7 +258,7 @@ const ReaderPage = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
-  }, [currentPage, scans.length]);
+  }, [chapterId, currentPage]);
 
   //Page Change Functions
   const nextPage = () => {
@@ -305,18 +307,29 @@ const ReaderPage = () => {
 
     const observer = new IntersectionObserver(
       (entries) => {
+        let maxVisibleRatio = 0;
+        let maxVisibleIndex = -1;
+
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const visiblePageIndex =
-              scanRefs.current.indexOf(entry.target as HTMLImageElement) + 1;
-            setCurrentPage(visiblePageIndex);
+          if (
+            entry.isIntersecting &&
+            entry.intersectionRatio > maxVisibleRatio
+          ) {
+            maxVisibleRatio = entry.intersectionRatio;
+            maxVisibleIndex = scanRefs.current.indexOf(
+              entry.target as HTMLImageElement
+            );
           }
         });
+
+        if (maxVisibleIndex !== -1) {
+          setCurrentPage(maxVisibleIndex + 1);
+        }
       },
       {
         root: null,
         rootMargin: "0px",
-        threshold: [0.2],
+        threshold: Array.from(Array(101).keys(), (k) => k / 100), // finer control over visibility thresholds
       }
     );
 
@@ -503,7 +516,7 @@ const ReaderPage = () => {
                   ref={(el) => (scanRefs.current[index] = el)}
                   id={`${index + 1}`}
                   className={`${
-                    fitHeight ? "h-screen" : "w-[70%]"
+                    fitHeight ? "h-screen" : "w-full"
                   } mb-[${pageGap.toString()}px] flex justify-self-center`}
                 />
               ))}
