@@ -47,7 +47,7 @@ const ReaderPage = () => {
   const [sidebarToggled, setSidebarToggled] = useState<boolean>(false);
   const [singlePage, setSinglePage] = useState<boolean>(false);
   const [fitHeight, setFitHeight] = useState<boolean>(true);
-  const [leftToRight, setLeftToRight] = useState<boolean>(false);
+  const [leftToRight, setLeftToRight] = useState<boolean>(true);
   const [pageGap, setPageGap] = useState<number>(90);
 
   //References
@@ -207,25 +207,57 @@ const ReaderPage = () => {
       `Current chapterId: ${chapterId}, Max chapters: ${maxChapters}`
     );
 
-    switch (event.key) {
-      case "ArrowLeft":
-        if (scans.length > 0) {
+    const navigatePages = (direction: string) => {
+      if (scans.length > 0) {
+        if (direction === "previous") {
           previousPage();
-        }
-        break;
-      case "ArrowRight":
-        if (scans.length > 0 && currentPage < scans.length) {
+        } else if (direction === "next") {
           nextPage();
         }
-        break;
-      case "[":
+      }
+    };
+
+    const navigateChapters = (direction: string) => {
+      if (direction === "previous") {
         if (Number(chapterId) > 1) {
           previousChapter();
         }
-        break;
-      case "]":
+      } else if (direction === "next") {
         if (Number(chapterId) < maxChapters) {
           nextChapter();
+        }
+      }
+    };
+
+    switch (event.key) {
+      case "ArrowLeft":
+        if (leftToRight) {
+          navigatePages("previous");
+        } else {
+          navigatePages("next");
+        }
+        break;
+
+      case "ArrowRight":
+        if (leftToRight) {
+          navigatePages("next");
+        } else {
+          navigatePages("previous");
+        }
+        break;
+      case "[":
+        if (leftToRight) {
+          navigateChapters("previous");
+        } else {
+          navigateChapters("next");
+        }
+        break;
+
+      case "]":
+        if (leftToRight) {
+          navigateChapters("next");
+        } else {
+          navigateChapters("previous");
         }
         break;
       case "s":
@@ -239,17 +271,6 @@ const ReaderPage = () => {
     }
   };
 
-  //UseEffect for Adding/Updating Key Press Listener
-  // useEffect(() => {
-  //   // Add event listener for keydown
-  //   window.addEventListener("keydown", handleKeyPress);
-
-  //   // Cleans up event listener on component unmount
-  //   return () => {
-  //     window.removeEventListener("keydown", handleKeyPress);
-  //   };
-  // }, [currentPage, scans.length]);
-
   useEffect(() => {
     // Add event listener for keydown
     window.addEventListener("keydown", handleKeyPress);
@@ -258,7 +279,7 @@ const ReaderPage = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
-  }, [chapterId, currentPage]);
+  }, [chapterId, currentPage, scans.length, leftToRight]);
 
   //Page Change Functions
   const nextPage = () => {
@@ -345,6 +366,117 @@ const ReaderPage = () => {
     };
   }, [scans, singlePage]);
 
+  // Helper function to determine tabIndex
+  const getPageTabIndex = (
+    isLeftToRight: boolean,
+    isFirstPage: boolean,
+    isLastPage: boolean
+  ) => {
+    if (isLeftToRight) {
+      return isFirstPage ? -1 : 0;
+    } else {
+      return isLastPage ? -1 : 0;
+    }
+  };
+
+  // Helper function to determine className for pointer-events and hover effects
+  const getPageButtonClass = (
+    isLeftToRight: boolean,
+    isFirstPage: boolean,
+    isLastPage: boolean
+  ) => {
+    if (isLeftToRight) {
+      return isFirstPage ? "pointer-events-none" : "hover:bg-primary";
+    } else {
+      return isLastPage ? "pointer-events-none" : "hover:bg-primary";
+    }
+  };
+
+  // Helper function to determine icon color class
+  const getPageIconClass = (
+    isLeftToRight: boolean,
+    isFirstPage: boolean,
+    isLastPage: boolean
+  ) => {
+    if (isLeftToRight) {
+      return isFirstPage ? "text-secondary" : "text-text";
+    } else {
+      return isLastPage ? "text-secondary" : "text-text";
+    }
+  };
+
+  // Function to navigate to the previous page
+  const navigatePreviousPage = () => {
+    if (leftToRight) {
+      if (currentPage > 1) previousPage();
+    } else {
+      if (currentPage < scans.length) nextPage();
+    }
+  };
+
+  // Function to navigate to the next page
+  const navigateNextPage = () => {
+    if (leftToRight) {
+      if (currentPage < scans.length) nextPage();
+    } else {
+      if (currentPage > 1) previousPage();
+    }
+  };
+
+  // Helper function to determine tabIndex for chapter navigation
+  const getChapterTabIndex = (
+    isLeftToRight: boolean,
+    chapterId: number,
+    maxChapters: number
+  ) => {
+    return (isLeftToRight && chapterId <= 1) ||
+      (!isLeftToRight && chapterId >= maxChapters)
+      ? -1
+      : 0;
+  };
+
+  // Helper function to determine className for chapter navigation buttons
+  const getChapterButtonClass = (
+    isLeftToRight: boolean,
+    chapterId: number,
+    maxChapters: number
+  ) => {
+    return (isLeftToRight && chapterId <= 1) ||
+      (!isLeftToRight && chapterId >= maxChapters)
+      ? "pointer-events-none"
+      : "hover:bg-primary";
+  };
+
+  // Helper function to determine icon color class for chapter navigation
+  const getChapterIconClass = (
+    isLeftToRight: boolean,
+    chapterId: number,
+    maxChapters: number
+  ) => {
+    return (isLeftToRight && chapterId <= 1) ||
+      (!isLeftToRight && chapterId >= maxChapters)
+      ? "text-secondary"
+      : "text-text";
+  };
+
+  // Function to navigate to the previous chapter
+  const navigatePreviousChapter = () => {
+    if (leftToRight) {
+      if (Number(chapterId) > 1) previousChapter();
+    } else {
+      if (Number(chapterId) < maxChapters) nextChapter();
+    }
+  };
+
+  // Function to navigate to the next chapter
+  const navigateNextChapter = () => {
+    if (leftToRight) {
+      if (Number(chapterId) < maxChapters) nextChapter();
+    } else {
+      if (Number(chapterId) > 1) previousChapter();
+    }
+  };
+
   return (
     <div className="flex px-4 justify-center h-screen w-screen overflow-y-auto">
       {sidebarToggled ? (
@@ -359,75 +491,96 @@ const ReaderPage = () => {
             <div className="flex flex-col w-full font-semibold px-5 text-lg *:w-full *:flex *:px-2 *:py-1 *:items-center *:justify-between  *:bg-secondary *:rounded-lg *:my-2">
               <div className="*:rounded-lg">
                 <button
-                  onClick={() => previousChapter()}
-                  tabIndex={Number(chapterId) <= 1 ? -1 : 0}
-                  className={`${
-                    Number(chapterId) <= 1
-                      ? "pointer-events-none"
-                      : "hover:bg-primary"
-                  }`}
+                  onClick={navigatePreviousChapter}
+                  tabIndex={getChapterTabIndex(
+                    leftToRight,
+                    Number(chapterId),
+                    maxChapters
+                  )}
+                  className={getChapterButtonClass(
+                    leftToRight,
+                    Number(chapterId),
+                    maxChapters
+                  )}
                 >
                   <IconChevronLeft
                     size={IconSize}
-                    className={
-                      Number(chapterId) <= 1 ? "text-secondary" : "text-text"
-                    }
+                    className={getChapterIconClass(
+                      leftToRight,
+                      Number(chapterId),
+                      maxChapters
+                    )}
                   />
                 </button>
                 <p className="text-center">{chapterName}</p>
                 <button
-                  onClick={() => nextChapter()}
-                  tabIndex={Number(chapterId) >= maxChapters ? -1 : 0}
-                  className={`${
-                    Number(chapterId) >= maxChapters
-                      ? "pointer-events-none"
-                      : "hover:bg-primary"
-                  }`}
+                  onClick={navigateNextChapter}
+                  tabIndex={getChapterTabIndex(
+                    !leftToRight,
+                    Number(chapterId),
+                    maxChapters
+                  )}
+                  className={getChapterButtonClass(
+                    !leftToRight,
+                    Number(chapterId),
+                    maxChapters
+                  )}
                 >
                   <IconChevronRight
                     size={IconSize}
-                    className={
-                      Number(chapterId) >= maxChapters
-                        ? "text-secondary"
-                        : "text-text"
-                    }
+                    className={getChapterIconClass(
+                      !leftToRight,
+                      Number(chapterId),
+                      maxChapters
+                    )}
                   />
                 </button>
               </div>
+
               <div className="*:rounded-lg">
                 <button
-                  onClick={() => previousPage()}
-                  tabIndex={currentPage <= 1 ? -1 : 0}
-                  className={`${
-                    currentPage <= 1
-                      ? "pointer-events-none"
-                      : "hover:bg-primary"
-                  }`}
+                  onClick={navigatePreviousPage}
+                  tabIndex={getPageTabIndex(
+                    leftToRight,
+                    currentPage <= 1,
+                    currentPage >= scans.length
+                  )}
+                  className={getPageButtonClass(
+                    leftToRight,
+                    currentPage <= 1,
+                    currentPage >= scans.length
+                  )}
                 >
                   <IconChevronLeft
                     size={IconSize}
-                    className={`${
-                      currentPage <= 1 ? "text-secondary" : "text-text"
-                    }`}
+                    className={getPageIconClass(
+                      leftToRight,
+                      currentPage <= 1,
+                      currentPage >= scans.length
+                    )}
                   />
                 </button>
                 {currentPage}/{scans.length}
                 <button
-                  onClick={() => nextPage()}
-                  tabIndex={currentPage >= scans.length ? -1 : 0}
-                  className={`${
-                    currentPage >= scans.length
-                      ? "pointer-events-none"
-                      : "hover:bg-primary "
-                  }`}
+                  onClick={navigateNextPage}
+                  tabIndex={getPageTabIndex(
+                    leftToRight,
+                    currentPage >= scans.length,
+                    currentPage <= 1
+                  )}
+                  className={getPageButtonClass(
+                    leftToRight,
+                    currentPage >= scans.length,
+                    currentPage <= 1
+                  )}
                 >
                   <IconChevronRight
                     size={IconSize}
-                    className={`${
-                      currentPage >= scans.length
-                        ? "text-secondary"
-                        : "text-text"
-                    }`}
+                    className={getPageIconClass(
+                      leftToRight,
+                      currentPage >= scans.length,
+                      currentPage <= 1
+                    )}
                   />
                 </button>
               </div>
@@ -468,11 +621,11 @@ const ReaderPage = () => {
                 >
                   {leftToRight ? (
                     <div>
-                      Right to Left <IconCircleArrowLeft size={IconSize} />
+                      Left to Right <IconCircleArrowRight size={IconSize} />
                     </div>
                   ) : (
                     <div>
-                      Left to Right <IconCircleArrowRight size={IconSize} />
+                      Right to Left <IconCircleArrowLeft size={IconSize} />
                     </div>
                   )}
                 </button>
@@ -493,9 +646,9 @@ const ReaderPage = () => {
       ) : (
         <button
           onClick={() => setSidebarToggled(true)}
-          className="fixed top-10 left-14 p-3 bg-opacity-40 bg-slate-400 hover:bg-slate-600 hover:bg-opacity-40  rounded-lg"
+          className="fixed top-10 left-14 p-3 bg-opacity-40 bg-primary hover:opacity-80  rounded-lg"
         >
-          <IconChevronLeft size={28} color="black" />
+          <IconChevronLeft size={28} />
         </button>
       )}
       {scans.length > 0 && !loading ? (

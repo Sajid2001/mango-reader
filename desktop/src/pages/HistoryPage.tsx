@@ -31,7 +31,7 @@ const HistoryPage = () => {
     "November",
     "December",
   ];
-  const buttonIconSize = 48;
+  const buttonIconSize = 36;
   let prevDate: Date | undefined = undefined;
 
   const navigate = useNavigate();

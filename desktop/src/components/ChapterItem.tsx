@@ -13,8 +13,8 @@ interface Props {
 const ChapterItem = ({ mangaId, chapter, reading }: Props) => (
   <Link
     to={`/reader/${mangaId}/${chapter.chapterNumber}`}
-    className={`flex justify-between p-3 items-center font-bold hover:bg-secondary ${
-      reading && reading.progress >= chapter.chapterNumber && "font-thin"
+    className={`flex justify-between p-3 items-center font-bold hover:bg-secondary hover:opacity-80 ${
+      reading && reading.progress >= chapter.chapterNumber && "font-light"
     }`}
   >
     <div className="flex-col">
@@ -22,7 +22,7 @@ const ChapterItem = ({ mangaId, chapter, reading }: Props) => (
       <p>{chapter.chapterNumber}</p>
     </div>
     <div>
-      <button className="bg-primary border-2 border-background rounded-lg text-text py-1 px-3 mr-4 hover:bg-primary active:bg-accent">
+      <button className="bg-primary border-2 border-background rounded-lg text-text py-1 px-3 mr-4 hover:bg-background active:bg-accent">
         <IconDownload />
       </button>
     </div>
