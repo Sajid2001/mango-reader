@@ -616,7 +616,7 @@ const ReaderPage = () => {
               </button>
               <button
                 onClick={() => setLeftToRight(!leftToRight)}
-                className="hover:bg-primary active:bg-slate-400"
+                className="hover:bg-primary"
               >
                 {leftToRight ? (
                   <div>
@@ -628,12 +628,12 @@ const ReaderPage = () => {
                   </div>
                 )}
               </button>
-              <button className="hover:bg-primary active:bg-slate-400">
+              <button className="hover:bg-primary">
                 <div>
                   Keybinds <IconKeyboard size={IconSize} />
                 </div>
               </button>
-              <button className="hover:bg-primary active:bg-slate-400">
+              <button className="hover:bg-primary">
                 <div>
                   Settings <IconSettings size={IconSize} />
                 </div>

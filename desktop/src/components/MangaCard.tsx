@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import React from "react";
 
 interface MangaCardProps {
   mangaId?: number;
@@ -16,9 +17,9 @@ const MangaCard = ({ mangaId, title, chapters, image }: MangaCardProps) => {
           src={image}
           alt=""
         />
-        <div className="flex flex-col items-stretch h-full w-full rounded-2xl absolute bottom-0 z-10 bg-slate-500 bg-opacity-35 transition ease-in-out duration-300 opacity-0 hover:opacity-100">
+        <div className="flex flex-col items-stretch h-full w-full rounded-2xl absolute bottom-0 z-10 bg-secondary-30 transition ease-in-out duration-300 opacity-0 hover:opacity-100">
           {chapters != null && (
-            <div className=" mx-3 pt-2 text-2xl font-bold bg-secondary text-text h-14 w-14 text-center align-middle  justify-items-center bg-opacity-90">
+            <div className=" mx-3 pt-2 text-2xl font-bold bg-primary text-text h-14 w-14 text-center align-middle justify-items-center">
               {chapters / 1000 < 1
                 ? chapters
                 : `${Math.round(chapters / 1000)}K+`}
@@ -33,4 +34,4 @@ const MangaCard = ({ mangaId, title, chapters, image }: MangaCardProps) => {
   );
 };
 
-export default MangaCard;
+export default React.memo(MangaCard);
