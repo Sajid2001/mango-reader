@@ -28,7 +28,7 @@ const MangaPage = () => {
   const [reading, setReading] = useState<LibraryEntry | null>();
   const [loadingManga, setLoadingManga] = useState<boolean>(true);
   const [loadingChapters, setLoadingChapters] = useState<boolean>(true);
-  const [ascending, setAscending] = useState<boolean>(true);
+  const [ascending, setAscending] = useState<boolean>(false);
 
   // Navigation
   const navigate = useNavigate();
@@ -331,7 +331,7 @@ const MangaPage = () => {
               <div className="flex">
                 <button
                   onClick={() => sortChapters()}
-                  className="flex bg-primary rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700 items-center"
+                  className="flex bg-primary rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:opacity-70 items-center"
                 >
                   {" "}
                   {ascending ? (
@@ -343,7 +343,7 @@ const MangaPage = () => {
                 {reading != null && reading.progress > 0 ? (
                   <button
                     onClick={continueReading}
-                    className="flex bg-primary rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700"
+                    className="flex bg-primary rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:opacity-70"
                   >
                     {" "}
                     Continue <IconPlayerPlay className="pl-2" />
@@ -351,7 +351,7 @@ const MangaPage = () => {
                 ) : (
                   <button
                     onClick={startReadingNow}
-                    className="flex bg-primary rounded-lg text-text py-1 px-3 mr-4 justify-self-end hover:bg-slate-800 active:bg-slate-700"
+                    className="flex bg-primary rounded-lg text-text py-1 px-3 mr-4 justify-self-end hover:opacity-70"
                   >
                     {" "}
                     Start <IconPlayerPlay className="pl-2" />

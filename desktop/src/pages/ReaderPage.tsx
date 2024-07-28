@@ -614,22 +614,20 @@ const ReaderPage = () => {
                   </div>
                 )}
               </button>
-              {singlePage && (
-                <button
-                  onClick={() => setLeftToRight(!leftToRight)}
-                  className="hover:bg-primary active:bg-slate-400"
-                >
-                  {leftToRight ? (
-                    <div>
-                      Left to Right <IconCircleArrowRight size={IconSize} />
-                    </div>
-                  ) : (
-                    <div>
-                      Right to Left <IconCircleArrowLeft size={IconSize} />
-                    </div>
-                  )}
-                </button>
-              )}
+              <button
+                onClick={() => setLeftToRight(!leftToRight)}
+                className="hover:bg-primary active:bg-slate-400"
+              >
+                {leftToRight ? (
+                  <div>
+                    Left to Right <IconCircleArrowRight size={IconSize} />
+                  </div>
+                ) : (
+                  <div>
+                    Right to Left <IconCircleArrowLeft size={IconSize} />
+                  </div>
+                )}
+              </button>
               <button className="hover:bg-primary active:bg-slate-400">
                 <div>
                   Keybinds <IconKeyboard size={IconSize} />
@@ -680,7 +678,7 @@ const ReaderPage = () => {
         <div className="flex flex-col justify-center items-center w-full h-full">
           <svg
             aria-hidden="true"
-            className="w-16 h-16 text-gray-200 animate-spin dark:text-gray-400 fill-slate-800"
+            className="w-16 h-16 text-secondary animate-spin fill-primary"
             viewBox="0 0 100 101"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"

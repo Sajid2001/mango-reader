@@ -16,7 +16,7 @@ const Tooltip: React.FC<TooltipProps> = ({ text, children }) => {
     >
       {children}
       {visible && (
-        <div className="absolute text-center z-30 top-1/2 left-0 transform -translate-y-1/2 font-bold translate-x-full mr-1 px-2 py-1 bg-background border-2 border-primary text-text text-md rounded-md shadow-lg">
+        <div className="absolute text-center z-30 top-1/2 left-0 transform -translate-y-1/2 font-bold translate-x-[68px] mr-1 px-2 py-1 bg-background border-2 border-primary text-text text-md rounded-md shadow-lg">
           {text}
         </div>
       )}
