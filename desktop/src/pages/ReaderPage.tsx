@@ -323,7 +323,7 @@ const ReaderPage = () => {
 
   //UseEffect for Setting up Observer for Telling what Page the User is On when Longstring is Turned On
   //is technically also active when singlePage is on but its not needed since only one page is shown at a time
-  useLayoutEffect(() => {
+  useEffect(() => {
     scanRefs.current = scanRefs.current.slice(0, scans.length);
 
     const observer = new IntersectionObserver(
@@ -478,9 +478,9 @@ const ReaderPage = () => {
   };
 
   return (
-    <div className="flex px-4 justify-center h-screen w-screen overflow-y-auto">
+    <div className="flex px-4 justify-center overflow-y-auto">
       {sidebarToggled ? (
-        <div className=" fixed top-0 left-0 h-screen w-72 bg-primary text-text overflow-y-auto">
+        <div className="fixed z-10 top-0 left-0 h-screen w-72 bg-primary-70 text-text overflow-y-auto">
           <div className="flex flex-col p-6 *:mb-3">
             <div className="flex font-bold text-2xl gap-1">
               <button onClick={() => setSidebarToggled(false)}>
@@ -592,11 +592,11 @@ const ReaderPage = () => {
               >
                 {singlePage ? (
                   <div>
-                    Longstrip <IconSpacingVertical size={IconSize} />
+                    Single Page <IconBook size={IconSize} />
                   </div>
                 ) : (
                   <div>
-                    Single Page <IconBook size={IconSize} />
+                    Longstrip <IconSpacingVertical size={IconSize} />
                   </div>
                 )}
               </button>
@@ -606,11 +606,11 @@ const ReaderPage = () => {
               >
                 {fitHeight ? (
                   <div>
-                    Fit Width <IconArrowAutofitWidth size={IconSize} />
+                    Fit Height <IconArrowAutofitHeight size={IconSize} />
                   </div>
                 ) : (
                   <div>
-                    Fit Height <IconArrowAutofitHeight size={IconSize} />
+                    Fit Width <IconArrowAutofitWidth size={IconSize} />
                   </div>
                 )}
               </button>
@@ -644,7 +644,7 @@ const ReaderPage = () => {
       ) : (
         <button
           onClick={() => setSidebarToggled(true)}
-          className="fixed top-10 left-14 p-3 bg-opacity-40 bg-primary hover:opacity-80  rounded-lg"
+          className="fixed top-10 left-14 p-3 bg-primary-40 hover:bg-primary-80 rounded-lg"
         >
           <IconChevronLeft size={28} />
         </button>
@@ -655,7 +655,7 @@ const ReaderPage = () => {
             <img
               src={scans[currentPage - 1]}
               className={`${
-                fitHeight ? "h-full" : "w-full"
+                fitHeight ? "h-screen" : "w-screen"
               } flex justify-self-center`}
             />
           ) : (
@@ -667,7 +667,7 @@ const ReaderPage = () => {
                   ref={(el) => (scanRefs.current[index] = el)}
                   id={`${index + 1}`}
                   className={`${
-                    fitHeight ? "h-screen" : "w-full"
+                    fitHeight ? "h-screen" : "w-screen"
                   } mb-[${pageGap.toString()}px] flex justify-self-center`}
                 />
               ))}
@@ -699,7 +699,7 @@ const ReaderPage = () => {
       )}
       <Link
         to={`/manga/${mangaId}`}
-        className="fixed top-10 right-14 text-3xl p-3 font-bold bg-accent hover:opacity-80 rounded-lg"
+        className="fixed top-10 right-14 text-3xl p-3 font-bold bg-accent-40 hover:bg-accent-80 rounded-lg"
       >
         <IconArrowBackUp size={28} className="text-background" />
       </Link>
