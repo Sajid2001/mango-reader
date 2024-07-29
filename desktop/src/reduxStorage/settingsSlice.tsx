@@ -5,7 +5,7 @@ import { UserSettings } from "../models/userSettings";
 
 
 const initialState: UserSettings = {
-    theme: "grape",
+    theme: "default",
     fontSize: 14,
     chapterDownloadPath: "",
     libraryDownloadPath: "",
@@ -25,6 +25,24 @@ const settingsSlice = createSlice({
     name: "userSettings",
     initialState,
     reducers: {
+
+        setAllSettings: (state, action: PayloadAction<UserSettings>) => {
+            state.theme = action.payload.theme;
+            state.fontSize = action.payload.fontSize;
+            state.chapterDownloadPath = action.payload.chapterDownloadPath;
+            state.libraryDownloadPath = action.payload.libraryDownloadPath;
+            state.defaultSinglePage = action.payload.defaultSinglePage;
+            state.defaultFitHeight = action.payload.defaultFitHeight;
+            state.defaultLeftToRight = action.payload.defaultLeftToRight;
+            state.pageGap = action.payload.pageGap;
+            state.leftPageKeybind = action.payload.leftPageKeybind;
+            state.rightPageKeybind = action.payload.rightPageKeybind;
+            state.leftChapterKeybind = action.payload.leftChapterKeybind;
+            state.rightChapterKeybind = action.payload.rightChapterKeybind;
+            state.sidebarKeybind = action.payload.sidebarKeybind;
+            state.exitKeybind = action.payload.exitKeybind;
+        },
+
         setTheme: (state, action: PayloadAction<string>) => {
             state.theme = action.payload;
         },
@@ -101,6 +119,7 @@ const settingsSlice = createSlice({
     }
 });
 export const {
+    setAllSettings,
     setTheme,
     setFontSize,
     setDownloadPath,

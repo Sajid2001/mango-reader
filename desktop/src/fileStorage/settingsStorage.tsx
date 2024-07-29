@@ -1,4 +1,3 @@
-import { LibraryEntry } from "../models/libraryEntry";
 import { UserSettings } from "../models/userSettings";
 
 import { readDataFromFile, writeDataToFile } from './dataManager';
@@ -19,15 +18,13 @@ const saveSettings = async () => {
     writeDataToFile(filepath, JSON.stringify(settings));
 };
 
-const clearSettings = async () => {
-    settings.theme = "light";
-    settings.fontSize = 14;
-    await saveSettings();
-}
-
-
 const getSettings = async () => {
     return settings;
 };
 
-export { loadSettings, saveSettings, clearSettings, getSettings };
+const setSettings = async (newSettings: UserSettings) => {
+    settings = newSettings;
+    await saveSettings();
+}
+
+export { loadSettings, saveSettings, getSettings, setSettings };

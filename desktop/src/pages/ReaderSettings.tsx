@@ -110,7 +110,7 @@ const ReaderSettings = () => {
         </div>
 
         <h3 className="text-xl font-bold pb-2 ">Keybinds</h3>
-        <div className="*:w-full *:border-b-2 border-slate-500 font-semibold">
+        <div className="*:w-full *:border-b-2 *:border-primary font-semibold">
           <div className="flex items-center justify-between p-2">
             <p className="align-bottom">Move Page Left</p>
             <button className="ml-2 w-44 bg-secondary px-2 py-1 h-full rounded-lg font-semibold">

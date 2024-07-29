@@ -1,21 +1,50 @@
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { getSettings, loadSettings, setSettings } from "../fileStorage/settingsStorage";
+import { resetUserSettings, setAllSettings } from "../reduxStorage/settingsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { get } from "http";
+import { UserSettings } from "../models/userSettings";
 
 const SettingsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const settings = useSelector((state: any) => state.userSettings);
+
+  const revertSettings = () => {
+    loadSettings().then(() => {
+      getSettings().then((oldSettings: UserSettings) => {
+        dispatch(setAllSettings(oldSettings));
+      })
+    })
+  };
+
+  const saveSettings = () => {
+    loadSettings().then(() => {
+      setSettings(settings);
+    })
+  };
+
+  const resetSettingsToDefault = () => {
+    loadSettings().then(() => {
+      getSettings().then(() => {
+        dispatch(resetUserSettings());
+      })
+    })
+  };
 
   return (
     <div className="h-screen w-full flex-col overflow-y-auto">
       <div className=" flex flex-wrap *:pt-3 pb-4">
         <h1 className="text-3xl pl-7 mr-2 font-bold ">Settings</h1>
         <div className="flex m-1 *:mr-2">
-          <button className="py-1  mb-3 font-semibold text-lg px-5 bg-accent text-background rounded-lg active:bg-slate-700">
+          <button onClick={resetSettingsToDefault} className="py-1  mb-3 font-semibold text-lg px-5 bg-accent text-background rounded-lg active:bg-slate-700">
             Reset To Default
           </button>
-          <button className="py-1  mb-3 font-semibold text-lg px-5 bg-secondary rounded-lg active:bg-slate-200">
+          <button onClick={revertSettings} className="py-1  mb-3 font-semibold text-lg px-5 bg-secondary rounded-lg active:bg-slate-200">
             Revert
           </button>
-          <button className="py-1  mb-3 font-semibold text-lg px-5 bg-secondary rounded-lg active:bg-slate-200">
+          <button onClick={saveSettings} className="py-1  mb-3 font-semibold text-lg px-5 bg-secondary rounded-lg active:bg-slate-200">
             Save Changes
           </button>
         </div>
