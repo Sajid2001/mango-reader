@@ -9,9 +9,22 @@ import MangaPage from "./pages/MangaPage";
 import ReaderPage from "./pages/ReaderPage";
 import GeneralSettings from "./pages/GeneralSettings";
 import ReaderSettings from "./pages/ReaderSettings";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getSettings, loadSettings } from "./fileStorage/settingsStorage";
+import { UserSettings } from "./models/userSettings";
+import { setAllSettings } from "./reduxStorage/settingsSlice";
 
 function App() {
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    loadSettings().then(() => {
+      getSettings().then((oldSettings: UserSettings) => {
+        dispatch(setAllSettings(oldSettings));
+      })
+    })
+  }, []);
   const theme = useSelector((state: any) => state.userSettings.theme);
 
   // Determine if the sidebar should be hidden based on the current route
