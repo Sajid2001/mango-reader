@@ -78,9 +78,6 @@ const LibraryPage = () => {
           <button className="py-1  mb-3 font-semibold text-lg px-5 bg-secondary rounded-lg active:bg-slate-200">
             Layout
           </button>
-          <button className="py-1 mb-3 font-semibold px-3 bg-secondary rounded-lg  active:bg-slate-200">
-            <IconMoon size={24} />
-          </button>
         </div>
       </div>
 

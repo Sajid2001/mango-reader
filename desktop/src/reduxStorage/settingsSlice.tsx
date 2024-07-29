@@ -1,24 +1,21 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { UserSettings } from "../models/userSettings";
 
-
-
-
 const initialState: UserSettings = {
     theme: "default",
     fontSize: 14,
     chapterDownloadPath: "",
     libraryDownloadPath: "",
     defaultSinglePage: false,
-    defaultFitHeight: false,
-    defaultLeftToRight: false,
+    defaultFitHeight: true,
+    defaultLeftToRight: true,
     pageGap: 0,
-    leftPageKeybind: "",
-    rightPageKeybind: "",
-    leftChapterKeybind: "",
-    rightChapterKeybind: "",
-    sidebarKeybind: "",
-    exitKeybind: "",
+    leftPageKeybind: "ArrowLeft",
+    rightPageKeybind: "ArrowRight",
+    leftChapterKeybind: "[",
+    rightChapterKeybind: "]",
+    sidebarKeybind: "s",
+    exitKeybind: "Escape",
 }
 
 const settingsSlice = createSlice({

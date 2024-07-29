@@ -102,9 +102,6 @@ const SearchPage = () => {
           <button className="py-1  mb-3 font-semibold text-lg px-5 bg-secondary rounded-lg active:bg-accent">
             Layout
           </button>
-          <button className="py-1 mb-3 font-semibold px-3 bg-secondary rounded-lg  active:bg-accent">
-            <IconMoon size={24} />
-          </button>
         </div>
       </div>
 
