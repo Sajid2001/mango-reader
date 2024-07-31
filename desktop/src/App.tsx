@@ -16,7 +16,6 @@ import { UserSettings } from "./models/userSettings";
 import { setAllSettings } from "./reduxStorage/settingsSlice";
 
 function App() {
-
   const dispatch = useDispatch();
   useEffect(() => {
     loadSettings().then(() => {

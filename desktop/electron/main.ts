@@ -1,9 +1,5 @@
 import { app, BrowserWindow, ipcMain, dialog } from 'electron'
 import path from 'node:path'
-import { getSettings, loadSettings } from '../src/fileStorage/settingsStorage';
-import { UserSettings } from '../src/models/userSettings';
-import { setAllSettings } from '../src/reduxStorage/settingsSlice';
-import { useDispatch } from 'react-redux';
 const fs = require('fs');
 
 
@@ -88,17 +84,10 @@ ipcMain.handle('open-file-dialog', async (event) => {
 app.on('activate', () => {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  const dispatch = useDispatch();
-
-  loadSettings().then(() => {
-    getSettings().then((oldSettings: UserSettings) => {
-      dispatch(setAllSettings(oldSettings));
-    })
-  }).finally(() => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow()
-    }
-  })
+  
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow()
+  }
 })
 
 
