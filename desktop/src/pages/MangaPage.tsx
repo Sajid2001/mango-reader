@@ -256,7 +256,7 @@ const MangaPage = () => {
         />
       </div>
       <div ref={targetRef} className="flex flex-col mt-2">
-        <div className="sticky top-0 z-30 bg-background">
+        <div className="sticky top-0 z-20 bg-background">
           <div className=" pl-4 pt-4 pr-2 inline-block align-baseline">
             <p className="text-3xl font-bold">
               {manga.name}
