@@ -207,6 +207,52 @@
     --secondary-rgb: 255, 107, 129;
     --accent-rgb: 59, 59, 59;
   }
+  .mushroom {
+    --text: #2c2b28;
+    --background: #f5f3f2;
+    --primary: #c2b280;
+    --secondary: #a39367;
+    --accent: #7e9466;
+
+    --primary-rgb: 194, 178, 128;
+    --secondary-rgb: 163, 147, 103;
+    --accent-rgb: 126, 148, 102;
+  }
+  .watermelon {
+    --text: #e0e0e0;
+    --background: #021c02;
+    --primary: #973838;
+    --secondary: #426939;
+    --accent: #60a852;
+
+    --primary-rgb: 208, 169, 169;
+    --secondary-rgb: 66, 105, 57;
+    --accent-rgb: 120, 181, 148;
+  }
+  .joycon {
+    --text: #f7f9f9;
+    --background: #1c1f1d;
+    --primary: #e63946;
+    --secondary: #51acd6;
+    --accent: #2a9d8f;
+
+    /* RGB color variables */
+    --primary-rgb: 230, 57, 70;
+    --secondary-rgb: 42, 157, 143;
+    --accent-rgb: 255, 207, 64;
+  }
+  .confetti {
+    --text: #f7f9f9;
+    --background: #1c1f1d;
+    --primary: #e63946;
+    --secondary: #2a9d8f;
+    --accent: #ffcf40;
+
+    /* RGB color variables */
+    --primary-rgb: 230, 57, 70;
+    --secondary-rgb: 42, 157, 143;
+    --accent-rgb: 255, 207, 64;
+  }
 }
 
 input {

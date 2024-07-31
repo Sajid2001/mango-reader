@@ -628,6 +628,7 @@ const ReaderPage = () => {
                   </div>
                 )}
               </button>
+              
               <button className="hover:bg-primary">
                 <div>
                   Keybinds <IconKeyboard size={IconSize} />
