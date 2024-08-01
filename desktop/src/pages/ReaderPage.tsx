@@ -21,6 +21,7 @@ import {
 } from "../fileStorage/libraryStorage";
 import { LibraryEntry } from "../models/libraryEntry";
 import { getSettings, loadSettings } from "../fileStorage/settingsStorage";
+import { useSelector } from "react-redux";
 
 const ReaderPage = () => {
   // [ VALUES ]
@@ -44,11 +45,25 @@ const ReaderPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   //Sidebar Option Values
+
+  const defualtSinglePage = useSelector(
+    (state: any) => state.userSettings.defaultSinglePage
+  );
+  const defualtFitHeight = useSelector(
+    (state: any) => state.userSettings.defaultFitHeight
+  );
+  const defualtLeftToRight = useSelector(
+    (state: any) => state.userSettings.defaultLeftToRight
+  );
+  const defualtPageGap = useSelector(
+    (state: any) => state.userSettings.pageGap
+  );
+
   const [sidebarToggled, setSidebarToggled] = useState<boolean>(false);
-  const [singlePage, setSinglePage] = useState<boolean>(false);
-  const [fitHeight, setFitHeight] = useState<boolean>(true);
-  const [leftToRight, setLeftToRight] = useState<boolean>(true);
-  const [pageGap, setPageGap] = useState<number>(90);
+  const [singlePage, setSinglePage] = useState<boolean>(defualtSinglePage);
+  const [fitHeight, setFitHeight] = useState<boolean>(defualtFitHeight);
+  const [leftToRight, setLeftToRight] = useState<boolean>(defualtLeftToRight);
+  const [pageGap, setPageGap] = useState<number>(defualtPageGap);
 
   //References
   const scanRefs = useRef<(HTMLImageElement | null)[]>([]);
@@ -628,7 +643,7 @@ const ReaderPage = () => {
                   </div>
                 )}
               </button>
-              
+
               <button className="hover:bg-primary">
                 <div>
                   Keybinds <IconKeyboard size={IconSize} />

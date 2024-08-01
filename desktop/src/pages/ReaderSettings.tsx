@@ -7,14 +7,29 @@ import {
   IconSpacingVertical,
 } from "@tabler/icons-react";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setDefaultFitHeight,
+  setDefaultLeftToRight,
+  setDefaultSinglePage,
+  setPageGap,
+} from "../reduxStorage/settingsSlice";
 
 const ReaderSettings = () => {
   const iconSize = 24;
 
-  const [singlePage, setSinglePage] = useState<boolean>();
-  const [fitHeight, setFitHeight] = useState<boolean>();
-  const [leftToRight, setLeftToRight] = useState<boolean>();
-  const [pageGap, setPageGap] = useState<number>(0);
+  const singlePage = useSelector(
+    (state: any) => state.userSettings.defaultSinglePage
+  );
+  const fitHeight = useSelector(
+    (state: any) => state.userSettings.defaultFitHeight
+  );
+  const leftToRight = useSelector(
+    (state: any) => state.userSettings.defaultLeftToRight
+  );
+  const pageGap = useSelector((state: any) => state.userSettings.pageGap);
+
+  const dispatch = useDispatch();
 
   return (
     <div className="*:py-3 *:px-4">
@@ -22,8 +37,8 @@ const ReaderSettings = () => {
         <h3 className="text-xl font-bold pb-3 ">Profile</h3>
         <div className="ml-2">
           <select className="pr-8">
-            <option value="mango">Default</option>
-            <option value="mango">Custom</option>
+            <option value="default">Default</option>
+            <option value="custom">Custom</option>
           </select>
           <button className="ml-2 w-44 bg-secondary px-2 py-1 h-full rounded-lg font-semibold">
             Create New Profile
@@ -37,16 +52,16 @@ const ReaderSettings = () => {
         <div className="ml-2 mb-4 grid grid-cols-2 grid-rows-1 *:gap-2 *:justify-center w-fit bg-secondary rounded-lg">
           <button
             disabled={singlePage}
-            onClick={() => setSinglePage(true)}
-            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-l-lg disabled:rounded-lg disabled:bg-primary font-semibold disabled:border-2 disabled:border-text disabled:ring-0 disabled:ring-offset-0"
+            onClick={() => dispatch(setDefaultSinglePage(true))}
+            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-l-lg disabled:rounded-lg disabled:bg-primary font-semibold border-2 border-secondary disabled:border-text disabled:ring-0 disabled:ring-offset-0"
           >
             <IconBook size={iconSize} />
             Single Page
           </button>
           <button
             disabled={!singlePage}
-            onClick={() => setSinglePage(false)}
-            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-r-lg disabled:rounded-lg disabled:bg-primary font-semibold disabled:border-2 disabled:border-text disabled:ring-0 disabled:ring-offset-0"
+            onClick={() => dispatch(setDefaultSinglePage(false))}
+            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-r-lg disabled:rounded-lg disabled:bg-primary font-semibold border-2 border-secondary disabled:border-text disabled:ring-0 disabled:ring-offset-0"
           >
             <IconSpacingVertical size={iconSize} />
             Long Strip
@@ -59,7 +74,7 @@ const ReaderSettings = () => {
             required
             value={pageGap}
             min={0}
-            onChange={(e) => setPageGap(e.target.valueAsNumber)}
+            onChange={(e) => dispatch(setPageGap(e.target.valueAsNumber))}
             className="p-1 pl-1 w-[100px]  text-md bg-secondary rounded-lg font-semibold text-right pr-2 custom-number-input"
             type="number"
           />
@@ -73,16 +88,16 @@ const ReaderSettings = () => {
         <div className="ml-2 mb-4 grid grid-cols-2 grid-rows-1 *:gap-2 *:justify-center w-fit bg-secondary rounded-lg">
           <button
             disabled={!leftToRight}
-            onClick={() => setLeftToRight(false)}
-            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-l-lg disabled:rounded-lg disabled:bg-primary font-semibold disabled:border-2 disabled:border-text disabled:ring-0 disabled:ring-offset-0"
+            onClick={() => dispatch(setDefaultLeftToRight(false))}
+            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-l-lg disabled:rounded-lg disabled:bg-primary font-semibold border-2 border-secondary disabled:border-text disabled:ring-0 disabled:ring-offset-0"
           >
             <IconCircleArrowLeft size={iconSize} />
             Right To Left
           </button>
           <button
             disabled={leftToRight}
-            onClick={() => setLeftToRight(true)}
-            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-r-lg disabled:rounded-lg disabled:bg-primary font-semibold disabled:border-2 disabled:border-text disabled:ring-0 disabled:ring-offset-0"
+            onClick={() => dispatch(setDefaultLeftToRight(true))}
+            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-r-lg disabled:rounded-lg disabled:bg-primary font-semibold border-2 border-secondary disabled:border-text disabled:ring-0 disabled:ring-offset-0"
           >
             <IconCircleArrowRight size={iconSize} />
             Left To Right
@@ -93,16 +108,16 @@ const ReaderSettings = () => {
         <div className="ml-2 mb-4 grid grid-cols-2 grid-rows-1 *:gap-2 *:justify-center w-fit bg-secondary rounded-lg">
           <button
             disabled={!fitHeight}
-            onClick={() => setFitHeight(false)}
-            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-l-lg disabled:rounded-lg disabled:bg-primary font-semibold disabled:border-2 disabled:border-text disabled:ring-0 disabled:ring-offset-0"
+            onClick={() => dispatch(setDefaultFitHeight(false))}
+            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-l-lg disabled:rounded-lg disabled:bg-primary font-semibold border-2 border-secondary disabled:border-text disabled:ring-0 disabled:ring-offset-0"
           >
             <IconArrowsHorizontal size={iconSize} />
             Fit Width
           </button>
           <button
             disabled={fitHeight}
-            onClick={() => setFitHeight(true)}
-            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-r-lg disabled:rounded-lg disabled:bg-primary font-semibold disabled:border-2 disabled:border-text disabled:ring-0 disabled:ring-offset-0"
+            onClick={() => dispatch(setDefaultFitHeight(true))}
+            className="flex w-44 bg-inherit px-2 py-1 h-full rounded-r-lg disabled:rounded-lg disabled:bg-primary font-semibold border-2 border-secondary disabled:border-text disabled:ring-0 disabled:ring-offset-0"
           >
             <IconArrowsVertical size={iconSize} />
             Fit Height
