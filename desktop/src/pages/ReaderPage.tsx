@@ -676,7 +676,7 @@ const ReaderPage = () => {
           )}
         </div>
       ) : (
-        <div className="flex flex-col justify-center items-center w-full h-full">
+        <div className="flex flex-col justify-center items-center w-screen h-screen">
           <svg
             aria-hidden="true"
             className="w-16 h-16 text-secondary animate-spin fill-primary"
