@@ -14,6 +14,7 @@ const GeneralSettings = () => {
 
   useEffect(() => {
     loadLibrary();
+
   }, []);
 
   const [file, setFile] = useState<File | null>(null);

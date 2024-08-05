@@ -46,24 +46,24 @@ const ReaderPage = () => {
 
   //Sidebar Option Values
 
-  const defualtSinglePage = useSelector(
-    (state: any) => state.userSettings.defaultSinglePage
-  );
-  const defualtFitHeight = useSelector(
-    (state: any) => state.userSettings.defaultFitHeight
-  );
-  const defualtLeftToRight = useSelector(
-    (state: any) => state.userSettings.defaultLeftToRight
-  );
-  const defualtPageGap = useSelector(
-    (state: any) => state.userSettings.pageGap
+  const profiles = useSelector((state: any) => state.userSettings.profiles);
+  const activeProfile = useSelector(
+    (state: any) => state.userSettings.activeProfile
   );
 
   const [sidebarToggled, setSidebarToggled] = useState<boolean>(false);
-  const [singlePage, setSinglePage] = useState<boolean>(defualtSinglePage);
-  const [fitHeight, setFitHeight] = useState<boolean>(defualtFitHeight);
-  const [leftToRight, setLeftToRight] = useState<boolean>(defualtLeftToRight);
-  const [pageGap, setPageGap] = useState<number>(defualtPageGap);
+  const [singlePage, setSinglePage] = useState<boolean>(
+    profiles[activeProfile].defaultSinglePage
+  );
+  const [fitHeight, setFitHeight] = useState<boolean>(
+    profiles[activeProfile].defaultFitHeight
+  );
+  const [leftToRight, setLeftToRight] = useState<boolean>(
+    profiles[activeProfile].defaultLeftToRight
+  );
+  const [pageGap, setPageGap] = useState<number>(
+    profiles[activeProfile].defaultPageGap
+  );
 
   //References
   const scanRefs = useRef<(HTMLImageElement | null)[]>([]);
@@ -77,23 +77,6 @@ const ReaderPage = () => {
   //Use Effect for getting Manga Specifc Data
   useEffect(() => {
     if (mangaId) {
-      //Loads User Settings else default Settings are employed
-      loadSettings().then(() => {
-        getSettings().then((settings) => {
-          if (settings) {
-            setSinglePage(
-              settings.defaultSinglePage ? settings.defaultSinglePage : false
-            );
-            setFitHeight(
-              settings.defaultFitHeight ? settings.defaultFitHeight : true
-            );
-            setLeftToRight(
-              settings.defaultLeftToRight ? settings.defaultLeftToRight : false
-            );
-          }
-        });
-      });
-
       // Checks if manga is already in library
       loadLibrary().then(() => {
         getLibrary().then((library) => {
@@ -684,7 +667,8 @@ const ReaderPage = () => {
                   id={`${index + 1}`}
                   className={`${
                     fitHeight ? "h-screen" : "w-screen"
-                  } mb-[${pageGap.toString()}px] flex justify-self-center`}
+                  } flex justify-self-center`}
+                  style={{ marginBottom: `${pageGap}px` }}
                 />
               ))}
             </div>

@@ -62,31 +62,33 @@ const SettingsPage = () => {
 
   return (
     <div className="h-screen w-full flex-col overflow-y-auto">
-      <div className=" flex flex-wrap pt-3 pb-4">
-        <h1 className="text-3xl pl-7 mr-2 font-bold ">Settings</h1>
-        <div className="flex m-1 *:mr-2">
-          <button
-            onClick={resetSettingsToDefault}
-            className="py-1  mb-3 font-semibold text-lg px-5 bg-accent text-background rounded-lg active:bg-slate-700"
-          >
-            Reset To Default
-          </button>
-          <button
-            onClick={revertSettings}
-            className="py-1  mb-3 font-semibold text-lg px-5 bg-secondary rounded-lg active:bg-slate-200"
-          >
-            Revert
-          </button>
-          <button
-            onClick={saveSettings}
-            className="py-1  mb-3 font-semibold text-lg px-5 bg-secondary rounded-lg active:bg-slate-200"
-          >
-            Save Changes
-          </button>
+      <div>
+        <div className=" flex flex-wrap pt-3 pb-2">
+          <h1 className="text-3xl pl-7 mr-2 font-bold ">Settings</h1>
+          <div className="flex m-1 *:mr-2">
+            <button
+              onClick={resetSettingsToDefault}
+              className="py-1  font-semibold text-lg px-5 bg-accent text-background rounded-lg active:bg-slate-700"
+            >
+              Reset To Default
+            </button>
+            <button
+              onClick={revertSettings}
+              className="py-1  font-semibold text-lg px-5 bg-secondary rounded-lg active:bg-slate-200"
+            >
+              Revert
+            </button>
+            <button
+              onClick={saveSettings}
+              className="py-1  font-semibold text-lg px-5 bg-secondary rounded-lg active:bg-slate-200"
+            >
+              Save Changes
+            </button>
+          </div>
         </div>
         {settingsChanged && (
-          <div className="flex">
-            <p className="  content-center text-md pl-7 mr-2 font-bold text-accent">
+          <div className="mb-2 flex">
+            <p className="content-center text-md pl-7 mr-2 font-bold text-accent">
               <p className="inline font-extrabold">Warning</p>
               <IconAlertTriangle
                 size={23}

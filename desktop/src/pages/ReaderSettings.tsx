@@ -6,7 +6,7 @@ import {
   IconCircleArrowRight,
   IconSpacingVertical,
 } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setDefaultFitHeight,
@@ -14,22 +14,34 @@ import {
   setDefaultSinglePage,
   setPageGap,
 } from "../reduxStorage/settingsSlice";
+import { UserSettings } from "../models/userSettings";
+import { selectProfiles } from "../reduxStorage/selectors";
 
 const ReaderSettings = () => {
   const iconSize = 24;
 
-  const singlePage = useSelector(
-    (state: any) => state.userSettings.defaultSinglePage
+  const profiles = useSelector((state: any) => state.userSettings.profiles);
+  const activeProfile = useSelector(
+    (state: any) => state.userSettings.activeProfile
   );
-  const fitHeight = useSelector(
-    (state: any) => state.userSettings.defaultFitHeight
-  );
-  const leftToRight = useSelector(
-    (state: any) => state.userSettings.defaultLeftToRight
-  );
-  const pageGap = useSelector((state: any) => state.userSettings.pageGap);
+
+  // const singlePage = useSelector(
+  //   (state: any) => state.userSettings.profiles[0].defaultSinglePage
+  // );
+  // const fitHeight = useSelector(
+  //   (state: any) => state.userSettings.defaultFitHeight
+  // );
+  // const leftToRight = useSelector(
+  //   (state: any) => state.userSettings.defaultLeftToRight
+  // );
+  // const pageGap = useSelector((state: any) => state.userSettings.pageGap);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    console.log(profiles);
+    console.log(activeProfile);
+  });
 
   return (
     <div className="*:py-3 *:px-4">
@@ -51,7 +63,7 @@ const ReaderSettings = () => {
         <h4 className="text-md font-bold pb-2">Page Style</h4>
         <div className="ml-2 mb-4 grid grid-cols-2 grid-rows-1 *:gap-2 *:justify-center w-fit bg-secondary rounded-lg">
           <button
-            disabled={singlePage}
+            disabled={profiles[activeProfile].defaultSinglePage}
             onClick={() => dispatch(setDefaultSinglePage(true))}
             className="flex w-44 bg-inherit px-2 py-1 h-full rounded-l-lg disabled:rounded-lg disabled:bg-primary font-semibold border-2 border-secondary disabled:border-text disabled:ring-0 disabled:ring-offset-0"
           >
@@ -59,7 +71,7 @@ const ReaderSettings = () => {
             Single Page
           </button>
           <button
-            disabled={!singlePage}
+            disabled={!profiles[activeProfile].defaultSinglePage}
             onClick={() => dispatch(setDefaultSinglePage(false))}
             className="flex w-44 bg-inherit px-2 py-1 h-full rounded-r-lg disabled:rounded-lg disabled:bg-primary font-semibold border-2 border-secondary disabled:border-text disabled:ring-0 disabled:ring-offset-0"
           >
@@ -72,14 +84,17 @@ const ReaderSettings = () => {
         <div className="ml-2 mb-4 w-full">
           <input
             required
-            value={pageGap}
+            value={profiles[activeProfile].pageGap}
             min={0}
             onChange={(e) => dispatch(setPageGap(e.target.valueAsNumber))}
             className="p-1 pl-1 w-[100px]  text-md bg-secondary rounded-lg font-semibold text-right pr-2 custom-number-input"
             type="number"
           />
           <span className="-ml-11 mr-6 font-semibold">px</span>
-          <button className="ml-2 w-44 bg-secondary px-2 py-1 h-full rounded-lg font-semibold">
+          <button
+            onClick={() => dispatch(setPageGap(0))}
+            className="ml-2 w-44 bg-secondary px-2 py-1 h-full rounded-lg font-semibold"
+          >
             Reset Margins
           </button>
         </div>
@@ -87,7 +102,7 @@ const ReaderSettings = () => {
         <h4 className="text-md font-bold pb-2">Direction</h4>
         <div className="ml-2 mb-4 grid grid-cols-2 grid-rows-1 *:gap-2 *:justify-center w-fit bg-secondary rounded-lg">
           <button
-            disabled={!leftToRight}
+            disabled={!profiles[activeProfile].defaultLeftToRight}
             onClick={() => dispatch(setDefaultLeftToRight(false))}
             className="flex w-44 bg-inherit px-2 py-1 h-full rounded-l-lg disabled:rounded-lg disabled:bg-primary font-semibold border-2 border-secondary disabled:border-text disabled:ring-0 disabled:ring-offset-0"
           >
@@ -95,7 +110,7 @@ const ReaderSettings = () => {
             Right To Left
           </button>
           <button
-            disabled={leftToRight}
+            disabled={profiles[activeProfile].defaultLeftToRight}
             onClick={() => dispatch(setDefaultLeftToRight(true))}
             className="flex w-44 bg-inherit px-2 py-1 h-full rounded-r-lg disabled:rounded-lg disabled:bg-primary font-semibold border-2 border-secondary disabled:border-text disabled:ring-0 disabled:ring-offset-0"
           >
@@ -107,7 +122,7 @@ const ReaderSettings = () => {
         <h4 className="text-md font-bold pb-2">Page Fit</h4>
         <div className="ml-2 mb-4 grid grid-cols-2 grid-rows-1 *:gap-2 *:justify-center w-fit bg-secondary rounded-lg">
           <button
-            disabled={!fitHeight}
+            disabled={!profiles[activeProfile].defaultFitHeight}
             onClick={() => dispatch(setDefaultFitHeight(false))}
             className="flex w-44 bg-inherit px-2 py-1 h-full rounded-l-lg disabled:rounded-lg disabled:bg-primary font-semibold border-2 border-secondary disabled:border-text disabled:ring-0 disabled:ring-offset-0"
           >
@@ -115,7 +130,7 @@ const ReaderSettings = () => {
             Fit Width
           </button>
           <button
-            disabled={fitHeight}
+            disabled={profiles[activeProfile].defaultFitHeight}
             onClick={() => dispatch(setDefaultFitHeight(true))}
             className="flex w-44 bg-inherit px-2 py-1 h-full rounded-r-lg disabled:rounded-lg disabled:bg-primary font-semibold border-2 border-secondary disabled:border-text disabled:ring-0 disabled:ring-offset-0"
           >
