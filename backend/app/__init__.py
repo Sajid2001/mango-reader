@@ -23,8 +23,10 @@ def create_app():
 
     from app.views import manga_view
     from app.views import chapters_view
+    from app.views import search_view
 
     app.register_blueprint(manga_view.manga_blueprint, url_prefix='/api/manga')
     app.register_blueprint(chapters_view.chapters_blueprint, url_prefix='/api/chapters')
+    app.register_blueprint(search_view.search_blueprint, url_prefix='/api/search')
 
     return app, celery
