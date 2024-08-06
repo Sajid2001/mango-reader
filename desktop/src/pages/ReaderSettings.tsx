@@ -12,18 +12,52 @@ import {
   setDefaultFitHeight,
   setDefaultLeftToRight,
   setDefaultSinglePage,
+  setLeftPageKeybind,
   setPageGap,
+  setRightPageKeybind,
 } from "../reduxStorage/settingsSlice";
 import { UserSettings } from "../models/userSettings";
 import { selectProfiles } from "../reduxStorage/selectors";
+import KeybindSelector from "../components/KeybindSelector";
 
 const ReaderSettings = () => {
   const iconSize = 24;
+
+  const [showKeybindPopup, setShowKeybindPopup] = useState(false);
 
   const profiles = useSelector((state: any) => state.userSettings.profiles);
   const activeProfile = useSelector(
     (state: any) => state.userSettings.activeProfile
   );
+
+  const leftPageKeybind = useSelector(
+    (state: any) => state.userSettings.leftPageKeybind
+  );
+
+  const rightPageKeybind = useSelector(
+    (state: any) => state.userSettings.rightPageKeybind
+  );
+
+  const leftChapterKeybind = useSelector(
+    (state: any) => state.userSettings.leftChapterKeybind
+  );
+
+  const rightChapterKeybind = useSelector(
+    (state: any) => state.userSettings.rightChapterKeybind
+  );
+
+  const sidebarKeybind = useSelector(
+    (state: any) => state.userSettings.sidebarKeybind
+  );
+
+  const exitKeybind = useSelector(
+    (state: any) => state.userSettings.exitKeybind
+  );
+
+  const changeKeybind = (keybind: string) => {
+    setShowKeybindPopup(true);
+    console.log(keybind);
+  };
 
   // const singlePage = useSelector(
   //   (state: any) => state.userSettings.profiles[0].defaultSinglePage
@@ -143,42 +177,46 @@ const ReaderSettings = () => {
         <div className="*:w-full *:border-b-2 *:border-primary font-semibold">
           <div className="flex items-center justify-between p-2">
             <p className="align-bottom">Move Page Left</p>
-            <button className="ml-2 w-44 bg-secondary px-2 py-1 h-full rounded-lg font-semibold">
-              D
+            <button
+              onClick={() => changeKeybind(leftChapterKeybind)}
+              className="ml-2 w-44 bg-secondary px-2 py-1 h-full rounded-lg font-semibold"
+            >
+              {leftPageKeybind}
             </button>
           </div>
           <div className="flex items-center justify-between p-2">
             <p className="align-bottom">Move Page Right</p>
             <button className="ml-2 w-44 bg-secondary px-2 py-1 h-full rounded-lg font-semibold">
-              A
+              {rightPageKeybind}
             </button>
           </div>
           <div className="flex items-center justify-between p-2">
             <p className="align-bottom">Move Chapter Left</p>
             <button className="ml-2 w-44 bg-secondary px-2 py-1 h-full rounded-lg font-semibold">
-              [
+              {leftChapterKeybind}
             </button>
           </div>
           <div className="flex items-center justify-between p-2">
             <p className="align-bottom">Move Chapter Right</p>
             <button className="ml-2 w-44 bg-secondary px-2 py-1 h-full rounded-lg font-semibold">
-              ]
+              {rightChapterKeybind}
             </button>
           </div>
           <div className="flex items-center justify-between p-2">
             <p className="align-bottom">Open Reader Sidebar</p>
             <button className="ml-2 w-44 bg-secondary px-2 py-1 h-full rounded-lg font-semibold">
-              Tab
+              {sidebarKeybind}
             </button>
           </div>
           <div className="flex items-center justify-between p-2">
             <p className="align-bottom">Go Back</p>
             <button className="ml-2 w-44 bg-secondary px-2 py-1 h-full rounded-lg font-semibold">
-              Esc
+              {exitKeybind}
             </button>
           </div>
         </div>
       </div>
+      {showKeybindPopup && <div></div>}
     </div>
   );
 };

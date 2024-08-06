@@ -46,12 +46,37 @@ const ReaderPage = () => {
 
   //Sidebar Option Values
 
+  const [sidebarToggled, setSidebarToggled] = useState<boolean>(false);
+
+  const movePageLeft = useSelector(
+    (state: any) => state.userSettings.leftPageKeybind
+  );
+
+  const movePageRight = useSelector(
+    (state: any) => state.userSettings.rightPageKeybind
+  );
+
+  const moveChapterLeft = useSelector(
+    (state: any) => state.userSettings.leftChapterKeybind
+  );
+
+  const moveChapterRight = useSelector(
+    (state: any) => state.userSettings.rightChapterKeybind
+  );
+
+  const sidebarKeybind = useSelector(
+    (state: any) => state.userSettings.sidebarKeybind
+  );
+
+  const exitKeybind = useSelector(
+    (state: any) => state.userSettings.exitKeybind
+  );
+
   const profiles = useSelector((state: any) => state.userSettings.profiles);
   const activeProfile = useSelector(
     (state: any) => state.userSettings.activeProfile
   );
 
-  const [sidebarToggled, setSidebarToggled] = useState<boolean>(false);
   const [singlePage, setSinglePage] = useState<boolean>(
     profiles[activeProfile].defaultSinglePage
   );
@@ -111,6 +136,7 @@ const ReaderPage = () => {
       })
       .then((data) => {
         // Map fetched data to Post model
+        console.log(data.total_chapters);
         setMangaName(data.title);
         setMaxChapters(data.total_chapters);
       })
@@ -222,13 +248,14 @@ const ReaderPage = () => {
         }
       } else if (direction === "next") {
         if (Number(chapterId) < maxChapters) {
+          console.log(maxChapters);
           nextChapter();
         }
       }
     };
 
     switch (event.key) {
-      case "ArrowLeft":
+      case movePageLeft:
         if (leftToRight) {
           navigatePages("previous");
         } else {
@@ -236,14 +263,14 @@ const ReaderPage = () => {
         }
         break;
 
-      case "ArrowRight":
+      case movePageRight:
         if (leftToRight) {
           navigatePages("next");
         } else {
           navigatePages("previous");
         }
         break;
-      case "[":
+      case moveChapterLeft:
         if (leftToRight) {
           navigateChapters("previous");
         } else {
@@ -251,17 +278,17 @@ const ReaderPage = () => {
         }
         break;
 
-      case "]":
+      case moveChapterRight:
         if (leftToRight) {
           navigateChapters("next");
         } else {
           navigateChapters("previous");
         }
         break;
-      case "s":
+      case sidebarKeybind:
         setSidebarToggled((sidebarToggled) => !sidebarToggled);
         break;
-      case "Escape":
+      case exitKeybind:
         navigate("/manga/" + mangaId);
         break;
       default:
