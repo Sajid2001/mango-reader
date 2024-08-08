@@ -1,9 +1,29 @@
-import { useState } from "react";
+import { IconCheck, IconX } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { changeKeybind } from "../reduxStorage/settingsSlice";
 
-const KeybindSelector = ({ onKeybindSelected: (keybind: string) => {}, setShowKeybindPopup: () => {} }) => {
+interface KeybindSelectorProps {
+  keybindToChange: string;
+  onClose: () => void;
+}
+
+const KeybindSelector = ({
+  keybindToChange,
+  onClose,
+}: KeybindSelectorProps) => {
   const [keybind, setKeybind] = useState("");
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  });
 
   const handleKeyDown = (event: any) => {
+    console.log("event");
     event.preventDefault();
     const { key, ctrlKey, shiftKey, altKey, metaKey } = event;
     const keys = [
@@ -20,37 +40,36 @@ const KeybindSelector = ({ onKeybindSelected: (keybind: string) => {}, setShowKe
       .filter(Boolean)
       .join("+");
 
-    try {
-      setKeybind(keys);
-      //onKeybindSelected(keys);
-    }
-    catch (error) {
-      console.error(error);
-    }
-    
+    setKeybind(keys);
   };
 
-  const handleClose = () => {
-    //setShowKeybindPopup(false);
+  const approveKeybind = () => {
+    dispatch(changeKeybind({ key: keybind, map: keybindToChange }));
+    onClose();
   };
 
   return (
-    <div
-      className={`fixed inset-0 bg-text bg-opacity-50 flex items-center justify-center`}
-    >
-      <div className="bg-white p-6 rounded-lg relative">
-        <button
-          className="absolute top-2 right-2 text-2xl"
-          onClick={handleClose}
-        >
-          &times;
-        </button>
-        <div
-          tabIndex={0}
-          onKeyDown={handleKeyDown}
-          className="p-10 cursor-pointer"
-        >
-          {keybind || "Press any key combination"}
+    <div className="absolute h-screen w-screen bg-accent-30 top-0 left-0 ">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-secondary pt-4 px-4 pb-2 rounded-lg min-w-44">
+        <div className="p-4 bg-primary font-bold rounded-xl text-center">
+          {keybind || "Press any key"}
+        </div>
+
+        <div className="flex justify-around mt-2">
+          <button
+            onClick={() => onClose()}
+            className="text-2xl bg-primary rounded-3xl p-1"
+          >
+            <IconX size={18} />
+          </button>
+
+          <button
+            onClick={() => approveKeybind()}
+            className="text-2xl bg-primary rounded-3xl p-1 disabled:opacity-30"
+            disabled={!keybind}
+          >
+            <IconCheck size={18} />
+          </button>
         </div>
       </div>
     </div>

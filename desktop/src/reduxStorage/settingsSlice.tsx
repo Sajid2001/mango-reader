@@ -24,6 +24,11 @@ const initialState: UserSettings = {
   exitKeybind: "Escape",
 };
 
+interface keybindChangeInfo {
+  key: string;
+  map: string;
+}
+
 const settingsSlice = createSlice({
   name: "userSettings",
   initialState,
@@ -74,28 +79,44 @@ const settingsSlice = createSlice({
       state.profiles[state.activeProfile].pageGap = action.payload;
     },
 
-    setLeftPageKeybind: (state, action: PayloadAction<string>) => {
-      state.leftPageKeybind = action.payload;
-    },
+    changeKeybind: (
+      state,
+      action: PayloadAction<{ key: string; map: string }>
+    ) => {
+      const key = action.payload.key;
 
-    setRightPageKeybind: (state, action: PayloadAction<string>) => {
-      state.rightPageKeybind = action.payload;
-    },
+      if (state.leftChapterKeybind === key)
+        state.leftChapterKeybind = "No Key Selected";
+      if (state.rightChapterKeybind === key)
+        state.rightChapterKeybind = "No Key Selected";
+      if (state.leftPageKeybind === key)
+        state.leftPageKeybind = "No Key Selected";
+      if (state.rightPageKeybind === key)
+        state.rightPageKeybind = "No Key Selected";
+      if (state.sidebarKeybind === key)
+        state.sidebarKeybind = "No Key Selected";
+      if (state.exitKeybind === key) state.exitKeybind = "No Key Selected";
 
-    setLeftChapterKeybind: (state, action: PayloadAction<string>) => {
-      state.leftChapterKeybind = action.payload;
-    },
-
-    setRightChapterKeybind: (state, action: PayloadAction<string>) => {
-      state.rightChapterKeybind = action.payload;
-    },
-
-    setSidebarKeybind: (state, action: PayloadAction<string>) => {
-      state.sidebarKeybind = action.payload;
-    },
-
-    setExitKeybind: (state, action: PayloadAction<string>) => {
-      state.exitKeybind = action.payload;
+      switch (action.payload.map) {
+        case "leftChapterKeybind":
+          state.leftChapterKeybind = key;
+          break;
+        case "rightChapterKeybind":
+          state.rightChapterKeybind = key;
+          break;
+        case "leftPageKeybind":
+          state.leftPageKeybind = key;
+          break;
+        case "rightPageKeybind":
+          state.rightPageKeybind = key;
+          break;
+        case "sidebarKeybind":
+          state.sidebarKeybind = key;
+          break;
+        case "exitKeybind":
+          state.exitKeybind = key;
+          break;
+      }
     },
 
     resetUserSettings: (state) => {
@@ -124,13 +145,8 @@ export const {
   setDefaultFitHeight,
   setDefaultLeftToRight,
   setPageGap,
-  setLeftPageKeybind,
-  setRightPageKeybind,
-  setLeftChapterKeybind,
-  setRightChapterKeybind,
-  setSidebarKeybind,
-  setExitKeybind,
   resetUserSettings,
+  changeKeybind,
 } = settingsSlice.actions;
 
 export default settingsSlice.reducer;

@@ -5,6 +5,7 @@ import {
   IconCircleArrowLeft,
   IconCircleArrowRight,
   IconSpacingVertical,
+  IconX,
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,9 +13,7 @@ import {
   setDefaultFitHeight,
   setDefaultLeftToRight,
   setDefaultSinglePage,
-  setLeftPageKeybind,
   setPageGap,
-  setRightPageKeybind,
 } from "../reduxStorage/settingsSlice";
 import { UserSettings } from "../models/userSettings";
 import { selectProfiles } from "../reduxStorage/selectors";
@@ -54,7 +53,10 @@ const ReaderSettings = () => {
     (state: any) => state.userSettings.exitKeybind
   );
 
+  const [keybindToChange, setKeybindToChange] = useState<string>("");
+
   const changeKeybind = (keybind: string) => {
+    setKeybindToChange(keybind);
     setShowKeybindPopup(true);
     console.log(keybind);
   };
@@ -178,7 +180,7 @@ const ReaderSettings = () => {
           <div className="flex items-center justify-between p-2">
             <p className="align-bottom">Move Page Left</p>
             <button
-              onClick={() => changeKeybind(leftChapterKeybind)}
+              onClick={() => changeKeybind("leftPageKeybind")}
               className="ml-2 w-44 bg-secondary px-2 py-1 h-full rounded-lg font-semibold"
             >
               {leftPageKeybind}
@@ -186,37 +188,60 @@ const ReaderSettings = () => {
           </div>
           <div className="flex items-center justify-between p-2">
             <p className="align-bottom">Move Page Right</p>
-            <button className="ml-2 w-44 bg-secondary px-2 py-1 h-full rounded-lg font-semibold">
+            <button
+              onClick={() => changeKeybind("rightPageKeybind")}
+              className="ml-2 w-44 bg-secondary px-2 py-1 h-full rounded-lg font-semibold"
+            >
               {rightPageKeybind}
             </button>
           </div>
           <div className="flex items-center justify-between p-2">
             <p className="align-bottom">Move Chapter Left</p>
-            <button className="ml-2 w-44 bg-secondary px-2 py-1 h-full rounded-lg font-semibold">
+            <button
+              onClick={() => changeKeybind("leftChapterKeybind")}
+              className="ml-2 w-44 bg-secondary px-2 py-1 h-full rounded-lg font-semibold"
+            >
               {leftChapterKeybind}
             </button>
           </div>
           <div className="flex items-center justify-between p-2">
             <p className="align-bottom">Move Chapter Right</p>
-            <button className="ml-2 w-44 bg-secondary px-2 py-1 h-full rounded-lg font-semibold">
+            <button
+              onClick={() => changeKeybind("rightChapterKeybind")}
+              className="ml-2 w-44 bg-secondary px-2 py-1 h-full rounded-lg font-semibold"
+            >
               {rightChapterKeybind}
             </button>
           </div>
           <div className="flex items-center justify-between p-2">
             <p className="align-bottom">Open Reader Sidebar</p>
-            <button className="ml-2 w-44 bg-secondary px-2 py-1 h-full rounded-lg font-semibold">
+            <button
+              onClick={() => changeKeybind("sidebarKeybind")}
+              className="ml-2 w-44 bg-secondary px-2 py-1 h-full rounded-lg font-semibold"
+            >
               {sidebarKeybind}
             </button>
           </div>
           <div className="flex items-center justify-between p-2">
             <p className="align-bottom">Go Back</p>
-            <button className="ml-2 w-44 bg-secondary px-2 py-1 h-full rounded-lg font-semibold">
+            <button
+              onClick={() => changeKeybind("exitKeybind")}
+              className="ml-2 w-44 bg-secondary px-2 py-1 h-full rounded-lg font-semibold"
+            >
               {exitKeybind}
             </button>
           </div>
         </div>
       </div>
-      {showKeybindPopup && <div></div>}
+      {showKeybindPopup && keybindToChange && (
+        <KeybindSelector
+          onClose={() => {
+            setKeybindToChange("");
+            setShowKeybindPopup(false);
+          }}
+          keybindToChange={keybindToChange}
+        />
+      )}
     </div>
   );
 };
