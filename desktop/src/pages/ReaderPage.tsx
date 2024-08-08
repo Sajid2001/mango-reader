@@ -226,10 +226,21 @@ const ReaderPage = () => {
 
   //Key Press Listener
   const handleKeyPress = (event: KeyboardEvent) => {
-    console.log(`Key pressed: ${event.key}`);
-    console.log(
-      `Current chapterId: ${chapterId}, Max chapters: ${maxChapters}`
-    );
+    event.preventDefault();
+    const { key, ctrlKey, shiftKey, altKey, metaKey } = event;
+    const keys = [
+      ctrlKey && "Ctrl",
+      shiftKey && "Shift",
+      altKey && "Alt",
+      metaKey && "Meta",
+      key !== "Control" &&
+        key !== "Shift" &&
+        key !== "Alt" &&
+        key !== "Meta" &&
+        key,
+    ]
+      .filter(Boolean)
+      .join("+");
 
     const navigatePages = (direction: string) => {
       if (scans.length > 0) {
@@ -254,7 +265,7 @@ const ReaderPage = () => {
       }
     };
 
-    switch (event.key) {
+    switch (keys) {
       case movePageLeft:
         if (leftToRight) {
           navigatePages("previous");
