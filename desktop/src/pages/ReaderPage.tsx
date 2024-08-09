@@ -22,6 +22,7 @@ import {
 import { LibraryEntry } from "../models/libraryEntry";
 import { getSettings, loadSettings } from "../fileStorage/settingsStorage";
 import { useSelector } from "react-redux";
+import KeybindPopup from "../components/KeybindPopup";
 
 const ReaderPage = () => {
   // [ VALUES ]
@@ -47,6 +48,7 @@ const ReaderPage = () => {
   //Sidebar Option Values
 
   const [sidebarToggled, setSidebarToggled] = useState<boolean>(false);
+  const [showKeybinds, setShowKeybinds] = useState<boolean>(false);
 
   const movePageLeft = useSelector(
     (state: any) => state.userSettings.leftPageKeybind
@@ -309,13 +311,13 @@ const ReaderPage = () => {
 
   useEffect(() => {
     // Add event listener for keydown
-    window.addEventListener("keydown", handleKeyPress);
+    if (!showKeybinds) window.addEventListener("keydown", handleKeyPress);
 
     // Cleans up event listener on component unmount
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
-  }, [chapterId, currentPage, scans.length, leftToRight]);
+  }, [chapterId, currentPage, scans.length, leftToRight, showKeybinds]);
 
   //Page Change Functions
   const nextPage = () => {
@@ -665,7 +667,10 @@ const ReaderPage = () => {
                 )}
               </button>
 
-              <button className="hover:bg-primary">
+              <button
+                onClick={() => setShowKeybinds(true)}
+                className="hover:bg-primary"
+              >
                 <div>
                   Keybinds <IconKeyboard size={IconSize} />
                 </div>
@@ -741,6 +746,9 @@ const ReaderPage = () => {
       >
         <IconArrowBackUp size={28} className="text-background" />
       </Link>
+      {showKeybinds && (
+        <KeybindPopup closeKeybinds={() => setShowKeybinds(false)} />
+      )}
     </div>
   );
 };
