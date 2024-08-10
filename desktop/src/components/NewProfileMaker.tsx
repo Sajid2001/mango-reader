@@ -21,12 +21,15 @@ const NewProfileMaker = ({
 
   return (
     <div className="flex items-center bg-accent-70 fixed z-20 justify-center top-0 left-0 h-screen w-screen">
-      <div className="relative flex flex-col w-[400px] py-6 px-8 rounded-xl bg-primary">
-        <button className="absolute top-2 right-2">
-          <IconX onClick={() => closePopup()} />
-        </button>
+      <div className="relative flex flex-col w-[400px] py-6 px-8 rounded-lg bg-primary">
+        <div className="font-bold text-xl flex justify-between mb-2">
+          <p>New Profile</p>
+          <button className="">
+            <IconX onClick={() => closePopup()} />
+          </button>
+        </div>
         <input
-          className="py-1  mb-3 font-semibold text-lg px-5 bg-secondary rounded-lg"
+          className="py-1  mb-3 font-semibold text-lg px-2 bg-secondary rounded-md"
           type="text"
           value={profileName}
           onChange={(e) => setProfileName(e.target.value)}
@@ -38,7 +41,7 @@ const NewProfileMaker = ({
         <button
           onClick={() => createNewProfile()}
           disabled={profileNames.includes(profileName)}
-          className="py-1  font-semibold text-lg px-5 bg-accent disabled:opacity-50 text-background rounded-lg"
+          className="py-1  font-semibold text-lg px-5 bg-accent disabled:opacity-50 text-background rounded-md"
         >
           Submit
         </button>
