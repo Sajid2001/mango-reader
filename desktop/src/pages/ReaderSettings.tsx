@@ -10,6 +10,8 @@ import {
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  removeProfile,
+  setActiveProfile,
   setDefaultFitHeight,
   setDefaultLeftToRight,
   setDefaultSinglePage,
@@ -18,6 +20,8 @@ import {
 import { UserSettings } from "../models/userSettings";
 import { selectProfiles } from "../reduxStorage/selectors";
 import KeybindSelector from "../components/KeybindSelector";
+import { Profile } from "../models/profile";
+import NewProfileMaker from "../components/NewProfileMaker";
 
 const ReaderSettings = () => {
   const iconSize = 24;
@@ -54,6 +58,7 @@ const ReaderSettings = () => {
   );
 
   const [keybindToChange, setKeybindToChange] = useState<string>("");
+  const [showProfileMaker, setShowProfileMaker] = useState<boolean>(false);
 
   const changeKeybind = (keybind: string) => {
     setKeybindToChange(keybind);
@@ -84,14 +89,41 @@ const ReaderSettings = () => {
       <div className="ml-4 ">
         <h3 className="text-xl font-bold pb-3 ">Profile</h3>
         <div className="ml-2">
-          <select className="pr-8">
-            <option value="default">Default</option>
-            <option value="custom">Custom</option>
+          <select
+            value={activeProfile}
+            onChange={(e) => {
+              dispatch(setActiveProfile(parseInt(e.target.value)));
+            }}
+            className="pr-8"
+          >
+            {profiles.map((profile: Profile, index: number) => {
+              return (
+                <option key={index} value={index}>
+                  {profile.name}
+                </option>
+              );
+            })}
           </select>
-          <button className="ml-2 w-44 bg-secondary px-2 py-1 h-full rounded-lg font-semibold">
+          <button
+            disabled={profiles.length >= 10}
+            onClick={() => setShowProfileMaker(true)}
+            className="ml-2 w-44 bg-secondary disabled:opacity-50 px-2 py-1 h-full rounded-lg font-semibold"
+          >
             Create New Profile
           </button>
+          <button
+            disabled={profiles.length <= 1}
+            onClick={() => dispatch(removeProfile(activeProfile))}
+            className="ml-2 w-36 bg-accent disabled:opacity-50 text-background px-2 py-1 h-full rounded-lg font-semibold"
+          >
+            Delete Profile
+          </button>
         </div>
+        {profiles.length >= 10 && (
+          <div className="text-accent font-bold ml-2 -mb-2">
+            Max 10 Profiles
+          </div>
+        )}
       </div>
 
       <div className="ml-4 ">
@@ -240,6 +272,14 @@ const ReaderSettings = () => {
             setShowKeybindPopup(false);
           }}
           keybindToChange={keybindToChange}
+        />
+      )}
+      {showProfileMaker && (
+        <NewProfileMaker
+          closePopup={() => {
+            setShowProfileMaker(false);
+          }}
+          profileNames={profiles.map((profile: Profile) => profile.name)}
         />
       )}
     </div>

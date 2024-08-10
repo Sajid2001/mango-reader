@@ -21,8 +21,10 @@ import {
 } from "../fileStorage/libraryStorage";
 import { LibraryEntry } from "../models/libraryEntry";
 import { getSettings, loadSettings } from "../fileStorage/settingsStorage";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import KeybindPopup from "../components/KeybindPopup";
+import { setActiveProfile } from "../reduxStorage/settingsSlice";
+import { Profile } from "../models/profile";
 
 const ReaderPage = () => {
   // [ VALUES ]
@@ -35,6 +37,8 @@ const ReaderPage = () => {
 
   //Navigation
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
 
   //Primary Reader Values
   const [scans, setScans] = useState<string[]>([]);
@@ -461,6 +465,14 @@ const ReaderPage = () => {
     }
   };
 
+  const changeProfile = (newProfileIndex: number) => {
+    setFitHeight(profiles[newProfileIndex].defaultFitHeight);
+    setPageGap(profiles[newProfileIndex].defaultPageGap);
+    setLeftToRight(profiles[newProfileIndex].defaultLeftToRight);
+    setSinglePage(profiles[newProfileIndex].defaultSinglePage);
+    dispatch(setActiveProfile(newProfileIndex));
+  };
+
   // Helper function to determine tabIndex for chapter navigation
   const getChapterTabIndex = (
     isLeftToRight: boolean,
@@ -675,11 +687,25 @@ const ReaderPage = () => {
                   Keybinds <IconKeyboard size={IconSize} />
                 </div>
               </button>
-              <button className="hover:bg-primary">
-                <div>
-                  Settings <IconSettings size={IconSize} />
-                </div>
-              </button>
+            </div>
+
+            <div className="flex flex-col w-full font-semibold px-5 text-lg  *:*::w-full *:*:flex *:px-2 *:py-1 *:*:items-center *:*:justify-between">
+              <h2 className="bg-opacity-50 px-2 py-1 rounded-lg">Profile:</h2>
+              <select
+                value={activeProfile}
+                onChange={(e) => {
+                  changeProfile(Number(e.target.value));
+                }}
+                className="pr-8"
+              >
+                {profiles.map((profile: Profile, index: number) => {
+                  return (
+                    <option key={index} value={index}>
+                      {profile.name}
+                    </option>
+                  );
+                })}
+              </select>
             </div>
           </div>
         </div>
@@ -747,7 +773,7 @@ const ReaderPage = () => {
         <IconArrowBackUp size={28} className="text-background" />
       </Link>
       {showKeybinds && (
-        <KeybindPopup closeKeybinds={() => setShowKeybinds(false)} />
+        <KeybindPopup closePopup={() => setShowKeybinds(false)} />
       )}
     </div>
   );

@@ -8,7 +8,7 @@ const initialState: UserSettings = {
   libraryDownloadPath: "",
   profiles: [
     {
-      name: "default",
+      name: "Default",
       defaultSinglePage: false,
       defaultFitHeight: true,
       defaultLeftToRight: true,
@@ -61,6 +61,31 @@ const settingsSlice = createSlice({
 
     setLibraryDownloadPath: (state, action: PayloadAction<string>) => {
       state.libraryDownloadPath = action.payload;
+    },
+
+    addProfile: (state, action: PayloadAction<string>) => {
+      state.profiles.push({
+        name: action.payload,
+        defaultSinglePage: false,
+        defaultFitHeight: true,
+        defaultLeftToRight: true,
+        pageGap: 0,
+      });
+    },
+
+    removeProfile: (state, action: PayloadAction<number>) => {
+      if (state.profiles.length <= action.payload)
+        throw new Error("Profile does not exist");
+
+      if (state.activeProfile >= action.payload)
+        state.activeProfile =
+          state.activeProfile - 1 < 0 ? 0 : state.activeProfile - 1;
+
+      state.profiles.splice(action.payload, 1);
+    },
+
+    setActiveProfile: (state, action: PayloadAction<number>) => {
+      state.activeProfile = action.payload;
     },
 
     setDefaultSinglePage: (state, action: PayloadAction<boolean>) => {
@@ -147,6 +172,9 @@ export const {
   setPageGap,
   resetUserSettings,
   changeKeybind,
+  addProfile,
+  removeProfile,
+  setActiveProfile,
 } = settingsSlice.actions;
 
 export default settingsSlice.reducer;

@@ -9,7 +9,7 @@ export interface UserSettings {
 
   //Reader Preferences
   profiles: Profile[];
-  activeProfile: 0;
+  activeProfile: number;
 
   //Keybinds
   leftPageKeybind: string;
