@@ -53,12 +53,13 @@ const GeneralSettings = () => {
 
   const downloadFile = (downloadDirectory: string, fileName: string) => {
     const path = window.require("path");
-    const fs = window.require("fs");
 
     if (!path) {
       alert("Please choose a download directory first!");
       return;
     }
+
+    const fs = window.require("fs");
 
     const sourceFilePath = path.join(__dirname, fileName);
     const destFilePath = path.join(downloadDirectory);
