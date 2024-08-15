@@ -29,11 +29,11 @@
   }
 
   .dark {
-    --text: #e4e6eb;
+    --text: #a1a1a1;
     --background: #18191a;
     --primary: #2f3136;
     --secondary: #3a3c43;
-    --accent: #eeeeee;
+    --accent: #e0e0e0;
 
     --primary-rgb: 47, 49, 54;
     --secondary-rgb: 58, 60, 67;

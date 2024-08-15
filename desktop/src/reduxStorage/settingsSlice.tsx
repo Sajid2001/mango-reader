@@ -55,7 +55,7 @@ const settingsSlice = createSlice({
       state.fontSize = action.payload;
     },
 
-    setDownloadPath: (state, action: PayloadAction<string>) => {
+    setChapterDownloadPath: (state, action: PayloadAction<string>) => {
       state.chapterDownloadPath = action.payload;
     },
 
@@ -164,7 +164,7 @@ export const {
   setAllSettings,
   setTheme,
   setFontSize,
-  setDownloadPath,
+  setChapterDownloadPath,
   setLibraryDownloadPath,
   setDefaultSinglePage,
   setDefaultFitHeight,
