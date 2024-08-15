@@ -36,4 +36,10 @@ Run `npm install` to install these dependencies
 
 You are free to add more json to the `db.json` file located in the desktop directory
 
+-- Update -> added dummy chapter information
+
+To access the chapters by a series, navigate to `http://localhost:5000/chapters?series_id=[series_id]`
+  * This is the route you will use to get the chapter information of a single series
+
+
 

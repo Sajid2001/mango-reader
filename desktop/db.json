@@ -1,40 +1,114 @@
 {
     "manga": [
         {
-            "Name": "One Piece",
-            "Alternate names": "One Piece",
-            "Genres": "Action, Adventure, Comedy, Drama, Fantasy, Shounen",
-            "Author(s)": "ODA Eiichiro",
-            "Status": "Ongoing (Scan), Ongoing (Publish)",
-            "Description": "As a child, Monkey D. Luffy dreamed of becoming the King of the Pirates. But his life changed when he accidentally gained the power to stretch like rubber...at the cost of never being able to swim again! Now Luffy, with the help of a motley collection of nakama, is setting off in search of 'One Piece,' said to be the greatest treasure in the world...",
-            "Total Chapters": 1111
+            "id": 1,
+            "name": "One Piece",
+            "alternateNames": "One Piece",
+            "genres": "Action, Adventure, Comedy, Drama, Fantasy, Shounen",
+            "author(s)": "ODA Eiichiro",
+            "status": "Ongoing (Scan), Ongoing (Publish)",
+            "description": "As a child, Monkey D. Luffy dreamed of becoming the King of the Pirates. But his life changed when he accidentally gained the power to stretch like rubber...at the cost of never being able to swim again! Now Luffy, with the help of a motley collection of nakama, is setting off in search of 'One Piece,' said to be the greatest treasure in the world...",
+            "totalChapters": 1111,
+            "bannerImage": "https://media.kitsu.io/manga/38/cover_image/large-bd52b8f2fb81d3cf99b4fbe4c072d2b1.jpeg"
         },
         {
-            "Name": "Delicious in Dungeon",
-            "Alternate names": "Dungeon Food, Dungeon Meshi",
-            "Genres": "Adventure, Comedy, Fantasy, Seinen, Supernatural",
-            "Author(s)": "KUI Ryouko",
-            "Status": "Complete (Scan), Complete (Publish)",
-            "Description": "After getting his sister devoured by a dragon and losing all their supplies in a failed dungeon raid, Lyos and his party are determined to save his sister before she gets digested. Completely broke and having to resort to eating monsters as food, they meet a dwarf who will introduce them to the world of dungeon meshi - Delicious cuisines made from ingredients such as the flesh of giant bats, walking mushroom, or even screaming mandrakes.",
-            "Total Chapters": 97
+            "id": 2,
+            "name": "Delicious in Dungeon",
+            "alternateNames": "Dungeon Food, Dungeon Meshi",
+            "genres": "Adventure, Comedy, Fantasy, Seinen, Supernatural",
+            "author(s)": "KUI Ryouko",
+            "status": "Complete (Scan), Complete (Publish)",
+            "description": "After getting his sister devoured by a dragon and losing all their supplies in a failed dungeon raid, Lyos and his party are determined to save his sister before she gets digested. Completely broke and having to resort to eating monsters as food, they meet a dwarf who will introduce them to the world of dungeon meshi - Delicious cuisines made from ingredients such as the flesh of giant bats, walking mushroom, or even screaming mandrakes.",
+            "totalChapters": 97,
+            "bannerImage": "https://media.kitsu.io/manga/cover_images/27539/large.jpg"
         },
         {
-            "Name": "[Oshi No Ko]",
-            "Alternate names": "Oshi No Ko",
-            "Genres": "Comedy, Drama, Mystery, Psychological, Seinen, Slice of Life, Tragedy",
-            "Author(s)": "AKASAKA Aka, YOKOYARI Mengo",
-            "Status": "Ongoing (Scan), Ongoing (Publish)",
-            "Description": "The story begins with a beautiful girl, her perfectly fake smile, and the people who love her selfishly for it. What transpires behind the scenes of the glittering showbiz industry? How far would you go for the sake of your beloved idol? What would you do if you found out reincarnation was real? The star of the show is Aquamarine Hoshino and the stage is but a mere facade. Will he manage to reach the climax before the world of glamour swallows him whole?",
-            "Total Chapters": 145
+            "id": 3,
+            "name": "[Oshi No Ko]",
+            "alternateNames": "Oshi No Ko",
+            "genres": "Comedy, Drama, Mystery, Psychological, Seinen, Slice of Life, Tragedy",
+            "author(s)": "AKASAKA Aka, YOKOYARI Mengo",
+            "status": "Ongoing (Scan), Ongoing (Publish)",
+            "description": "The story begins with a beautiful girl, her perfectly fake smile, and the people who love her selfishly for it. What transpires behind the scenes of the glittering showbiz industry? How far would you go for the sake of your beloved idol? What would you do if you found out reincarnation was real? The star of the show is Aquamarine Hoshino and the stage is but a mere facade. Will he manage to reach the climax before the world of glamour swallows him whole?",
+            "totalChapters": 145,
+            "bannerImage": "https://media.kitsu.io/manga/56391/cover_image/large-2195d7af0c06ae1dc142ed98295f0f2f.jpeg"
         },
         {
-            "Name": "One-Punch Man",
-            "Alternate names": "One Punch-Man, Onepunch Man, OPM",
-            "Genres": "Action, Adventure, Comedy, Drama, Sci-fi, Seinen, Supernatural",
-            "Author(s)": "MURATA Yuusuke, ONE",
-            "Status": "Ongoing (Scan), Ongoing (Publish)",
-            "Description": "In this new action-comedy, everything about a young man named Saitama screams 'AVERAGE,' from his lifeless expression to his bald head, to his unimpressive physique. However, this average-looking fellow doesn't have your average problem... He's actually a superhero that's looking for tough opponents! The problem is, every time he finds a promising candidate he beats the snot out of them in one punch. Can Saitama finally find an evil villain strong enough to challenge him? Follow Saitama through his hilarious romps as he searches for new bad guys to challenge!",
-            "Total Chapters": 200
+            "id": 4,
+            "name": "One-Punch Man",
+            "alternateNames": "One Punch-Man, Onepunch Man, OPM",
+            "genres": "Action, Adventure, Comedy, Drama, Sci-fi, Seinen, Supernatural",
+            "author(s)": "MURATA Yuusuke, ONE",
+            "status": "Ongoing (Scan), Ongoing (Publish)",
+            "description": "In this new action-comedy, everything about a young man named Saitama screams 'AVERAGE,' from his lifeless expression to his bald head, to his unimpressive physique. However, this average-looking fellow doesn't have your average problem... He's actually a superhero that's looking for tough opponents! The problem is, every time he finds a promising candidate he beats the snot out of them in one punch. Can Saitama finally find an evil villain strong enough to challenge him? Follow Saitama through his hilarious romps as he searches for new bad guys to challenge!",
+            "totalChapters": 200,
+            "bannerImage": "https://media.kitsu.io/manga/24147/cover_image/large-3bf6d144f65a2c6f9c246578617df691.jpeg"
+        }
+    ],
+    "chapters": [
+        {
+            "series_id": 1,
+            "number": 1100
+        },
+        {
+            "series_id": 1,
+            "number": 1101
+        },
+        {
+            "series_id": 1,
+            "number": 1102
+        },
+        {
+            "series_id": 1,
+            "number": 1103
+        },
+        {
+            "series_id": 2,
+            "number": 0
+        },
+        {
+            "series_id": 2,
+            "number": 1.1
+        },
+        {
+            "series_id": 2,
+            "number": 1.2
+        },
+        {
+            "series_id": 2,
+            "number": 1.3
+        },
+        {
+            "series_id": 3,
+            "number": 200
+        },
+        {
+            "series_id": 3,
+            "number": 201
+        },
+        {
+            "series_id": 3,
+            "number": 202
+        },
+        {
+            "series_id": 3,
+            "number": 203
+        },
+        {
+            "series_id": 4,
+            "number": 100
+        },
+        {
+            "series_id": 4,
+            "number": 101
+        },
+        {
+            "series_id": 4,
+            "number": 102
+        },
+        {
+            "series_id": 4,
+            "number": 103
         }
     ]
 }
