@@ -1,5 +1,5 @@
 <div style="display: flex; align-items: center; justify-content:center;">
-  <img src="https://github.com/user-attachments/assets/a091071c-4992-4a6e-a0aa-9fa0b60479c6" alt="Mango Reader" style="height: 200px;">
+  <img src="https://github.com/user-attachments/assets/bf5911ac-d428-4843-9d6f-db5ce433d409" alt="Mango Reader" style="height: 200px;">
   <h1 style="font-size:48px">Mango Reader</h1>
 </div>
 
