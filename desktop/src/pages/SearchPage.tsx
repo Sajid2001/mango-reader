@@ -127,12 +127,14 @@ const SearchPage = () => {
       ) : mangaData != null && mangaData.length != 0 ? (
         <div className="grid mb-3 xs:grids-col-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {mangaData.map((item) => (
-            <MangaCard
-              mangaId={item.mangaId}
-              title={item.title}
-              image={item.coverImage}
-              chapters={item.totalChapters}
-            />
+            <div key={item.mangaId}>
+              <MangaCard
+                mangaId={item.mangaId}
+                title={item.title}
+                image={item.coverImage}
+                chapters={item.totalChapters}
+              />
+            </div>
           ))}
         </div>
       ) : (
