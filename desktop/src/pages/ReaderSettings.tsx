@@ -264,7 +264,7 @@ const ReaderSettings = () => {
       </div>
       {showKeybindPopup && keybindToChange && (
         <KeybindSelector
-          onClose={() => {
+          closePopup={() => {
             setKeybindToChange("");
             setShowKeybindPopup(false);
           }}

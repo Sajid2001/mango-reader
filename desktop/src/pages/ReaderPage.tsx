@@ -770,7 +770,7 @@ const ReaderPage = () => {
         <IconArrowBackUp size={28} className="text-background" />
       </Link>
       {showKeybinds && (
-        <KeybindPopup closeKeybinds={() => setShowKeybinds(false)} />
+        <KeybindPopup closePopup={() => setShowKeybinds(false)} />
       )}
     </div>
   );
