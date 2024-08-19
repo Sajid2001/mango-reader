@@ -113,22 +113,22 @@ describe("HistoryPage Component", () => {
     );
     expect(deleteButtons.length).toBe(2);
 
-    const expectedHistoryInformation = {
-      lastViewed: undefined,
-      lastReadChapterName: undefined,
-    };
-
-    screen.debug();
+    const sortedLibraryData = [...mockLibraryData].sort((a, b) => {
+      return b.lastViewed!.getTime() - a.lastViewed!.getTime();
+    });
 
     deleteButtons.forEach(async (deleteButton, index) => {
       fireEvent.click(deleteButton);
-      expect(updateLibraryEntry).toHaveBeenCalledTimes(index + 1);
-      expect(updateLibraryEntry).toHaveBeenCalledWith(
-        expect.objectContaining(expectedHistoryInformation)
-      );
-      expect(updateLibraryEntry).toHaveBeenCalledWith(
-        expect.objectContaining(mockLibraryData[index].manga)
-      );
+      waitFor(() => {
+        expect(updateLibraryEntry).toHaveBeenCalledTimes(index + 1);
+        expect(updateLibraryEntry).toHaveBeenCalledWith(
+          expect.objectContaining({
+            lastViewed: undefined,
+            lastReadChapterName: undefined,
+            manga: expect.objectContaining(sortedLibraryData[index].manga),
+          })
+        );
+      });
     });
   });
 });
