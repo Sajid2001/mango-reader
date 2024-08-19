@@ -58,6 +58,7 @@ const HistoryPage = () => {
       historicalData.filter((x) => x.manga.mangaId !== entry.manga.mangaId)
     );
     updateLibraryEntry(entry);
+    console.log(entry);
   };
 
   return (
@@ -126,7 +127,7 @@ const HistoryPage = () => {
                           `/reader/${entry.manga.mangaId}/${entry.progress}`
                         )
                       }
-                      className="text-center items-center  text-2xl flex font-semibold m-8 py-1 px-2  rounded-lg hover:bg-secondary active:bg-slate-400 "
+                      className="text-center items-center  text-2xl flex font-semibold m-8 py-1 px-2 rounded-lg hover:bg-secondary active:bg-slate-400 "
                     >
                       <IconPlayerPlayFilled
                         className=""
