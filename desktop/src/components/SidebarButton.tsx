@@ -1,20 +1,21 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Tooltip from "./Tooltip";
 
 interface SidebarButtonProps {
   icon?: React.ReactNode;
   pageName: string;
   routeName: string;
-  alreadyOn: boolean;
 }
 
-const SidebarButton = ({
-  icon,
-  routeName,
-  pageName,
-  alreadyOn,
-}: SidebarButtonProps) => {
+const SidebarButton = ({ icon, routeName, pageName }: SidebarButtonProps) => {
+  const location = useLocation();
+
+  const isActive =
+    routeName === "/settings"
+      ? location.pathname.includes(routeName)
+      : location.pathname === routeName;
+
   return (
     <Tooltip text={pageName}>
       <Link
@@ -25,7 +26,7 @@ const SidebarButton = ({
       >
         <div
           className={`transition ease-in-out duration-200 font-thin w-14 h-14 ${
-            alreadyOn
+            isActive
               ? "bg-background shadow-inner bg-opacity-70"
               : "hover:bg-background hover:shadow-inner"
           } my-1 ml-2 mr-3 rounded-full flex justify-center items-center`}

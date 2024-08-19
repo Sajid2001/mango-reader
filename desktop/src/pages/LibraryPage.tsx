@@ -1,30 +1,27 @@
-import { IconMoodEmpty, IconMoon, IconSearch } from "@tabler/icons-react";
+import { IconSearch } from "@tabler/icons-react";
 import MangaCard from "../components/MangaCard";
 import { useEffect, useState } from "react";
-import { MangaDetails } from "../models/mangaDetails";
 import {
-  getLibrary,
+  // getLibrary,
   loadLibrary,
   emptyLibrary,
 } from "../fileStorage/libraryStorage";
 import { Link } from "react-router-dom";
 import { LibraryEntry } from "../models/libraryEntry";
-import { get } from "node:http";
 
 const LibraryPage = () => {
-  // [ State Variables ]
-
   const [libraryData, setLibraryData] = useState<LibraryEntry[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filterTerm, setFilterTerm] = useState<string>("");
 
-  // [ Functions ]
-
   //Gets User Library Data on Library Page load
   useEffect(() => {
-    loadLibrary().then(() => {
-      getLibrary().then((data) => setLibraryData(data));
+    loadLibrary().then((data) => {
+      setLibraryData(data);
     });
+    // loadLibrary().then(() => {
+    //   getLibrary().then((data) => setLibraryData(data));
+    // });
   }, []);
 
   //Enter Key Press Listener
@@ -67,8 +64,10 @@ const LibraryPage = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="py-1 mb-3 grow font-semibold text-lg px-5 pl-10 rounded-lg placeholder:text-text"
               placeholder="Search Library..."
+              value={searchTerm}
             />
             <button
+              data-testid="search-button"
               onClick={() => setFilterTerm(searchTerm)}
               className="py-1 mb-3 absolute inset-y-0 left-0 flex items-center pl-2"
             >

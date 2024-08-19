@@ -24,10 +24,10 @@ const initialState: UserSettings = {
   exitKeybind: "Escape",
 };
 
-interface keybindChangeInfo {
-  key: string;
-  map: string;
-}
+// interface keybindChangeInfo {
+//   key: string;
+//   map: string;
+// }
 
 const settingsSlice = createSlice({
   name: "userSettings",

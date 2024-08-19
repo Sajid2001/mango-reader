@@ -59,6 +59,7 @@ const KeybindSelector = ({
           <button
             onClick={() => onClose()}
             className="text-2xl bg-primary rounded-3xl p-1"
+            data-testid="close-button"
           >
             <IconX size={18} />
           </button>
@@ -67,6 +68,7 @@ const KeybindSelector = ({
             onClick={() => approveKeybind()}
             className="text-2xl bg-primary rounded-3xl p-1 disabled:opacity-30"
             disabled={!keybind}
+            data-testid="approve-button"
           >
             <IconCheck size={18} />
           </button>

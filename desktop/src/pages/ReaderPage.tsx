@@ -8,14 +8,13 @@ import {
   IconCircleArrowLeft,
   IconCircleArrowRight,
   IconKeyboard,
-  IconSettings,
   IconSpacingVertical,
   IconX,
 } from "@tabler/icons-react";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
-  getLibrary,
+  // getLibrary,
   loadLibrary,
   updateLibraryEntry,
 } from "../fileStorage/libraryStorage";
@@ -109,26 +108,24 @@ const ReaderPage = () => {
   useEffect(() => {
     if (mangaId) {
       // Checks if manga is already in library
-      loadLibrary().then(() => {
-        getLibrary().then((library) => {
-          const previousReading = library.some(
-            (entry) => entry.manga.mangaId === Number(mangaId)
-          );
-          if (previousReading) {
-            setReading(() => {
-              const entry = library.find(
-                (entry) => entry.manga.mangaId === Number(mangaId)
-              );
-              if (entry) {
-                entry.progress = Number(chapterId);
-                entry.lastViewed = new Date();
-                entry.lastReadChapterName = chapterName;
-                updateLibraryEntry(entry);
-                return entry;
-              } else return null;
-            });
-          }
-        });
+      loadLibrary().then((library) => {
+        const previousReading = library.some(
+          (entry) => entry.manga.mangaId === Number(mangaId)
+        );
+        if (previousReading) {
+          setReading(() => {
+            const entry = library.find(
+              (entry) => entry.manga.mangaId === Number(mangaId)
+            );
+            if (entry) {
+              entry.progress = Number(chapterId);
+              entry.lastViewed = new Date();
+              entry.lastReadChapterName = chapterName;
+              updateLibraryEntry(entry);
+              return entry;
+            } else return null;
+          });
+        }
       });
     }
 
@@ -773,7 +770,7 @@ const ReaderPage = () => {
         <IconArrowBackUp size={28} className="text-background" />
       </Link>
       {showKeybinds && (
-        <KeybindPopup closePopup={() => setShowKeybinds(false)} />
+        <KeybindPopup closeKeybinds={() => setShowKeybinds(false)} />
       )}
     </div>
   );

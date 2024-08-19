@@ -6,6 +6,7 @@ import { addProfile } from "../reduxStorage/settingsSlice";
 
 interface ProfileMakerPopupProps extends PopupProps {
   profileNames: string[];
+  closePopup: () => void;
 }
 const NewProfileMaker = ({
   closePopup,
@@ -24,12 +25,12 @@ const NewProfileMaker = ({
       <div className="relative flex flex-col w-[400px] py-6 px-8 rounded-lg bg-primary">
         <div className="font-bold text-xl flex justify-between mb-2">
           <p>New Profile</p>
-          <button className="">
+          <button>
             <IconX onClick={() => closePopup()} />
           </button>
         </div>
         <input
-          className="py-1  mb-3 font-semibold text-lg px-2 bg-secondary rounded-md"
+          className="py-1 mb-3 font-semibold text-lg px-2 bg-secondary rounded-md"
           type="text"
           value={profileName}
           onChange={(e) => setProfileName(e.target.value)}
@@ -41,7 +42,7 @@ const NewProfileMaker = ({
         <button
           onClick={() => createNewProfile()}
           disabled={profileNames.includes(profileName)}
-          className="py-1  font-semibold text-lg px-5 bg-accent disabled:opacity-50 text-background rounded-md"
+          className="py-1 font-semibold text-lg px-5 bg-accent disabled:opacity-50 text-background rounded-md"
         >
           Submit
         </button>

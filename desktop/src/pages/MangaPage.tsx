@@ -13,7 +13,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   addEntryToLibrary,
-  getLibrary,
+  // getLibrary,
   loadLibrary,
   removeEntryFromLibrary,
 } from "../fileStorage/libraryStorage";
@@ -26,7 +26,6 @@ const MangaPage = () => {
   // [ State Variables ]
   const [chapters, setChapters] = useState<ChapterDetails[]>([]);
   const [reading, setReading] = useState<LibraryEntry | null>();
-  const [loadingManga, setLoadingManga] = useState<boolean>(true);
   const [loadingChapters, setLoadingChapters] = useState<boolean>(true);
   const [ascending, setAscending] = useState<boolean>(false);
 
@@ -109,17 +108,13 @@ const MangaPage = () => {
   useEffect(() => {
     if (manga.id != -1) {
       setLoadingChapters(true);
-      loadLibrary().then(() => {
-        getLibrary().then((library) => {
-          const previousReading = library.some(
-            (entry) => entry.manga.mangaId === manga.id
-          );
-          if (previousReading) {
-            setReading(
-              library.find((entry) => entry.manga.mangaId == manga.id)!
-            );
-          }
-        });
+      loadLibrary().then((library) => {
+        const previousReading = library.some(
+          (entry) => entry.manga.mangaId === manga.id
+        );
+        if (previousReading) {
+          setReading(library.find((entry) => entry.manga.mangaId == manga.id)!);
+        }
       });
 
       fetch("http://127.0.0.1:8000/api/chapters/" + manga.id)

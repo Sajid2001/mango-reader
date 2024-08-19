@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { MangaDetails } from "../models/mangaDetails";
-import { IconMoon, IconSearch } from "@tabler/icons-react";
+import { IconSearch } from "@tabler/icons-react";
 import MangaCard from "../components/MangaCard";
 
 const SearchPage = () => {

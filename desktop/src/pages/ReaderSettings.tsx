@@ -5,7 +5,6 @@ import {
   IconCircleArrowLeft,
   IconCircleArrowRight,
   IconSpacingVertical,
-  IconX,
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,8 +16,6 @@ import {
   setDefaultSinglePage,
   setPageGap,
 } from "../reduxStorage/settingsSlice";
-import { UserSettings } from "../models/userSettings";
-import { selectProfiles } from "../reduxStorage/selectors";
 import KeybindSelector from "../components/KeybindSelector";
 import { Profile } from "../models/profile";
 import NewProfileMaker from "../components/NewProfileMaker";

@@ -1,4 +1,4 @@
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   getSettings,
   loadSettings,
@@ -9,7 +9,6 @@ import {
   setAllSettings,
 } from "../reduxStorage/settingsSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { get } from "http";
 import { UserSettings } from "../models/userSettings";
 import { useEffect, useMemo, useState } from "react";
 import { IconAlertTriangle } from "@tabler/icons-react";

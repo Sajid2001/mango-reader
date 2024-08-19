@@ -1,13 +1,8 @@
-import {
-  IconBook,
-  IconMoon,
-  IconPlayerPlayFilled,
-  IconTrash,
-} from "@tabler/icons-react";
+import { IconBook, IconPlayerPlayFilled, IconTrash } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import {
   eraseAllHistoricalData,
-  getLibrary,
+  // getLibrary,
   loadLibrary,
   updateLibraryEntry,
 } from "../fileStorage/libraryStorage";
@@ -37,18 +32,16 @@ const HistoryPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    loadLibrary().then(() => {
-      getLibrary().then((data) => {
-        setHistoricalData(() => {
-          const filteredData = data.filter(
-            (x) => x.lastViewed != undefined || x.lastViewed != null
-          );
-          return filteredData.sort(
-            (a, b) =>
-              new Date(b.lastViewed!).getTime() -
-              new Date(a.lastViewed!).getTime()
-          );
-        });
+    loadLibrary().then((data) => {
+      setHistoricalData(() => {
+        const filteredData = data.filter(
+          (x) => x.lastViewed != undefined || x.lastViewed != null
+        );
+        return filteredData.sort(
+          (a, b) =>
+            new Date(b.lastViewed!).getTime() -
+            new Date(a.lastViewed!).getTime()
+        );
       });
     });
   }, []);
@@ -127,6 +120,7 @@ const HistoryPage = () => {
                   </div>
                   <div className="flex items-center mx-1 md:mx-8 ">
                     <button
+                      data-testid="play-button"
                       onClick={() =>
                         navigate(
                           `/reader/${entry.manga.mangaId}/${entry.progress}`
@@ -141,6 +135,7 @@ const HistoryPage = () => {
                     </button>
 
                     <button
+                      data-testid="delete-button"
                       onClick={() => removeFromHistory(entry)}
                       className="font-semibold  py-1 px-2  hover:bg-secondary rounded-lg  active:bg-slate-400 "
                     >

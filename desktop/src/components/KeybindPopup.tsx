@@ -54,8 +54,12 @@ const KeybindPopup = ({ closeKeybinds }: KeybindPopupProps) => {
       }
     >
       <div className="relative w-98 p-6 rounded-xl bg-primary">
-        <button className="absolute top-2 right-2">
-          <IconX onClick={() => closeKeybinds()} />
+        <button
+          data-testid="close-keybinds-button"
+          className="absolute top-2 right-2"
+          onClick={() => closeKeybinds()}
+        >
+          <IconX />
         </button>
         <div className="*:w-full *:border-b-2 *:border-primary font-semibold">
           <div className="flex items-center justify-between p-2">

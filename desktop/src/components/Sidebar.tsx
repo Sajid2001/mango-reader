@@ -17,73 +17,79 @@ const Sidebar = () => {
     location.pathname.startsWith(route)
   );
 
-  const strikeWidth = 1.7;
+  const strokeWidth = 1.7;
   const size = 42;
 
   if (shouldHideSidebar) return null;
 
+  const buttons = [
+    {
+      icon: (
+        <IconBooks
+          className="text-text"
+          strokeWidth={strokeWidth}
+          size={size}
+        />
+      ),
+      routeName: "/",
+      pageName: "Library",
+    },
+    {
+      icon: (
+        <IconSearch
+          className="text-text"
+          strokeWidth={strokeWidth}
+          size={size}
+        />
+      ),
+      routeName: "/search",
+      pageName: "Search",
+    },
+    {
+      icon: (
+        <IconHistory
+          className="text-text"
+          strokeWidth={strokeWidth}
+          size={size}
+        />
+      ),
+      routeName: "/history",
+      pageName: "History",
+    },
+    {
+      icon: (
+        <IconRobot
+          className="text-text"
+          strokeWidth={strokeWidth}
+          size={size}
+        />
+      ),
+      routeName: "/askai",
+      pageName: "Ask AI",
+    },
+    {
+      icon: (
+        <IconSettings
+          className="text-text"
+          strokeWidth={strokeWidth}
+          size={size}
+        />
+      ),
+      routeName: "/settings/general",
+      pageName: "Settings",
+    },
+  ];
+
   return (
-    <div className="grid grid-cols-1 mt-2">
-      <SidebarButton
-        icon={
-          <IconBooks
-            className="text-text"
-            strokeWidth={strikeWidth}
-            size={size}
-          />
-        }
-        routeName="/"
-        pageName="Library"
-        alreadyOn={location.pathname === "/"}
-      />
-      <SidebarButton
-        icon={
-          <IconSearch
-            className="text-text"
-            strokeWidth={strikeWidth}
-            size={size}
-          />
-        }
-        routeName="/search"
-        pageName="Search"
-        alreadyOn={location.pathname === "/search"}
-      />
-      <SidebarButton
-        icon={
-          <IconHistory
-            className="text-text"
-            strokeWidth={strikeWidth}
-            size={size}
-          />
-        }
-        routeName="/history"
-        pageName="History"
-        alreadyOn={location.pathname === "/history"}
-      />
-      <SidebarButton
-        icon={
-          <IconRobot
-            className="text-text"
-            strokeWidth={strikeWidth}
-            size={size}
-          />
-        }
-        routeName="/askai"
-        pageName="Ask AI"
-        alreadyOn={location.pathname === "/askai"}
-      />
-      <SidebarButton
-        icon={
-          <IconSettings
-            className="text-text"
-            strokeWidth={strikeWidth}
-            size={size}
-          />
-        }
-        routeName="/settings/general"
-        pageName="Settings"
-        alreadyOn={location.pathname.includes("/settings")}
-      />
+    <div className="grid grid-cols-1 gap-1 mt-2">
+      {buttons.map((button, index) => (
+        <SidebarButton
+          key={index}
+          icon={button.icon}
+          routeName={button.routeName}
+          pageName={button.pageName}
+        />
+      ))}
     </div>
   );
 };

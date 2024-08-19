@@ -13,9 +13,9 @@ const MangaCard = ({ mangaId, title, chapters, image }: MangaCardProps) => {
     <div className="w-min-20 rounded-2xl relative drop-shadow-lg">
       <Link to={`/manga/${mangaId}`}>
         <img
-          className=" aspect-[2/3] rounded-2xl object-fit h-full w-full"
+          className="aspect-[2/3] rounded-2xl object-fit h-full w-full"
           src={image}
-          alt=""
+          alt="cover image"
         />
         <div className="flex flex-col items-stretch h-full w-full rounded-2xl absolute bottom-0 z-10 bg-secondary-30 transition ease-in-out duration-300 opacity-0 hover:opacity-100">
           {chapters != null && (
