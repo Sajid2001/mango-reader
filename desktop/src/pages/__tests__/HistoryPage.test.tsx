@@ -8,11 +8,15 @@ import {
 // import userEvent from "@testing-library/user-event";
 import HistoryPage from "../HistoryPage";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
-import { loadLibrary } from "../../fileStorage/libraryStorage";
+import {
+  loadLibrary,
+  updateLibraryEntry,
+} from "../../fileStorage/libraryStorage";
 import { LibraryEntry } from "../../models/libraryEntry";
 
 jest.mock("../../fileStorage/libraryStorage", () => ({
   loadLibrary: jest.fn(),
+  updateLibraryEntry: jest.fn(),
 }));
 
 const mockLibraryData: LibraryEntry[] = [
@@ -43,6 +47,7 @@ const mockLibraryData: LibraryEntry[] = [
 describe("HistoryPage Component", () => {
   beforeEach(() => {
     (loadLibrary as jest.Mock).mockResolvedValue(mockLibraryData);
+    (updateLibraryEntry as jest.Mock).mockResolvedValue(undefined);
   });
 
   afterEach(() => {
@@ -108,15 +113,21 @@ describe("HistoryPage Component", () => {
     );
     expect(deleteButtons.length).toBe(2);
 
-    const expectedDeletedTitles = ["One Piece", "Naruto"];
+    const expectedHistoryInformation = {
+      lastViewed: undefined,
+      lastReadChapterName: undefined,
+    };
 
-    // Click each delete button and check if the corresponding manga is deleted
+    screen.debug();
+
     deleteButtons.forEach(async (deleteButton, index) => {
       fireEvent.click(deleteButton);
-      await waitFor(() =>
-        expect(
-          screen.queryByText(expectedDeletedTitles[index])
-        ).not.toBeInTheDocument()
+      expect(updateLibraryEntry).toHaveBeenCalledTimes(index + 1);
+      expect(updateLibraryEntry).toHaveBeenCalledWith(
+        expect.objectContaining(expectedHistoryInformation)
+      );
+      expect(updateLibraryEntry).toHaveBeenCalledWith(
+        expect.objectContaining(mockLibraryData[index].manga)
       );
     });
   });
