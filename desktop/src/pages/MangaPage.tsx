@@ -79,8 +79,6 @@ const MangaPage = () => {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
-
         // Map fetched data to Post model
         const mappedData: MangaExtDetails = {
           id: data.id,
@@ -98,10 +96,11 @@ const MangaPage = () => {
           bannerImage: data.banner_image,
           coverImage: data.cover_image,
         };
-        //console.log(mappedData)
         setManga(mappedData);
       })
-      .catch((error) => console.error("Error fetching manga data:", error));
+      .catch((error) => {
+        throw new Error("Error fetching manga data:" + error);
+      });
   }, []);
 
   //After Manga Data is Found, Gets Chapter Data and Checks Library
@@ -133,10 +132,11 @@ const MangaPage = () => {
           }));
           if (ascending) setChapters(mappedData);
           else setChapters(mappedData.reverse());
-          setLoadingChapters(false);
         })
         .catch((error) => {
-          console.error("Error fetching chapter data:", error);
+          throw new Error("Error fetching chapter data:" + error);
+        })
+        .finally(() => {
           setLoadingChapters(false);
         });
     }
@@ -149,10 +149,7 @@ const MangaPage = () => {
   };
 
   const startSeries = async () => {
-    if (reading != null) {
-      console.log("Already reading");
-      return;
-    }
+    if (reading != null) throw new Error("Series already in library");
     const mangaDetails: MangaDetails = {
       mangaId: manga.id,
       title: manga.name,
@@ -178,10 +175,8 @@ const MangaPage = () => {
   };
 
   const stopSeries = () => {
-    if (reading == null) {
-      console.log("Already removed from library");
-      return;
-    }
+    if (reading == null) throw new Error("Series already removed from library");
+
     removeEntryFromLibrary(manga.id);
     setReading(null);
   };
@@ -218,6 +213,28 @@ const MangaPage = () => {
         behavior: "smooth",
       });
     }
+  };
+
+  const downloadChapter = (downloadDirectory: string, fileName: string) => {
+    const path = window.require("path");
+    const fs = window.require("fs");
+    if (!path) {
+      return;
+    }
+
+    var filePath = path.join(downloadDirectory, `${fileName}.json`); // fileName);
+
+    let i = 0;
+    while (fs.existsSync(filePath)) {
+      i++;
+      filePath = path.join(downloadDirectory, `${fileName} (${i}).json`);
+    }
+
+    fs.copyFile(`${fileName}.json`, filePath, (err: any) => {
+      if (err) {
+        throw new Error("Error making new file:" + err);
+      }
+    });
   };
 
   function getStatusIcon(status: string) {

@@ -5,7 +5,6 @@ const initialState: UserSettings = {
   theme: "default",
   fontSize: 14,
   chapterDownloadPath: "",
-  libraryDownloadPath: "",
   profiles: [
     {
       name: "Default",
@@ -37,7 +36,6 @@ const settingsSlice = createSlice({
       state.theme = action.payload.theme;
       state.fontSize = action.payload.fontSize;
       state.chapterDownloadPath = action.payload.chapterDownloadPath;
-      state.libraryDownloadPath = action.payload.libraryDownloadPath;
       state.profiles = action.payload.profiles;
       state.leftPageKeybind = action.payload.leftPageKeybind;
       state.rightPageKeybind = action.payload.rightPageKeybind;
@@ -57,10 +55,6 @@ const settingsSlice = createSlice({
 
     setChapterDownloadPath: (state, action: PayloadAction<string>) => {
       state.chapterDownloadPath = action.payload;
-    },
-
-    setLibraryDownloadPath: (state, action: PayloadAction<string>) => {
-      state.libraryDownloadPath = action.payload;
     },
 
     addProfile: (state, action: PayloadAction<string>) => {
@@ -148,7 +142,6 @@ const settingsSlice = createSlice({
       state.theme = initialState.theme;
       state.fontSize = initialState.fontSize;
       state.chapterDownloadPath = initialState.chapterDownloadPath;
-      state.libraryDownloadPath = initialState.libraryDownloadPath;
       state.profiles = initialState.profiles;
       state.activeProfile = initialState.activeProfile;
       state.leftPageKeybind = initialState.leftPageKeybind;
@@ -165,7 +158,6 @@ export const {
   setTheme,
   setFontSize,
   setChapterDownloadPath,
-  setLibraryDownloadPath,
   setDefaultSinglePage,
   setDefaultFitHeight,
   setDefaultLeftToRight,

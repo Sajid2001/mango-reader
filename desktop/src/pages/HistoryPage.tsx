@@ -93,7 +93,7 @@ const HistoryPage = () => {
               ) {
                 prevDate = entry.lastViewed;
                 header = (
-                  <div>
+                  <div key={index - 0.5}>
                     <p className="text-2xl p-2 my-6 border-b-4 border-secondary font-semibold">
                       {months[new Date(entry.lastViewed!).getMonth()]}{" "}
                       {new Date(entry.lastViewed!).getDate()}{" "}

@@ -60,7 +60,6 @@ const ReaderSettings = () => {
   const changeKeybind = (keybind: string) => {
     setKeybindToChange(keybind);
     setShowKeybindPopup(true);
-    console.log(keybind);
   };
 
   // const singlePage = useSelector(
@@ -75,11 +74,6 @@ const ReaderSettings = () => {
   // const pageGap = useSelector((state: any) => state.userSettings.pageGap);
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    console.log(profiles);
-    console.log(activeProfile);
-  });
 
   return (
     <div className="*:py-3 *:px-4">

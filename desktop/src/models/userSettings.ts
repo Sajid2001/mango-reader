@@ -5,7 +5,6 @@ export interface UserSettings {
   theme: string;
   fontSize: number;
   chapterDownloadPath: string;
-  libraryDownloadPath: string;
 
   //Reader Preferences
   profiles: Profile[];

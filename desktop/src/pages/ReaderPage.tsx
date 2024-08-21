@@ -139,11 +139,12 @@ const ReaderPage = () => {
       })
       .then((data) => {
         // Map fetched data to Post model
-        console.log(data.total_chapters);
         setMangaName(data.title);
         setMaxChapters(data.total_chapters);
       })
-      .catch((error) => console.error("Error fetching chapter data:", error));
+      .catch((error) => {
+        throw new Error("Error fetching chapter data: " + error);
+      });
   }, [mangaId]);
 
   //Use Effect for getting Chapter Specifc Data
@@ -164,7 +165,6 @@ const ReaderPage = () => {
         })
         .then(async (data) => {
           // Map fetched data to Post model
-          console.log(data);
           setChapterName(data.chapter_name);
           setIsProcessing(data.is_processing);
 
@@ -189,9 +189,9 @@ const ReaderPage = () => {
                 setLoading(false);
                 setIsProcessing(false);
               })
-              .catch((error) =>
-                console.error("Error fetching chapter data:", error)
-              );
+              .catch((error) => {
+                throw new Error("Error mapping chapter data: " + error);
+              });
           } else {
             if (isCurrent) {
               setTimeout(() => {
@@ -200,7 +200,9 @@ const ReaderPage = () => {
             }
           }
         })
-        .catch((error) => console.error("Error fetching chapter data:", error));
+        .catch((error) => {
+          throw new Error("Error fetching chapter data: " + error);
+        });
     };
 
     getChapterData();
@@ -262,7 +264,6 @@ const ReaderPage = () => {
         }
       } else if (direction === "next") {
         if (Number(chapterId) < maxChapters) {
-          console.log(maxChapters);
           nextChapter();
         }
       }
@@ -342,13 +343,11 @@ const ReaderPage = () => {
       Number(chapterId) + 1,
       maxChapters
     )}`;
-    console.log(url);
     navigate(url);
   };
 
   const previousChapter = async () => {
     const url = `/reader/${mangaId}/${Math.max(Number(chapterId) - 1, 1)}`;
-    console.log(url);
     navigate(url);
   };
 
