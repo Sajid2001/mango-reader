@@ -6,10 +6,16 @@ import {
 } from "../fileStorage/libraryStorage";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  setAllSettings,
   setChapterDownloadPath,
   setTheme,
 } from "../reduxStorage/settingsSlice";
 import themeOptions from "../themeOptions";
+import {
+  importSettingsFromFile,
+  loadSettings,
+} from "../fileStorage/settingsStorage";
+import { IconAlertCircle } from "@tabler/icons-react";
 
 const GeneralSettings = () => {
   const dispatch = useDispatch();
@@ -17,26 +23,62 @@ const GeneralSettings = () => {
 
   useEffect(() => {
     loadLibrary();
+    loadSettings();
   }, []);
 
-  const [file, setFile] = useState<File | null>(null);
   const importLibrary = useRef<HTMLInputElement>(null);
+  const importSettings = useRef<HTMLInputElement>(null);
   const downloadSettings = useRef<HTMLAnchorElement>(null);
   const downloadLibrary = useRef<HTMLAnchorElement>(null);
 
-  const getFile = (event: any) => {
-    setFile(event.target.files[0]);
+  const [failedToImport, setFailedToImport] = useState<string>("");
+
+  const importBackup = (event: any, backupType: string) => {
+    console.log("ok");
+
+    const file = event.target.files[0];
+    console.log("good");
+
+    switch (backupType) {
+      case "library":
+        if (file !== undefined && file !== null) {
+          importLibraryFromFile(file.path).catch((err) => {
+            setFailedToImport("library");
+            setTimeout(() => {
+              setFailedToImport("");
+            }, 3000);
+          });
+        }
+        break;
+      case "settings":
+        if (file !== undefined && file !== null) {
+          console.log("good");
+          importSettingsFromFile(file.path)
+            .then(() => {
+              loadSettings()
+                .then((newSettings) => {
+                  dispatch(setAllSettings(newSettings));
+                })
+                .catch((err) => {
+                  throw new Error(err);
+                });
+            })
+            .catch((err) => {
+              setFailedToImport("settings");
+              setTimeout(() => {
+                setFailedToImport("");
+              }, 3000);
+            });
+        }
+        break;
+      default:
+        break;
+    }
   };
 
   const chapterDownloadPath = useSelector(
     (state: any) => state.userSettings.chapterDownloadPath
   );
-
-  useMemo(async () => {
-    if (file !== undefined && file !== null) {
-      importLibraryFromFile(file.path);
-    }
-  }, [file]);
 
   const changeTheme = (newTheme: string) => {
     dispatch(setTheme(newTheme));
@@ -102,7 +144,7 @@ const GeneralSettings = () => {
           </button>
           <input
             ref={importLibrary}
-            onChange={getFile}
+            onChange={(event) => importBackup(event, "library")}
             type="file"
             id="file-input"
             className="hidden"
@@ -115,6 +157,12 @@ const GeneralSettings = () => {
             href="library.json"
           ></a>
         </div>
+        {failedToImport === "library" && (
+          <p className="absolute flex text-red-accent gap-2 font-bold pt-1">
+            <IconAlertCircle />
+            Failed to import settings
+          </p>
+        )}
       </div>
 
       <div className=" w-[500px]">
@@ -128,14 +176,14 @@ const GeneralSettings = () => {
             Export Settings
           </button>
           <button
-            onClick={() => importLibrary.current?.click()}
+            onClick={() => importSettings.current?.click()}
             className=" bg-secondary py-1 h-full rounded-lg w-full"
           >
             Import Settings
           </button>
           <input
-            ref={importLibrary}
-            onChange={getFile}
+            ref={importSettings}
+            onChange={(event) => importBackup(event, "settings")}
             type="file"
             id="file-input"
             className="hidden"
@@ -148,6 +196,12 @@ const GeneralSettings = () => {
             href="settings.json"
           ></a>
         </div>
+        {failedToImport === "settings" && (
+          <p className="absolute flex text-red-accent gap-2 font-bold pt-1">
+            <IconAlertCircle />
+            Failed to import settings
+          </p>
+        )}
       </div>
 
       <div className="">

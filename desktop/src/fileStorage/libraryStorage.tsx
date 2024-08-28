@@ -58,13 +58,38 @@ const eraseAllHistoricalData = async () => {
   await saveLibrary();
 };
 
-// const getLibrary = async () => {
-//     return library;
-// };
-
 const importLibraryFromFile = async (newLibraryFilepath: string) => {
-  await replaceFileData(filepath, newLibraryFilepath);
+  if (!isFileOfLibrary(readDataFromFile(newLibraryFilepath))) {
+    throw new Error("File type not supported");
+  }
+  await replaceFileData(filepath, newLibraryFilepath).catch((err) => {
+    //if failed here, it probably means the file couldnt be replaced
+    throw new Error(err);
+  });
 };
+
+function isFileOfLibrary(jsonData: any): jsonData is LibraryEntry[] {
+  if (Array.isArray(jsonData) == false) return false;
+  if (jsonData.length === 0) return true;
+  let properFormat = true;
+  for (let i = 0; i < jsonData.length; i++) {
+    if (!isStructureOfLibraryEntry(jsonData[i])) {
+      properFormat = false;
+      break;
+    }
+  }
+  return properFormat;
+}
+
+function isStructureOfLibraryEntry(jsonData: any): jsonData is LibraryEntry {
+  return (
+    typeof jsonData.progress === "number" &&
+    typeof jsonData.manga.mangaId === "number" &&
+    typeof jsonData.manga.title === "string" &&
+    typeof jsonData.manga.totalChapters === "number" &&
+    typeof jsonData.manga.coverImage === "string"
+  );
+}
 
 // export { loadLibrary, addEntryToLibrary, removeEntryFromLibrary, emptyLibrary, getLibrary, updateLibraryEntry, eraseAllHistoricalData, importLibraryFromFile};
 export {

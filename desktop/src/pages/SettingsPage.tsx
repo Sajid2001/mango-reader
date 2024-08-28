@@ -1,9 +1,5 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import {
-  getSettings,
-  loadSettings,
-  setSettings,
-} from "../fileStorage/settingsStorage";
+import { loadSettings, setSettings } from "../fileStorage/settingsStorage";
 import {
   resetUserSettings,
   setAllSettings,
@@ -29,18 +25,14 @@ const SettingsPage = () => {
   }, []);
 
   const getSavedSettings = () => {
-    loadSettings().then(() => {
-      getSettings().then((oldSettings: UserSettings) => {
-        setSaveSettings(oldSettings);
-      });
+    loadSettings().then((oldSettings: UserSettings) => {
+      setSaveSettings(oldSettings);
     });
   };
 
   const revertSettings = () => {
-    loadSettings().then(() => {
-      getSettings().then((oldSettings: UserSettings) => {
-        dispatch(setAllSettings(oldSettings));
-      });
+    loadSettings().then((oldSettings: UserSettings) => {
+      dispatch(setAllSettings(oldSettings));
     });
   };
 
@@ -53,9 +45,7 @@ const SettingsPage = () => {
 
   const resetSettingsToDefault = () => {
     loadSettings().then(() => {
-      getSettings().then(() => {
-        dispatch(resetUserSettings());
-      });
+      dispatch(resetUserSettings());
     });
   };
 

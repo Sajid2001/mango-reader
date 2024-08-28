@@ -19,7 +19,7 @@ import {
   updateLibraryEntry,
 } from "../fileStorage/libraryStorage";
 import { LibraryEntry } from "../models/libraryEntry";
-import { getSettings, loadSettings } from "../fileStorage/settingsStorage";
+import { loadSettings } from "../fileStorage/settingsStorage";
 import { useDispatch, useSelector } from "react-redux";
 import KeybindPopup from "../components/KeybindPopup";
 import { setActiveProfile } from "../reduxStorage/settingsSlice";

@@ -56,17 +56,17 @@ const Sidebar = () => {
       routeName: "/history",
       pageName: "History",
     },
-    {
-      icon: (
-        <IconRobot
-          className="text-text"
-          strokeWidth={strokeWidth}
-          size={size}
-        />
-      ),
-      routeName: "/askai",
-      pageName: "Ask AI",
-    },
+    // {
+    //   icon: (
+    //     <IconRobot
+    //       className="text-text"
+    //       strokeWidth={strokeWidth}
+    //       size={size}
+    //     />
+    //   ),
+    //   routeName: "/askai",
+    //   pageName: "Ask AI",
+    // },
     {
       icon: (
         <IconSettings

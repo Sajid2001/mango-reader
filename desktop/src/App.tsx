@@ -11,18 +11,16 @@ import GeneralSettings from "./pages/GeneralSettings";
 import ReaderSettings from "./pages/ReaderSettings";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { getSettings, loadSettings } from "./fileStorage/settingsStorage";
+import { loadSettings } from "./fileStorage/settingsStorage";
 import { UserSettings } from "./models/userSettings";
 import { setAllSettings } from "./reduxStorage/settingsSlice";
 
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
-    loadSettings().then(() => {
-      getSettings().then((oldSettings: UserSettings) => {
-        dispatch(setAllSettings(oldSettings));
-      })
-    })
+    loadSettings().then((oldSettings: UserSettings) => {
+      dispatch(setAllSettings(oldSettings));
+    });
   }, []);
   const theme = useSelector((state: any) => state.userSettings.theme);
 
