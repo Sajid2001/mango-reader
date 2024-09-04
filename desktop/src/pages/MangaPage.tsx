@@ -21,6 +21,7 @@ import { MangaDetails } from "../models/mangaDetails";
 import { LibraryEntry } from "../models/libraryEntry";
 import { ChapterDetails } from "../models/chapterDetails";
 import ChapterList from "../components/ChapterList";
+import { useSelector } from "react-redux";
 
 const MangaPage = () => {
   // [ State Variables ]
@@ -102,6 +103,28 @@ const MangaPage = () => {
         throw new Error("Error fetching manga data:" + error);
       });
   }, []);
+
+  const downloadPath = useSelector(
+    (state: any) => state.userSettings.chapterDownloadPath
+  );
+
+  const descriptionRef = useRef<HTMLDivElement>(null);
+  const [isDescriptionOverflow, setIsDescriptionOverflow] = useState(false);
+
+  const checkOverflow = () => {
+    if (descriptionRef.current) {
+      const isOverflowing = descriptionRef.current.scrollHeight > 4;
+      setIsDescriptionOverflow(isOverflowing);
+      console.log("isOverflowing: " + isDescriptionOverflow);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", checkOverflow);
+    return () => {
+      window.removeEventListener("resize", checkOverflow);
+    };
+  }, [manga.description]);
 
   //After Manga Data is Found, Gets Chapter Data and Checks Library
   useEffect(() => {
@@ -215,22 +238,24 @@ const MangaPage = () => {
     }
   };
 
-  const downloadChapter = (downloadDirectory: string, fileName: string) => {
+  const downloadChapter = (chapterNumber: number) => {
+    console.log(chapterNumber);
+
     const path = window.require("path");
     const fs = window.require("fs");
     if (!path) {
       return;
     }
 
-    var filePath = path.join(downloadDirectory, `${fileName}.json`); // fileName);
+    var filePath = path.join(downloadPath, `o.json`); // fileName);
 
     let i = 0;
     while (fs.existsSync(filePath)) {
       i++;
-      filePath = path.join(downloadDirectory, `${fileName} (${i}).json`);
+      filePath = path.join(downloadPath, `o (${i}).json`);
     }
 
-    fs.copyFile(`${fileName}.json`, filePath, (err: any) => {
+    fs.copyFile(`o.json`, filePath, (err: any) => {
       if (err) {
         throw new Error("Error making new file:" + err);
       }
@@ -295,10 +320,14 @@ const MangaPage = () => {
             </div>
           )}
           {!showScrollToTop && (
-            <div className="flex px-4 py-2">
-              {manga.description.length > 580 && !descriptionExpanded
-                ? manga.description.slice(0, 580) + "..."
-                : manga.description}
+            <div
+              className={`flex px-4 py-2 ${
+                isDescriptionOverflow &&
+                !descriptionExpanded &&
+                "bg-gradient-to-b from-text from-80% to-background to-98% inline-block text-transparent bg-clip-text h-20"
+              }`}
+            >
+              {manga.description}
             </div>
           )}
 
@@ -308,7 +337,7 @@ const MangaPage = () => {
                 onClick={toggleDescriptionExpansion}
                 className="flex px-4 -translate-y-3 font-bold text-primary hover:text-slate-800 items-center"
               >
-                Show more
+                {descriptionExpanded ? <p>Show Less</p> : <p>Show More</p>}
               </button>
             </div>
           )}
@@ -396,6 +425,7 @@ const MangaPage = () => {
             manga={manga}
             reading={reading}
             loadingChapters={loadingChapters}
+            downloadChapter={() => downloadChapter}
           />
           <button
             onClick={scrollToTarget}

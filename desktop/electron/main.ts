@@ -24,7 +24,7 @@ const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 function createWindow() {
   win = new BrowserWindow({
     minWidth: 750, // Set minimum width
-    minHeight: 300, // Set minimum height
+    minHeight: 400, // Set minimum height
     icon: path.join(process.env.VITE_PUBLIC, "mango-reader.png"),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),

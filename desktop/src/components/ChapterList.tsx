@@ -6,14 +6,26 @@ interface Props {
   manga: any;
   reading: any;
   loadingChapters: boolean;
+  downloadChapter: (chapterNumber: number) => void;
 }
 
-const ChapterList = ({ chapters, manga, reading, loadingChapters }: Props) => (
+const ChapterList = ({
+  chapters,
+  manga,
+  reading,
+  loadingChapters,
+  downloadChapter,
+}: Props) => (
   <>
     {chapters && chapters.length !== 0 ? (
       <div key={manga.id}>
         {chapters.map((chapter: any) => (
-          <ChapterItem mangaId={manga.id} chapter={chapter} reading={reading} />
+          <ChapterItem
+            mangaId={manga.id}
+            chapter={chapter}
+            reading={reading}
+            chapterDownload={() => downloadChapter}
+          />
         ))}
       </div>
     ) : (

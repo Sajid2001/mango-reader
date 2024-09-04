@@ -8,9 +8,10 @@ interface Props {
   mangaId: number;
   chapter: ChapterDetails;
   reading?: LibraryEntry;
+  chapterDownload: (chapterNumber: number) => void;
 }
 
-const ChapterItem = ({ mangaId, chapter, reading }: Props) => (
+const ChapterItem = ({ mangaId, chapter, reading, chapterDownload }: Props) => (
   <div className="w-full flex">
     <Link
       to={`/reader/${mangaId}/${chapter.chapterNumber}`}
@@ -24,7 +25,10 @@ const ChapterItem = ({ mangaId, chapter, reading }: Props) => (
       </div>
     </Link>
     <div className="flex bg-accent p-2 items-center justify-center">
-      <button className="bg-primary border-2 border-background rounded-lg text-text py-1 px-3 mx-4 hover:bg-background active:bg-accent">
+      <button
+        onClick={() => chapterDownload(chapter.chapterNumber)}
+        className="bg-primary border-2 border-background rounded-lg text-text py-1 px-3 mx-4 hover:bg-background active:bg-accent"
+      >
         <IconDownload />
       </button>
     </div>
