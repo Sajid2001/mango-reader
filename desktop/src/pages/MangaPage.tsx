@@ -108,14 +108,18 @@ const MangaPage = () => {
     (state: any) => state.userSettings.chapterDownloadPath
   );
 
-  const descriptionRef = useRef<HTMLDivElement>(null);
   const [isDescriptionOverflow, setIsDescriptionOverflow] = useState(false);
 
+  const textRef = useRef<HTMLParagraphElement>(null);
+
   const checkOverflow = () => {
-    if (descriptionRef.current) {
-      const isOverflowing = descriptionRef.current.scrollHeight > 4;
+    const element = textRef.current;
+    if (element) {
+      const isOverflowing =
+        element.scrollHeight > element.clientHeight ||
+        element.clientHeight > 100;
+      console.log(isOverflowing);
       setIsDescriptionOverflow(isOverflowing);
-      console.log("isOverflowing: " + isDescriptionOverflow);
     }
   };
 
@@ -320,18 +324,21 @@ const MangaPage = () => {
             </div>
           )}
           {!showScrollToTop && (
-            <div
-              className={`flex px-4 py-2 ${
-                isDescriptionOverflow &&
-                !descriptionExpanded &&
-                "bg-gradient-to-b from-text from-80% to-background to-98% inline-block text-transparent bg-clip-text h-20"
-              }`}
-            >
-              {manga.description}
+            <div className={`flex px-4 py-2 `}>
+              <p
+                ref={textRef}
+                className={`${
+                  isDescriptionOverflow &&
+                  !descriptionExpanded &&
+                  "bg-gradient-to-b from-text from-80% to-background to-98% inline-block text-transparent bg-clip-text h-20 overflow-hidden"
+                }`}
+              >
+                {manga.description}
+              </p>
             </div>
           )}
 
-          {!showScrollToTop && manga.description.length > 580 && (
+          {!showScrollToTop && (
             <div>
               <button
                 onClick={toggleDescriptionExpansion}
