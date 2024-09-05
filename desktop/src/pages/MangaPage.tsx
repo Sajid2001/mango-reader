@@ -9,7 +9,13 @@ import {
   IconPlus,
   IconTrafficCone,
 } from "@tabler/icons-react";
-import { useEffect, useRef, useState, useCallback } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  useLayoutEffect,
+} from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   addEntryToLibrary,
@@ -114,21 +120,23 @@ const MangaPage = () => {
 
   const checkOverflow = () => {
     const element = textRef.current;
+    console.log(element);
     if (element) {
       const isOverflowing =
         element.scrollHeight > element.clientHeight ||
         element.clientHeight > 100;
-      console.log(isOverflowing);
       setIsDescriptionOverflow(isOverflowing);
     }
   };
 
   useEffect(() => {
+    //this is admittedly not the best way to do this but it works
+    checkOverflow();
     window.addEventListener("resize", checkOverflow);
     return () => {
       window.removeEventListener("resize", checkOverflow);
     };
-  }, [manga.description]);
+  }, [manga.description, window.innerWidth]);
 
   //After Manga Data is Found, Gets Chapter Data and Checks Library
   useEffect(() => {
@@ -340,12 +348,14 @@ const MangaPage = () => {
 
           {!showScrollToTop && (
             <div>
-              <button
-                onClick={toggleDescriptionExpansion}
-                className="flex px-4 -translate-y-3 font-bold text-primary hover:text-slate-800 items-center"
-              >
-                {descriptionExpanded ? <p>Show Less</p> : <p>Show More</p>}
-              </button>
+              {isDescriptionOverflow && (
+                <button
+                  onClick={toggleDescriptionExpansion}
+                  className="flex px-4 -translate-y-3 font-bold text-primary hover:text-slate-800 items-center"
+                >
+                  {descriptionExpanded ? <p>Show Less</p> : <p>Show More</p>}
+                </button>
+              )}
             </div>
           )}
 
