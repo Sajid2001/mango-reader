@@ -2,15 +2,16 @@ import { IconCheck, IconX } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { changeKeybind } from "../reduxStorage/settingsSlice";
+import PopupProps from "../models/popupProps";
 
-interface KeybindSelectorProps {
+interface KeybindSelectorProps extends PopupProps {
   keybindToChange: string;
-  onClose: () => void;
+  closePopup: () => void;
 }
 
 const KeybindSelector = ({
   keybindToChange,
-  onClose,
+  closePopup,
 }: KeybindSelectorProps) => {
   const [keybind, setKeybind] = useState("");
   const dispatch = useDispatch();
@@ -23,7 +24,6 @@ const KeybindSelector = ({
   });
 
   const handleKeyDown = (event: any) => {
-    console.log("event");
     event.preventDefault();
     const { key, ctrlKey, shiftKey, altKey, metaKey } = event;
     const keys = [
@@ -45,7 +45,7 @@ const KeybindSelector = ({
 
   const approveKeybind = () => {
     dispatch(changeKeybind({ key: keybind, map: keybindToChange }));
-    onClose();
+    closePopup();
   };
 
   return (
@@ -57,9 +57,8 @@ const KeybindSelector = ({
 
         <div className="flex justify-around mt-2">
           <button
-            onClick={() => onClose()}
+            onClick={() => closePopup()}
             className="text-2xl bg-primary rounded-3xl p-1"
-            data-testid="close-button"
           >
             <IconX size={18} />
           </button>
@@ -68,7 +67,6 @@ const KeybindSelector = ({
             onClick={() => approveKeybind()}
             className="text-2xl bg-primary rounded-3xl p-1 disabled:opacity-30"
             disabled={!keybind}
-            data-testid="approve-button"
           >
             <IconCheck size={18} />
           </button>

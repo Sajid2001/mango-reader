@@ -2,11 +2,9 @@ import { IconX } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import KeybindSelector from "./KeybindSelector";
+import PopupProps from "../models/popupProps";
 
-interface KeybindPopupProps {
-  closeKeybinds: () => void;
-}
-const KeybindPopup = ({ closeKeybinds }: KeybindPopupProps) => {
+const KeybindPopup = ({ closePopup }: PopupProps) => {
   const leftPageKeybind = useSelector(
     (state: any) => state.userSettings.leftPageKeybind
   );
@@ -54,12 +52,8 @@ const KeybindPopup = ({ closeKeybinds }: KeybindPopupProps) => {
       }
     >
       <div className="relative w-98 p-6 rounded-xl bg-primary">
-        <button
-          data-testid="close-keybinds-button"
-          className="absolute top-2 right-2"
-          onClick={() => closeKeybinds()}
-        >
-          <IconX />
+        <button className="absolute top-2 right-2">
+          <IconX onClick={() => closePopup()} />
         </button>
         <div className="*:w-full *:border-b-2 *:border-primary font-semibold">
           <div className="flex items-center justify-between p-2">
@@ -120,7 +114,7 @@ const KeybindPopup = ({ closeKeybinds }: KeybindPopupProps) => {
       </div>
       {showKeybindPopup && keybindToChange && (
         <KeybindSelector
-          onClose={() => {
+          closePopup={() => {
             setKeybindToChange("");
             setShowKeybindPopup(false);
           }}
