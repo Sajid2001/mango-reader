@@ -9,7 +9,13 @@ import {
   IconPlus,
   IconTrafficCone,
 } from "@tabler/icons-react";
-import { useEffect, useRef, useState, useCallback } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  useLayoutEffect,
+} from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   addEntryToLibrary,
@@ -108,23 +114,27 @@ const MangaPage = () => {
     (state: any) => state.userSettings.chapterDownloadPath
   );
 
-  const descriptionRef = useRef<HTMLDivElement>(null);
   const [isDescriptionOverflow, setIsDescriptionOverflow] = useState(false);
 
+  const textRef = useRef<HTMLParagraphElement>(null);
+
   const checkOverflow = () => {
-    if (descriptionRef.current) {
-      const isOverflowing = descriptionRef.current.scrollHeight > 4;
+    const element = textRef.current;
+    console.log(element);
+    if (element) {
+      const isOverflowing = element.scrollHeight > 100;
       setIsDescriptionOverflow(isOverflowing);
-      console.log("isOverflowing: " + isDescriptionOverflow);
     }
   };
 
   useEffect(() => {
+    //this is admittedly not the best way to do this but it works
+    checkOverflow();
     window.addEventListener("resize", checkOverflow);
     return () => {
       window.removeEventListener("resize", checkOverflow);
     };
-  }, [manga.description]);
+  }, [manga.description, window.innerWidth]);
 
   //After Manga Data is Found, Gets Chapter Data and Checks Library
   useEffect(() => {
@@ -313,32 +323,37 @@ const MangaPage = () => {
                   </div>
                 ))
               ) : (
-                <div className="bg-slate-300 bg p-1 font-semibold mx-1 rounded-md">
+                <div className="bg-secondary bg p-1 font-semibold mx-1 rounded-md">
                   No Associated Genres
                 </div>
               )}
             </div>
           )}
           {!showScrollToTop && (
-            <div
-              className={`flex px-4 py-2 ${
-                isDescriptionOverflow &&
-                !descriptionExpanded &&
-                "bg-gradient-to-b from-text from-80% to-background to-98% inline-block text-transparent bg-clip-text h-20"
-              }`}
-            >
-              {manga.description}
+            <div className={`flex px-4 py-2 `}>
+              <p
+                ref={textRef}
+                className={`${
+                  isDescriptionOverflow &&
+                  !descriptionExpanded &&
+                  "bg-gradient-to-b from-text from-80% to-background to-98% inline-block text-transparent bg-clip-text h-20 overflow-hidden"
+                }`}
+              >
+                {manga.description}
+              </p>
             </div>
           )}
 
-          {!showScrollToTop && manga.description.length > 580 && (
+          {!showScrollToTop && (
             <div>
-              <button
-                onClick={toggleDescriptionExpansion}
-                className="flex px-4 -translate-y-3 font-bold text-primary hover:text-slate-800 items-center"
-              >
-                {descriptionExpanded ? <p>Show Less</p> : <p>Show More</p>}
-              </button>
+              {isDescriptionOverflow && (
+                <button
+                  onClick={toggleDescriptionExpansion}
+                  className="flex px-4 -translate-y-3 font-bold text-accent hover:text-secondary items-center"
+                >
+                  {descriptionExpanded ? <p>Show Less</p> : <p>Show More</p>}
+                </button>
+              )}
             </div>
           )}
 
@@ -372,7 +387,7 @@ const MangaPage = () => {
               <div className="flex">
                 <button
                   onClick={() => sortChapters()}
-                  className="flex bg-primary rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:opacity-70 items-center"
+                  className="flex bg-primary rounded-lg text-text py-1 px-3 mr-4 justify-self-end hover:opacity-70 items-center"
                 >
                   {" "}
                   {ascending ? (
@@ -384,7 +399,7 @@ const MangaPage = () => {
                 {reading != null && reading.progress > 0 ? (
                   <button
                     onClick={continueReading}
-                    className="flex bg-primary rounded-lg text-white py-1 px-3 mr-4 justify-self-end hover:opacity-70"
+                    className="flex bg-primary rounded-lg text-text py-1 px-3 mr-4 justify-self-end hover:opacity-70"
                   >
                     {" "}
                     Continue <IconPlayerPlay className="pl-2" />
