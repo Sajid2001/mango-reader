@@ -50,8 +50,8 @@ const MangaPage = () => {
     name: string;
     genres: string[];
     description: string;
-    publishStatus: string;
-    scanStatus: string;
+    status: string;
+    //scanStatus: string;
     totalChapters: number;
     bannerImage: string;
     coverImage: string;
@@ -65,8 +65,8 @@ const MangaPage = () => {
     name: "No Manga Found",
     genres: [],
     description: "",
-    publishStatus: "Unknown",
-    scanStatus: "Unknown",
+    status: "Unknown",
+    //scanStatus: "Unknown",
     totalChapters: 0,
     bannerImage:
       "https://static.vecteezy.com/system/resources/previews/005/337/799/non_2x/icon-image-not-found-free-vector.jpg",
@@ -97,8 +97,8 @@ const MangaPage = () => {
           name: data.title,
           genres: data.genres.split(", "),
           description: data.description,
-          publishStatus: data.publish_status,
-          scanStatus: data.scan_status,
+          status: data.status,
+          //scanStatus: data.scan_status,
           totalChapters: data.total_chapters,
           bannerImage: data.banner_image,
           coverImage: data.cover_image,
@@ -362,14 +362,8 @@ const MangaPage = () => {
               <p>{manga.mangaka}</p>
               <div className="font-bold flex *:mr-2 flex-wrap">
                 <div className="flex">
-                  {getStatusIcon(manga.scanStatus)}
-                  <p className="pl-1">{manga.scanStatus} [Scan Status]</p>
-                </div>
-                <div className="flex">
-                  {getStatusIcon(manga.publishStatus)}
-                  <p className="pl-1">
-                    {manga.publishStatus} [Publishing Status]
-                  </p>
+                  {getStatusIcon(manga.status)}
+                  <p className="pl-1">{manga.status} [Series Status]</p>
                 </div>
               </div>
             </div>

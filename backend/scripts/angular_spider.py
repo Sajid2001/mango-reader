@@ -39,7 +39,7 @@ class AngularSpider(scrapy.Spider):
         wait = WebDriverWait(self.driver, 10)
         wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ".bg-base-300.flex.gap-4.p-4")))
         links = self.driver.find_elements(By.CSS_SELECTOR, ".bg-base-300.flex.gap-4.p-4")
-        for link in links[:1]:  # Limit to the set number of links
+        for link in links[:30]:  # Limit to the set number of links
             href = link.find_element(By.CSS_SELECTOR, "a[href]").get_attribute("href")
             yield scrapy.Request(url=href, callback=self.parse_detail_page)
 

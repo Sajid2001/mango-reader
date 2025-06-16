@@ -1,5 +1,5 @@
 import Sidebar from "./components/Sidebar";
-import { Route, HashRouter, Routes } from "react-router-dom";
+import { Route, HashRouter, Routes, Navigate } from "react-router-dom";
 import LibraryPage from "./pages/LibraryPage";
 import SearchPage from "./pages/SearchPage";
 import HistoryPage from "./pages/HistoryPage";
@@ -45,6 +45,7 @@ function App() {
             <Route path="/settings" element={<SettingsPage />}>
               <Route path="general" element={<GeneralSettings />} />
               <Route path="reader" element={<ReaderSettings />} />
+              <Route path="" element={<GeneralSettings />} />
             </Route>
             <Route path="/askai" element={<AskAIPage />} />
             <Route path="/" element={<LibraryPage />} />

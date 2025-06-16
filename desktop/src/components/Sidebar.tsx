@@ -75,7 +75,7 @@ const Sidebar = () => {
           size={size}
         />
       ),
-      routeName: "/settings/general",
+      routeName: "/settings",
       pageName: "Settings",
     },
   ];

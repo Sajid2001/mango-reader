@@ -94,7 +94,7 @@ const SettingsPage = () => {
       <div className="flex w-full border-b-2 border-secondary mb-4 *:-mt-4">
         <button
           onClick={() => navigate("/settings/general")}
-          disabled={location.pathname === "/settings/general"}
+          disabled={location.pathname != "/settings/reader"}
           className="transition ease-in-out disabled:border-b-4 disabled:border-primary text-2xl p-4 border-1 border-primary"
         >
           General
