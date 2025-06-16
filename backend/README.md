@@ -39,8 +39,7 @@ CREATE TABLE manga (
     authors VARCHAR(200),
     genres VARCHAR(200),
     description TEXT,
-    scan_status VARCHAR(100),
-    publish_status VARCHAR(100),
+    status VARCHAR(100),
     total_chapters INTEGER,
     banner_image VARCHAR(500),
     cover_image VARCHAR(500)

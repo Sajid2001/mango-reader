@@ -33,15 +33,14 @@ def process_manga_data(cursor, manga_data):
             is_insert = True
 
         cursor.execute("""
-            INSERT INTO manga (title, alternate_names, authors, genres, description, scan_status, publish_status, total_chapters, banner_image, cover_image)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO manga (title, alternate_names, authors, genres, description, status, total_chapters, banner_image, cover_image)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             ON CONFLICT (title) DO UPDATE
             SET alternate_names = EXCLUDED.alternate_names,
                 authors = EXCLUDED.authors,
                 genres = EXCLUDED.genres,
                 description = EXCLUDED.description,
-                scan_status = EXCLUDED.scan_status,
-                publish_status = EXCLUDED.publish_status,
+                status = EXCLUDED.status,
                 total_chapters = EXCLUDED.total_chapters,
                 banner_image = EXCLUDED.banner_image,
                 cover_image = EXCLUDED.cover_image
@@ -51,8 +50,7 @@ def process_manga_data(cursor, manga_data):
             manga_data.get("Author(s)", None),
             manga_data.get("Genre", None),
             manga_data.get("Description", None),
-            manga_data.get("Scan Status", None),
-            manga_data.get("Publish Status", None),
+            manga_data.get("Status", None),
             manga_data.get("Total Chapters", current_total_chapters),  # Use existing total_chapters for insert
             manga_data.get("Banner Image", None),
             manga_data.get("Cover Image", None)
@@ -84,8 +82,8 @@ def parse_chapter_links(cursor, manga_id, rss_link, series_title, driver):
     try:
         driver.get(rss_link)
         rss_content = driver.page_source
-        soup = BeautifulSoup(rss_content, 'xml')
-        chapter_links = soup.find_all('item')
+        soup = BeautifulSoup(rss_content, 'html.parser')
+        chapter_links = soup.find_all('a', class_='hover:bg-base-300 flex-1 flex items-center p-2')
         new_chapters_count = 0
 
         if chapter_links:
@@ -100,17 +98,17 @@ def parse_chapter_links(cursor, manga_id, rss_link, series_title, driver):
             # Parse and collect new chapters from the RSS feed
             all_chapters = []
             for item in chapter_links:
-                title = item.find('title').text.strip().replace('’', '\'')
-                # Remove the series title from the chapter title
-                title = re.sub(re.escape(series_title), '', title, flags=re.IGNORECASE).strip()
-
+                link = item.get('href')
+                title = item.select_one('span.grow > span')
+                if not title:
+                    continue
+                title = title.get_text().replace('’', '\'')
                 if title in existing_chapter_dict:
                     # Use existing chapter
                     existing_chapter = existing_chapter_dict[title]
                     all_chapters.append((existing_chapter[0], existing_chapter[1], existing_chapter[2], None))
                 else:
-                    link = item.find('link').text.strip().replace("-page-1.html", "")
-                    if "https://manga4life.com/read-online/" in link:
+                    if "chapters" in link:
                         new_chapters_count += 1
                         all_chapters.append((None, title, None, link))
 

@@ -7,21 +7,26 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.chrome.options import Options as ChromeOptions
 from scrapy.selector import Selector
 
 class AngularSpider(scrapy.Spider):
     name = 'angular_spider'
     start_urls = [
-        'https://manga4life.com/search/?sort=v&desc=true&type=Manga',
+        'https://weebcentral.com/search?sort=Popularity&order=Descending&official=Any&anime=Any&adult=Any&included_type=Manga&display_mode=Full+Display',
     ]
 
     # Initialize the webdriver
     def __init__(self):
-        firefox_options = FirefoxOptions()
-        firefox_options.add_argument("--private")
-        firefox_options.add_argument("--headless")
-        self.driver = webdriver.Firefox(options=firefox_options)
+        chrome_options = ChromeOptions()
+        chrome_options.add_argument("--private")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--headless=new")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--remote-debugging-port=9222")
+
+        self.driver = webdriver.Chrome(options=chrome_options)
 
     # Parse through each Start URLs
     def start_requests(self):
@@ -32,47 +37,37 @@ class AngularSpider(scrapy.Spider):
     def parse_initial_page(self, response):
         self.driver.get(response.url)
         wait = WebDriverWait(self.driver, 10)
-        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.SeriesName.ng-binding')))
-        links = self.driver.find_elements(By.CSS_SELECTOR, ".SeriesName.ng-binding")
-        for link in links[:26]:  # Limit to the set number of links
-            href = link.get_attribute("href")
+        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ".bg-base-300.flex.gap-4.p-4")))
+        links = self.driver.find_elements(By.CSS_SELECTOR, ".bg-base-300.flex.gap-4.p-4")
+        for link in links[:1]:  # Limit to the set number of links
+            href = link.find_element(By.CSS_SELECTOR, "a[href]").get_attribute("href")
             yield scrapy.Request(url=href, callback=self.parse_detail_page)
 
     # Parse function: Scrape the detail page and store data
     def parse_detail_page(self, response):
-        name = response.css('h1::text').get()
-        if name:
-            name = name.replace('’', '\'')
-        # Not sure why this won't work using CSS Selector
-        alternate_names = response.xpath('//span[@class="mlabel" and contains(text(), "Alternate Name(s):")]/following-sibling::text()').get()
-        if alternate_names is not None:
-            alternate_names = alternate_names.strip()
-        authors = response.css('span.mlabel:contains("Author(s):") ~ a::text').getall()
-        genres = response.css('span.mlabel:contains("Genre(s):") ~ a::text').getall()
-        description = response.css('div.top-5.Content::text').get()
+        name = response.css('.hidden.md\\:block.text-2xl.font-bold::text').get().replace('’', '\'')
+        alternate_names = ', '.join(alternate_name.strip() for alternate_name in response.css('ul.list-disc.list-inside li::text').getall() if alternate_name.strip()) 
+        if not alternate_names:
+            alternate_names = None
+        authors = response.css('li strong:contains("Author(s):") ~ span a::text').getall()
+        genres = response.css('li strong:contains("Tags(s):") ~ span a::text').getall()
+        description = response.css('li strong:contains("Description") + p::text').get()
         if description:
             description = description.replace('\n', ' ')
             description = ' '.join(description.split())
             description = description.replace('’', '\'')
             description = description.replace('—', '-')
             description = description.replace('â€¦', '.')
-        status_elements = response.css('span.mlabel:contains("Status:") ~ a::text').getall()
-        scan_status = None
-        publish_status = None
-        for status in status_elements:
-            if 'Scan' in status:
-                scan_status = status.replace(' (Scan)', '').strip()
-            if 'Publish' in status:
-                publish_status = status.replace(' (Publish)', '').strip()
+        status = response.css('li strong:contains("Status:") ~ a::text').get()
         # Extracting total chapters from RSS feed if available
-        rss_link = response.css('a[href^="/rss/"]::attr(href)').get()
+        rss_link = response.css('li strong:contains("RSS") ~ a::attr(href)').get().replace("rss", "full-chapter-list")
         if rss_link:
-            rss_url = response.urljoin(rss_link)
-            self.driver.get(rss_url)
+            self.driver.get(rss_link)
             rss_content = self.driver.page_source
-            soup = BeautifulSoup(rss_content, 'xml')
-            # Count the number of <item> elements
-            total_chapters = len(soup.find_all('item'))
+            rss_selector = Selector(text=rss_content)
+            # Count the number of <a> elements with href starting with https:
+            total_chapters = len(rss_selector.css('a[href^="https:"]::attr(href)').getall())
+            self.parse_chapter_links(rss_link)
         else:
             total_chapters = None
         banner_image = self.get_banner(name)
@@ -88,31 +83,41 @@ class AngularSpider(scrapy.Spider):
             f.write(f'Author(s): {", ".join(authors)}\n')
             f.write(f'Genre: {", ".join(genres)}\n')
             f.write(f'Description: {description}\n')
-            f.write(f'Scan Status: {scan_status}\n')
-            f.write(f'Publish Status: {publish_status}\n')
+            f.write(f'Status: {status}\n')
             if total_chapters:
                 f.write(f'Total Chapters: {total_chapters}\n')
             else:
                 f.write('Total Chapters: Not available\n')
             if rss_link:
-                f.write(f'RSS Link: https://manga4life.com{rss_link}\n\n')
+                f.write(f'RSS Link: {rss_link}\n')
+            f.write('\n')
         self.log(f'Saved data for "{name}" to {filename}')
 
 
     # Parses chapter links from the RSS feed and stores them in a separate txt file
-    def parse_chapter_links(self, rss_url):
-        self.driver.get(rss_url)
+    def parse_chapter_links(self, rss_link):
+        self.driver.get(rss_link)
         rss_content = self.driver.page_source
-        soup = BeautifulSoup(rss_content, 'xml')
-        chapter_links = soup.find_all('item')
+        soup = BeautifulSoup(rss_content, 'html.parser')
+        chapter_links = soup.find_all('a', class_='hover:bg-base-300 flex-1 flex items-center p-2')
         chapter_filename = None
         if chapter_links:
             chapter_filename = "chapter_links.txt"
             with open(chapter_filename, 'a+', encoding='utf-8') as f:
-                for item in chapter_links:
-                    link = item.find('link').text.strip()
-                    if "https://manga4life.com/read-online/" in link:
-                        f.write(link + '\n')
+                for link in chapter_links:
+                    href = link.get('href')
+                    if href and "chapters" in href:
+                        f.write(href + '\n')
+                    title = link.select_one('span.grow > span')
+                    if not title:
+                        continue
+                    title = title.get_text().replace('’', '\'')
+                    if title:
+                        f.write(title + '\n')
+                # for item in chapter_links:
+                #     link = item.find('link').text.strip()
+                #     if "https://manga4life.com/read-online/" in link:
+                #         f.write(link + '\n')
         else:
             print("No chapter links found.")
         self.log(f'Saved chapter links to {chapter_filename}')

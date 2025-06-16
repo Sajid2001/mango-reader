@@ -29,7 +29,7 @@ def search_series_by_name():
     
     # Make sure the path to chromedriver is correct
     driver = webdriver.Chrome(options=chrome_options)
-    base_url = 'https://manga4life.com/search/?sort=s&desc=false&name='
+    base_url = 'https://weebcentral.com/search?text='
 
     try:
         driver.get(base_url + search_query)
@@ -38,8 +38,8 @@ def search_series_by_name():
 
         # Get the page source and parse with BeautifulSoup
         soup = BeautifulSoup(driver.page_source, 'html.parser')
-        search_result_block = soup.select_one('.col-md-8.order-md-1.order-12')
-        search_result_rows = search_result_block.select('.row')
+        search_result_block = soup.select_one('.bg-base-200.max-w-7xl.w-full flex-1.p-6') 
+        search_result_rows = search_result_block.select('.bg-base-300.flex.gap-4.p-4')
 
         series_data = []
         for series in search_result_rows[:3]:

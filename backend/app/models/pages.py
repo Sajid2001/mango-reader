@@ -36,17 +36,18 @@ class Pages(db.Model):
                     driver.get(chapter_link)
                     
                     # Wait for the page to load and the image tags to be present
-                    WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'img.img-fluid')))
+                    WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'img.maw-w-full.mx-auto')))
                     
                     # Get the page source and pass it to BeautifulSoup
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
-                    img_tags = soup.select('img.img-fluid')
+                    img_tags = soup.select('img.maw-w-full.mx-auto')
                     
                     if img_tags:
                         for img_tag in img_tags:
                             img_src = img_tag.get('src')
                             scan_url = img_src
-                            page_number = int(scan_url.split('-')[-1].split('.')[0].lstrip('0'))  # Extract the page number
+                            page_number = img_tag.get('alt')  
+                            page_number = int(page_number.split()[-1].lstrip('0')) if page_number else None # Extract the page number
 
                             # Create a Pages object and add it to the session
                             page = Pages(manga_id=manga_id, chapter_number=chapter_number, scan_url=scan_url, page_number=page_number)
